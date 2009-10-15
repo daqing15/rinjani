@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _("Not Found") }}{% end %}
+
+{% block body %}
+
+<h1>{{ _('Not Found') }}</h1>
+{% if message %}
+    <p>{{ message }}</p>
+{% else %}    
+    <p>{{ _('We have millions page, but not what you&rsquo;re looking for') }}</p>
+{% end %}
+   
+{% end %}
+

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>{{ _('New Activity') }}</h1>
+
+<div class="form-area">
+    <form method="post" action="{{BP}}/activity/edit">
+    {{ f.render_css() }}
+    <div><input class="button" name="submit" type="submit" value="{{_('Save')}}"/></div>
+    {% if slug %}
+    <input type="hidden" name="is_edit" value="1" />
+    <input type="hidden" name="slug" value="{{slug}}" />
+    {% end %}
+    {{ xsrf_form_html() }}
+    </form>
+</div>
+{% end %}
+

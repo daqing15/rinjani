@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% if article %}
+	<h1>{{ article['title'] }} {{ h.link_if_editor(current_user, article['author'], BP + '/article/edit/' + article['slug'], _('Edit'), _class='small-link') }}</h2>
+	<div class="content-body">
+	   {{ article['content_html'] }}
+	</div>
+    
+    {{ modules.Tags(article['tags']) }}
+    {{ modules.Disqus(current_path) }}  
+    
+{% else %}
+    <h1>{{ _('Article not found') }}</h1>
+{% end %}
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.UserBlock(article['author']) }}
+    
+    {{ modules.ArticleLatest() }}
+    
+    {% if article %}
+        {{ modules.ReportBox(current_path) }}
+        {{ modules.ArticleStat(article['_id']) }}
+        {{ modules.ArticlesRelated(article['tags']) }}
+    {% end %}    
+{% end %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div id="subheader">
+    <h2>{{ _('Articles') }} {{ h.link_if_auth(current_user, BP + '/article/new', _('New Article'), _class='small-link') }}</h2>
+    
+    <div id="tabs">
+        <a href="/?tab=active" class="youarehere">{{ _('latest') }}</a>
+        <a href="/?tab=featured">{{ _('featured') }}</a>
+        <a href="/?tab=hot">{{ _('popular') }}</a>
+    </div>
+</div>
+
+<div class="items">
+{% for article in pagination.get_objects() %}
+        {{ modules.ItemSummary(article) }}
+{% end %}
+</div>
+
+<p class="clear"></p>
+
+{{ pagination }}
+
+{% end %}
+

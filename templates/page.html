@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _("Static Page") }}{% end %}
+
+{% block body %}
+
+<h1>{{ page['title'] }} {{ h.link_if_auth(current_user, BP + '/page/edit/' + page['slug'], _('Edit'), 'admin', _class='small-link') }}</h1>
+ 
+<div class="content-body">
+   {{ page['content_html'] }}
+</div>
+ 
+{% end %}
+
+{% block sidebar %}
+
+{% end %}

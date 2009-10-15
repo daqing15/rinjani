@@ -1,0 +1,23 @@
+{% extends '../base.html' %}
+
+{% block title %}My Profile{% end %}
+
+{% block body %}
+
+<div class="main">
+     <h2>{{_('Dashboard')}} <small>(<a href="/profile/edit">{{ _('Edit Profile') }}</a>)</small></h2>
+<div class="box">
+    <a class="button" href="{{BP}}/article/new">{{ _('New Article') }}</a> 
+    {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin', _class='button') }}
+</div>   
+
+{{ modules.Streams(current_user) }}
+
+</div><!-- /.main -->
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.Fans(current_user) }}
+    {{ modules.FansOf(current_user) }}
+{% end %}

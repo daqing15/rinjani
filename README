@@ -1,0 +1,13 @@
+put these libraries in lib/:
+
+markdown2.py    # markdown2 lib
+pymongo/        # python-client for mongodb
+mongokit/       # wrapper for pymongo
+tornado/        # tornado web server + framework
+web/            # web.py framework. i use it form component.
+beaker/         # beaker caching lib
+scrappy/        # ls
+
+also, install mongodb (statically compiled ver available) 
+and python-simplejson.
+

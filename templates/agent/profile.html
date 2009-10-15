@@ -1,0 +1,18 @@
+{% extends '../base.html' %}
+
+{% block body %}
+
+<div class="main">
+
+<h1>Profile of {{ user['username'] }}</h1>
+
+<p>{{ user }}</p>
+
+</div>
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.Fans(user) }}
+    {{ modules.FansOf(user) }}
+{% end %}

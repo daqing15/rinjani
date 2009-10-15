@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div id="subheader">
+    <h2>{{ _('Come on in!') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/login">{{ _('Login') }}</a>
+        <a href="{{BP}}/register" class="youarehere">{{ _('register') }}</a>
+    </div>
+</div>
+
+<div>
+
+
+<form action="{{BP}}/register" method="post">
+{{ f.render_css() }}
+
+{{ xsrf_form_html() }}
+<div><input class="button" type="submit" value="{{ _('Register') }}" /></div>
+</form>
+ 
+</div>
+{% end %}
