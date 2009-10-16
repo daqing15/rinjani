@@ -24,9 +24,34 @@
 
 {% block sidebar %}
     {{ modules.UserBlock(activity['author']) }}
+    
+    <div class="mod simple">
+        <b class="top"><b class="tl"></b><b class="tr"></b></b>
+        <div class="inner">
+            <div class="hd"><h3>Need donations!</h3></div>
+            <div class="bd">
+              <p>Amount Required: Rp 2.300.000,-</p>
+              <p><a href="#">See this org bank accounts</a></p>
+              <p><br /></p>
+
+              <p><a class="button" href="{{BP}}/register">{{ _('Confirm My Donation') }}!</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mod simple">
+		<b class="top"><b class="tl"></b><b class="tr"></b></b>
+		<div class="inner">
+		    <div class="bd">
+		      <p>Posted on 29 Oktober 2009</p>
+		      <p>364x {{_('viewed')}}</p>
+		      <p>19 {{_('comments')}}</p>
+		    </div>
+		</div>
+    </div>
+		      
     {{ modules.Map((34,636)) }}
     {{ modules.ReportBox(current_path) }}
-    {{ modules.ActivityLatest() }}
-    {% if activity %}
-    {% end %}    
+    {{ modules.ActivitySupporters(activity) }}
+    
 {% end %}

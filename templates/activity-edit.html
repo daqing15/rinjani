@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 
 {% block body %}
+{% if slug %}
+<h1>{{ _('Edit Activity') }}</h1>
+{% else %}
 <h1>{{ _('New Activity') }}</h1>
+{% end %}
 
 <div class="form-area">
     <form method="post" action="{{BP}}/activity/edit">

@@ -11,6 +11,8 @@ url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
     (r"/l/(\w+)", 'handlers.main.LocaleHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
+    (r"/profile/donations", 'handlers.donation.ListHandler'),
+    (r"/profile/comments", 'handlers.profile.CommentsHandler'),
     (r"/profile/(\w+)", 'handlers.profile.ViewHandler'),
     (r"/register", 'handlers.profile.RegisterHandler'),
     (r"/dashboard", 'handlers.profile.Dashboard'),
@@ -18,23 +20,27 @@ url_handlers = [
     (r"/activities", 'handlers.activity.ListHandler'),
     (r"/activity/new", 'handlers.activity.EditHandler'),
     (r"/activity/edit", 'handlers.activity.EditHandler'),
-    (r"/activity/edit/([a-z0-9\-]+)", 'handlers.activity.EditHandler'),
-    (r"/activity/([a-z0-9\-]+)", 'handlers.activity.ViewHandler'),
+    (r"/activity/edit/([A-Za-z0-9\-]+)", 'handlers.activity.EditHandler'),
+    (r"/activity/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
     
     (r"/articles", 'handlers.article.ListHandler'),
     (r"/article/new", 'handlers.article.EditHandler'),
     (r"/article/edit", 'handlers.article.EditHandler'),
-    (r"/article/edit/([a-z0-9\-]+)", 'handlers.article.EditHandler'),
-    (r"/article/([a-z0-9\-]+)", 'handlers.article.ViewHandler'),
+    (r"/article/edit/([A-Za-z0-9\-]+)", 'handlers.article.EditHandler'),
+    (r"/article/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
     
     (r"/page/new", 'handlers.page.EditHandler'),
     (r"/page/edit", 'handlers.page.EditHandler'),
-    (r"/page/edit/([a-z0-9\-]+)", 'handlers.page.EditHandler'),
-    (r"/page/([a-z0-9\-]+)", 'handlers.page.ViewHandler'),
+    (r"/page/edit/(.*)", 'handlers.page.EditHandler'),
+    (r"/page/(.*)", 'handlers.page.ViewHandler'),
     
     (r"/users", 'handlers.profile.UserListHandler'),
+    
+    (r"/tag/is/([a-z0-9]+)", 'handlers.tag.ViewHandler'),
     (r"/tags", 'handlers.tag.ListHandler'),
+    
     (r"/report", 'handlers.report.Handler'),
+    
     (r"/login", 'handlers.auth.LoginHandler'),
     (r"/logout.*", 'handlers.auth.LogoutHandler'),
 ]

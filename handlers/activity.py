@@ -33,7 +33,7 @@ class EditHandler(BaseHandler):
             if isinstance(activity['tags'], list):
                 activity['tags'] = ', '.join(activity['tags'])
             f.fill(activity)
-        self.render("article-edit", f=f, slug=slug)
+        self.render("activity-edit", f=f, slug=slug)
     
     @authenticated(['agent', 'sponsor'])
     def post(self):

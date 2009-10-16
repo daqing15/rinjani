@@ -1,18 +1,30 @@
 {% extends '../base.html' %}
 
+{% block title %}My Profile{% end %}
+
 {% block body %}
 
-<div class="main">
+<div id="subheader">
+    <h2>{{ _('Profile of ') }} {{ user['username'] }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/profile/{{ current_user['username'] }}" class="youarehere">{{ _('general info') }}</a>
+        <a href="{{BP}}/profile/comments">{{ _('comments') }}</a>
+    </div>
+</div>
 
-<h1>Profile of {{ user['username'] }}</h1>
-
-<p>{{ user }}</p>
-
+<div class="mod simple2">
+    <div class="inner">
+        {% for info in user %}    
+        <p>{% if user[info] %}{{ info }}: {{ user[info] }}{% end %}</p>
+        {% end %}
+    </div>
 </div>
 
 {% end %}
 
 {% block sidebar %}
-    {{ modules.Fans(user) }}
-    {{ modules.FansOf(user) }}
+    {{ modules.FansOf(current_user) }}
+    {{ modules.FansOf(current_user) }}
+    
+    {{ modules.CommentBox() }}
 {% end %}

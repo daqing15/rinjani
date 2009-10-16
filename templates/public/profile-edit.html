@@ -2,7 +2,13 @@
 
 {% block body %}
 
-<h1>{{ _('Edit Profile') }}</h1>
+<div id="subheader">
+    <h2>{{ _('Edit Profile') }}</h2>
+    <div id="tabs">
+        <a href="#" class="youarehere">{{ _('profile') }}</a>
+        <a href="{{BP}}">{{ _('settings') }}</a>
+    </div>
+</div>
 
 <div class="form-area">
     <form method="post">

@@ -113,6 +113,10 @@ article_form = MyForm(
     Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=53, description="Tags")
  )
 
+commentbox_form = MyForm(
+    Textarea("content", form.notnull, rows=3, cols=25, description="Say something"),
+)
+
 page_form = MyForm(
     Textbox("title", form.notnull, size=53, description="Title"),
     Textbox("slug", form.notnull, size=53, description="Slug - use alphabet and dash (-)"),

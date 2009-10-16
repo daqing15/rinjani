@@ -7,7 +7,11 @@ from forms import profile_public_form, profile_form, register_form
 
 class ViewHandler(BaseHandler):
     def get(self, username):
-        user = User.one({'username': username}) 
+        user = User.one({'username': username})
+        
+        if user == self.get_current_user():
+            self.redirect("/dashboard")
+             
         if user:
             self.render(user['type'] + "/profile", user=user)
         else:
@@ -32,6 +36,7 @@ class RegisterHandler(BaseHandler):
             new_user = User()
             try:
                 new_user.populate(data)
+                new_user['is_admin'] = False
                 new_user.validate()
                 new_user.save()
                 self.set_flash("You have been successfully registered. You can log in now.")
@@ -66,5 +71,18 @@ class UserListHandler(BaseHandler):
     def get(self):
         pagination = Pagination(self, User, {}, 1)
         self.render('users', pagination=pagination)
+
+class CommentsHandler(BaseHandler):
+    @authenticated()
+    def get(self):
+        pagination = Pagination(self, User, {}, 1)
+        self.render('public/comments', pagination=pagination)
+    
+    @authenticated()
+    def post(self):
+        pagination = Pagination(self, User, {}, 1)
+        self.render('public/comments', pagination=pagination)
         
+
+
         

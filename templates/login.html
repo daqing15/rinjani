@@ -19,20 +19,29 @@
 		    <p class="grey"><br />Non-functional yet</p>		    
 	    </div>
 	</div>
-	<div class="size2of3 lastUnit" style="border-left: 1px solid #efefef">
-	   <h4>{{ _('Using This Form') }}</h4>
-        <form action="/login" method="post">
-        {{ f.render_css() }}
-        <div>
-            <input class="button" type="submit" value="{{ _('Login') }}"/>
-            <input type="hidden" name="next" value="{{next}}" />
+	<div class="size1of3 unit">
+	   <div class="sep-left">
+		   <h4>{{ _('Using This Form') }}</h4>
+	        <form action="/login" method="post">
+	        {{ f.render_css() }}
+	        <div>
+	            <input class="button" type="submit" value="{{ _('Login') }}"/>
+	            <input type="hidden" name="next" value="{{next}}" />
+	        </div>
+	          {{ xsrf_form_html() }}
+	        </form>
+	        <script type="text/javascript">
+	            $('input[name=username]').focus();
+	        </script>
+	    </div>
+    </div>
+    <div class="size1of3 lastUnit">
+       <h4>{{ _('Dont have account yet?') }}</h4>
+       <div style="margin-right:10px;">
+           <div style="margin:5px 0; ">&nbsp;</div>
+           <div style="padding-left: 10px;"><a class="button" href="{{BP}}/register">{{ _('Register') }}!</a></div>
+           <p>&nbsp; </p>
         </div>
-          {{ xsrf_form_html() }}
-        </form>
-        <script type="text/javascript">
-            $('input[name=username]').focus();
-        </script>
-        
     </div>
 </div>
 <p class="grey">Dev Note: agent and sponsor must login via form. Public could use Facebook Connect.</p>

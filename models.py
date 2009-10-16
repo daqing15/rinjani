@@ -28,17 +28,22 @@ class BaseDocument(MongoDocument):
         for field in doc_in_struct:
             self[field] = force_unicode(web.net.websafe(doc[field]))
     
-    def fill_slug_field(self, str):
+    def fill_slug_field(self, s):
         from utils.string import slugify
-        str = slugify(str)
-        _str = str
+        s = slugify(s)
+        _s = s
         i = 2
         while True:
-            if not self.__class__.one({"slug": str}):
+            if not self.__class__.one({"slug": s}):
                 break
-            str = "%s-%d" % (_str, i)
+            s = "%s-%d" % (_s, i)
             i += 1
-        self['slug'] = unicode(str)
+        self['slug'] = unicode(s)
+    
+    def set_slugs(self, s):
+        if tags:
+            tags = [tag.strip() for tag in s.split(',')]
+            self['tags'] = tags
     
     def save(self, uuid=True, validate=None, safe=True, *args, **kwargs):
         super(BaseDocument, self).save(uuid=True, validate=None, safe=True, *args, **kwargs)

@@ -17,6 +17,7 @@
 		<div class="dd_menu"><span class="head_menu"><a href="{{BP}}/dashboard">{{ current_user['username'] }}</a> <img src="/static/css/img/arrow.png" width="18" height="15" align="top" class="arrow" /></span>
 		  <div class="sub_menu">
 		      <a href="{{BP}}/profile/edit" class="item_line">{{ _('Edit Profile') }}</a>
+		      <a href="{{BP}}/profile/settings/edit">{{ _('Edit Settings') }}</a>
 		      <a href="{{BP}}/article/new" class="item_line">{{ _('New Article') }}</a>
 		      {{ h.link_if_auth(current_user, BP + '/activity/new', _('New Activity'), ['agent','sponsor']) }} 
 		      {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin') }} 
@@ -36,8 +37,8 @@
     </div>
 	<div id="hsearch">
 		<form method="get" action="/search" id="search">
-		<div><input type="text" value="search" size="28" maxlength="80"
-			onfocus="if (this.value=='search') this.value = ''" tabindex="1"
+		<div><input type="text" value="{{_('search')}}" size="28" maxlength="80"
+			onfocus="if (this.value=='{{_('search')}}') this.value = ''" tabindex="1"
 			class="textbox" name="q" />
 		</div>
 		</form>
@@ -50,8 +51,8 @@
             <ul>
                 <li><a href="/articles">{{ _('Articles') }}</a></li>
                 <li><a href="/activities">{{ _('Activities') }}</a></li>
-                <li><a href="/users">{{ _('Users') }}</a></li>
                 <li><a href="/tags">{{ _('Tags') }}</a></li>
+                <li><a href="/users">{{ _('Users') }}</a></li>
                 <!--  <li><a href="#">|</a></li>
                 {{ modules.Locale() }} -->
             </ul>
@@ -75,7 +76,8 @@
 
     <div class="foot">
         <p>
-            <a href="/page/about">{{ _('About') }}</a>
+            <a href="/page/about">{{ _('About Us') }}</a>
+            <a href="/page/how-it-works">{{ _('How it Works') }}</a>
             <a href="/page/faq">{{ _('FAQ') }}</a>
             <a href="/page/privacy">{{ _('Privacy') }}</a>
             <a href="/page/contact-us">{{ _('Contact Us') }}</a>

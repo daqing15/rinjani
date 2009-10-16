@@ -1,23 +1,18 @@
-{% extends '../base.html' %}
 
-{% block title %}My Profile{% end %}
+{% extends '_dashboard.html' %}
 
-{% block body %}
+{% block tabContent %}
 
-<div class="main">
-     <h2>{{_('Dashboard')}} <small>(<a href="/profile/edit">{{ _('Edit Profile') }}</a>)</small></h2>
-<div class="box">
-    <a class="button" href="{{BP}}/article/new">{{ _('New Article') }}</a> 
-    {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin', _class='button') }}
-</div>   
+<div id="subheader">
+    <h2>{{ _('Dashboard') }} {{ h.link_if_auth(current_user, BP + '/profile/edit', _('Edit Profile'), ['agent','sponsor'], _class='small-link') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/dashboard" class="youarehere">{{ _('your messages') }}</a>
+        <a href="{{BP}}/profile/donations">{{ _('donations') }}</a>
+        <a href="{{BP}}/profile/comments">{{ _('comments') }}</a>
+    </div>
+</div>
 
-{{ modules.Streams(current_user) }}
-
-</div><!-- /.main -->
+{{ modules.ProfileStreams(current_user) }}
 
 {% end %}
 
-{% block sidebar %}
-    {{ modules.Fans(current_user) }}
-    {{ modules.FansOf(current_user) }}
-{% end %}

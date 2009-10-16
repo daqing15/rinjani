@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+ -{% extends 'base.html' %}
 
 {% block title %}{{ _("Home") }}{% end %}
 
@@ -8,6 +8,8 @@
 <p>Welcome, coy. Mau bantu-bantu?</p>
 
 {{ modules.ActivityLatest(style='simple', limit=5) }}
+{{ modules.ArticleLatest(limit=5) }}
+
 <hr />
 
 {{ modules.Cloud() }}
@@ -17,7 +19,7 @@
 
 {% block sidebar %}
     {{ modules.Static('welcome') }}
-    {{ modules.ArticleLatest() }}
     {{ modules.Streams() }}
+    {{ modules.AgentFeatured() }}
 {% end %}
 

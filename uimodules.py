@@ -19,7 +19,19 @@ class ActivityLatest(BaseUIModule):
         if activities:
             return self.render_string("modules/activities-latest.html", activities=activities)
         else: return ''
+
+class ActivitySupporters(BaseUIModule):
+    def render(self, activity):
+        supporters = self.handler.get_current_user()
+        if supporters:
+            return self.render_string("modules/activity-supporters.html", supporters=supporters)
+        else: return ''        
         
+class AgentFeatured(BaseUIModule):
+    def render(self, **kwargs):
+        agents = []
+        return self.render_string("modules/agents-featured.html", agents=agents)
+                
 class ArticleLatest(BaseUIModule):
     def render(self, **kwargs):
         from models import Article
@@ -40,7 +52,13 @@ class ArticlesRelated(BaseUIModule):
 class Cloud(BaseUIModule):
     def render(self, **kwargs):
         return self.render_string("modules/cloud.html")
-        
+
+class CommentBox(BaseUIModule):
+    def render(self, **kwargs):
+        from forms import commentbox_form
+        f = commentbox_form()
+        return self.render_string("modules/comment-box.html", f=f)
+
 class Disqus(BaseUIModule):
     def render(self, url):
         return self.render_string("modules/disqus.html", url=url)
@@ -121,6 +139,10 @@ class Slideshow(BaseUIModule):
 class Streams(BaseUIModule):
     def render(self, user=None):
         return self.render_string("modules/streams.html")
+    
+class ProfileStreams(BaseUIModule):
+    def render(self, user=None):
+        return self.render_string("modules/profile-streams.html")
 
 class Tags(BaseUIModule):
     def render(self, tags):
