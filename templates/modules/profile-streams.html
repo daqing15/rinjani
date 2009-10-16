@@ -1,0 +1,30 @@
+<div class="mod simple3">
+<b class="top"><b class="tl"></b><b class="tr"></b></b>
+
+<div class="inner">
+	<div class="bd">
+	<div class="line item-summary">
+	   <div class="unit thumb2">
+	   </div>
+	   <div class="lastUnit">
+	       <p>Apito: Apa kabar?<p>
+	   </div>
+	</div>
+	<div class="line item-summary">
+	   <div class="unit thumb3">
+       </div>
+       <div class="lastUnit">
+           {% if current_user['type'] == 'public' %}
+           <p>PKC: Thanks for donating money to Imunisasi Bayi di Srengseng Sawah</p>
+           {% else %}
+           <p>Apito: I have sent you donation for Imunisasi Bayi. Please validate.</p>
+           {% end %}
+       </div>
+	</div>
+	<p class="grey small">events related to this profile (comment, donations, etc)</p>
+	
+	</div>
+</div>
+
+<b class="bottom"><b class="bl"></b><b class="br"></b></b>
+</div>

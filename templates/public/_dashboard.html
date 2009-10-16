@@ -1,0 +1,22 @@
+{% extends '../base.html' %}
+
+{% block title %}My Profile{% end %}
+
+{% block body %}
+
+<div class="box">
+    <a class="button" href="{{BP}}/article/new">{{ _('New Article') }}</a> 
+    {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin', _class='button') }}
+    {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), ['agent','sponsor'], _class='button') }}
+</div>   
+
+{% block tabContent %}{% end %}
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.FansOf(current_user) }}
+    {{ modules.FansOf(current_user) }}
+    
+    {{ modules.CommentBox() }}
+{% end %}

@@ -1,0 +1,21 @@
+{% extends '../base.html' %}
+
+{% block title %}My Profile{% end %}
+
+{% block body %}
+
+<div class="box">
+    <a class="button" href="{{BP}}/article/new">{{ _('New Article') }}</a> 
+    <a class="button" href="{{BP}}/activity/new">{{ _('New Activity') }}</a>
+</div>   
+
+{% block tabContent %}{% end %}
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.FansOf(current_user) }}
+    {{ modules.FansOf(current_user) }}
+    
+    {{ modules.CommentBox() }}
+{% end %}

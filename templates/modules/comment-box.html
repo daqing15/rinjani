@@ -1,0 +1,13 @@
+<div class="mod simple">
+<b class="top"><b class="tl"></b><b class="tr"></b></b>
+
+<div class="inner">
+   <form method="post">
+       {{ f.render_css() }}
+       <div><input class="button" name="submit" type="submit" value="{{_('Give')}}"/></div>
+       {{ xsrf_form_html() }}
+   </form>
+</div>
+
+<b class="bottom"><b class="bl"></b><b class="br"></b></b>
+</div>
