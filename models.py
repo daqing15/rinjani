@@ -68,10 +68,8 @@ class User(BaseDocument):
     structure = {
         # account info
         'username': unicode,
-        'password': unicode,
-        'password_hashed': unicode,
-        'password_salt': unicode,
-        'facebook_uid': unicode,
+        'uid': unicode,
+        'auth_provider': IS(u'facebook', u'google', u'twitter'),
         'status': IS(u'active', u'disabled', u'deleted'), 
         'type': IS(u'agent', u'sponsor', u'public'), 
         'is_admin': bool,
@@ -79,7 +77,8 @@ class User(BaseDocument):
         'created_at': datetime.datetime,
         
         # personnal information
-        'fullname': unicode,
+        'last_name': unicode,
+        'first_name': unicode,
         'dateofbirth': datetime.datetime,
         'about': unicode,
         'profile_content': unicode, 
@@ -102,14 +101,14 @@ class User(BaseDocument):
         'up_votes': int,
         'down_votes': int
     }
-    required_fields = ['username', 'password']
+    required_fields = ['username']
     default_values = {
         'status': u'active',
         'is_admin': False,
         'created_at':datetime.datetime.utcnow, 
         'type': u'public'
     }
-    indexes = [ { 'fields': 'username', 'unique': True} ]
+    #indexes = [ { 'fields': 'username', 'unique': True} ]
     
 class Article(BaseDocument):
     collection_name = 'articles'

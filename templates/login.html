@@ -14,36 +14,19 @@
 
 <div class="line" style="padding: 10px 0">
 	<div class="size1of3 unit">
-	   <h4>{{ _('Use Your Facebook Account') }}</h4>
-	   <p class="grey tip">You dont need to register</p>
-	   <div style="margin-right:10px;">
-		    <div style="margin:5px 0; ">&nbsp;</div>
-		    <div style="padding-left: 10px;"><a class="button" href="{{BP}}/login/fb">Facebook Connect</a></div>
+	   <h3>{{ _('Authentication Provider') }}</h3>
+   	   <div>
+		    <div style="padding-left: 10px;">
+			    <a class="button" href="{{BP}}/login/fb">Facebook Connect</a> 
+			    <a class="button" href="{{BP}}/login/google">Google</a>
+		    </div>
 	    </div>
 	</div>
-	<div class="size1of3 unit">
-	   <div class="sep-left">
-		   <h4>{{ _('Use Login Form') }}</h4>
-	        <form action="{{BP}}/login" method="post">
-	        {{ f.render_css() }}
-	        <div>
-	            <input class="button" type="submit" value="{{ _('Login') }}"/>
-	            <input type="hidden" name="next" value="{{next}}" />
-	        </div>
-	          {{ xsrf_form_html() }}
-	        </form>
-	        <script type="text/javascript">
-	            $('input[name=username]').focus();
-	        </script>
-	    </div>
-    </div>
-    <div class="size1of3 lastUnit">
-       <h5 class="grey tip">{{ _('Want to use login form but dont have account yet?') }}</h5>
-       <div style="margin-right:10px;">
-           <div style="margin:5px 0; ">&nbsp;</div>
-           <div style="padding-left: 10px;"><a class="button" href="{{BP}}/register">{{ _('Register') }}!</a></div>
-           <p>&nbsp; </p>
-        </div>
+    <div class="size2of3 lastUnit">
+       <h3>Returned user?</h3>
+       <p class="grey tip">{{ _('Just click the button, buddy.') }}</p>
+       <h3>Not registered yet?</h3>
+       <p class="grey tip">{{ _('Login via one of the provider in the left. <br />After successfully logged in, we will ask some questions.') }}</p>
     </div>
 </div>
 

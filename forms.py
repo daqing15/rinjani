@@ -86,9 +86,15 @@ register_form = MyForm(
     Textbox("username", form.notnull, description="User Name"),
     Password("password", form.notnull, vpass, description="Password"),
     Password("password2", form.notnull, vpass, description="Repeat password"),
-    Dropdown(name='type', args=[('agent', 'Staff of Social Organization'), ('sponsor', 'Corporate Representative'), ('public', 'Public/None of above')], description='I am a'),
+    Dropdown(name='type', args=[('public', 'Public/None of above'), ('agent', 'Staff of Social Organization'), ('sponsor', 'Corporate Representative')], description='I am a'),
     Checkbox("agree", form.notnull, checked=False, value="1", pre_separator=True, description="I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"),
     validators = [form.Validator("Passwords didn't match", lambda i: i.password == i.password2)]
+)
+
+new_user_form = MyForm(
+    Textbox("username", form.notnull, description="User Name (no space, only alphabets and numbers)"),
+    Dropdown(name='type', args=[('agent', 'Staff of Social Organization'), ('sponsor', 'Corporate Representative'), ('public', 'Public/None of above')], description='I am a'),
+    Checkbox("agree", form.notnull, checked=False, value="1", pre_separator=True, description="I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"),
 )
 
 login_form = MyForm(

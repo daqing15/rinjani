@@ -80,7 +80,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie("f", message)
         
     def get_user_type(self):
-        return self.get_cookie("t")
+        return self.get_current_user()['type']
     
     def get_arguments(self):
         d = {}

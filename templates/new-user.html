@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Register')}}{% end %}
+
+{% block body %}
+
+<div id="subheader">
+    <h2>{{ _('New User') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/login">{{ _('Login') }}</a>
+        <a href="{{BP}}/register" class="youarehere">{{ _('register') }}</a>
+    </div>
+</div>
+
+<div class="line">
+	<div class="size2of3 unit">
+	   <div class="sep-left">
+			<form method="post">
+			{{ f.render_css() }}
+			{{ xsrf_form_html() }}
+			<div><input class="button" type="submit" value="{{ _('Finish') }}" /></div>
+			</form>
+		</div>
+	</div>
+	<div class="size1of3 lastUnit">
+       <div class="mod simple2">
+           <div class="inner">
+               <div class="hd"><h3>Tips</h3></div>
+               <div class="bd">
+                   <h4>Privacy</h4>
+                   <p>Blah blah</p>
+               </div>
+           </div>
+       </div>
+    </div>
+</div> 
+{% end %}

@@ -3,8 +3,10 @@ import web.form
 from .main import BaseHandler, authenticated
 from models import User
 from utils.pagination import Pagination
-from forms import profile_public_form, profile_form, register_form
+from forms import profile_public_form, profile_form, register_form, new_user_form
 import tornado.web
+from tornado.escape import json_decode
+import logging
 
 class ViewHandler(BaseHandler):
     def get(self, username):
@@ -16,34 +18,35 @@ class ViewHandler(BaseHandler):
         else:
             raise tornado.web.HTTPError(404)
 
-class RegisterHandler(BaseHandler):
+class NewUserHandler(BaseHandler):
     def get(self):
-        f = register_form()
-        self.render("register", f=f)
-
+        f = new_user_form()
+        self.render("new-user", f=f)
+    
     def post(self):
-        f = register_form()
+        f = new_user_form()
         data = self.get_arguments()
         
         if data.has_key('username'):
             user = User.one({'username': data['username']})
-            print "user already exists? %s" % data['username']
             f.validators.append(web.form.Validator("The username you wanted is already taken", 
                                 lambda x: not bool(user)) )
-        
+            
         if f.validates(Storage(data)):
-            new_user = User()
-            try:
-                new_user.populate(data)
-                new_user['is_admin'] = False
-                new_user.validate()
-                new_user.save()
-                self.set_flash("You have been successfully registered. You can log in now.")
-                self.redirect(self.get_login_url())
-                return
-            except:
-                raise
-        self.render("register", f=f)
+            data.update(json_decode(self.get_secure_cookie("user")))
+            user = User()
+            user.populate(data)
+            logging.info("\n=============\nNEW USER via %s: %s %s============\n" \
+                             % (user['auth_provider'], user['first_name'], user['last_name']))
+            user.save()
+            self.set_secure_cookie("username", user['username'])
+            self.clear_cookie("user")
+            self.clear_cookie("ap")
+            self.redirect("/")
+            return
+        
+        self.render("new-user", f=f)
+            
 
 class EditHandler(BaseHandler):
     @authenticated()

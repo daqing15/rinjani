@@ -11,7 +11,7 @@ url_handlers = [
     (r"/profile/([A-Za-z0-9\.]+)/comments", 'handlers.profile.ProfileCommentsHandler'),
     (r"/profile/([A-Za-z0-9\.]+)", 'handlers.profile.ViewHandler'),
     (r"/register", 'handlers.profile.RegisterHandler'),
-    (r"/new_user", 'handlers.profile.RegisterFBHandler'),
+    (r"/new-user", 'handlers.profile.NewUserHandler'),
     (r"/dashboard", 'handlers.profile.Dashboard'),
     
     (r"/activities", 'handlers.activity.ListHandler'),
@@ -39,6 +39,7 @@ url_handlers = [
     (r"/report", 'handlers.report.Handler'),
     
     (r"/login/fb", 'handlers.auth.FacebookLoginHandler'),
+    (r"/login/google", 'handlers.auth.GoogleLoginHandler'),
     (r"/login", 'handlers.auth.LoginHandler'),
     (r"/logout.*", 'handlers.auth.LogoutHandler'),
 ]
