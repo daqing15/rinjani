@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 
+{% block title %}{{_('Activities')}}{% end %}
+
 {% block body %}
 
-<div id="subheader">
-    <h2>{{ _('Activities') }} {{ h.link_if_auth(current_user, BP + '/activity/new', _('New Activity'), ['agent','sponsor'], _class='small-link') }}</h2>
-    <div id="tabs">
-        <a href="/?tab=active" class="youarehere">{{ _('latest') }}</a>
-        <a href="/?tab=featured">{{ _('featured') }}</a>
-        <a href="/?tab=hot">{{ _('popular') }}</a>
-    </div>
-</div>
+{{ h.link_if_auth(current_user, BP + '/activity/new', _('New Activity'), ['agent','sponsor'], _class='button') }}
 
+{{ modules.Tabs('activities', '/activities?tab=latest') }}
 
 <div class="items">
 {% for activity in pagination.get_objects() %}

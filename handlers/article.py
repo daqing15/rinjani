@@ -1,10 +1,10 @@
-import markdown2
 from .main import BaseHandler, authenticated
 from forms import article_form, InvalidFormDataError
 from models import EditDisallowedError, Article, User
 from web.utils import Storage
 from utils.pagination import Pagination
 import tornado.web
+import markdown2
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
@@ -55,15 +55,14 @@ class EditHandler(BaseHandler):
                 else:
                     article = Article()
                     article['author'] = self.get_current_user()
+                    article.fill_slug_field(data['title'])
                     
                 article.populate(data)
                 tags = data.get('tags', None)
                 if tags:
                     tags = [tag.strip() for tag in tags.split(',')]
                     article['tags'] = tags
-                
                 article.validate()
-                article.fill_slug_field(data['title'])
                 article['content_html'] = markdown2.markdown(data['content'])
                 article.save()
                 self.set_flash("Article has been saved.")
@@ -74,6 +73,9 @@ class EditHandler(BaseHandler):
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(article.get_url())
         except Exception, e:
-            self.render("article-edit", f=f, slug=None)
+            if is_edit:
+                self.render("article-edit", f=f, slug=data['slug'])
+            else:
+                self.render("article-edit", f=f, slug=None)
         
         

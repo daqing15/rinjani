@@ -6,7 +6,7 @@
 	<div class="bd">
 	<ul>
 	{% for article in articles %}
-	    <li><a href="{{BP}}/article/{{ article['slug'] }}">{{ article['title'] }}</a></li>
+	    <li><a href="{{BP}}/article/{{ article['slug'] }}">{{ escape(article['title']) }}</a></li>
 	{% end %}
 	</ul>
 	</div>

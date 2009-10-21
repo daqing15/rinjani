@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Confirm Donation')}}{% end %}
+
+{% block body %}
+
+<div class="content-wrapper">
+    <h3>Confirm Your Donation</h3> 
+    <p> 
+        You can only interact with elements that are inside this dialog. 
+        To close it click a button or use the ESC key. 
+    </p> 
+ 
+    <!-- yes/no buttons --> 
+    <p> 
+        <button class="close">{{_('Cancel')}}</button> 
+        <button class="close">{{_('Confirm')}}</button> 
+    </p> 
+</div>
+
+{% end %}

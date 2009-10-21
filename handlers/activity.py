@@ -1,8 +1,11 @@
 from .main import BaseHandler, authenticated
 from forms import activity_form, InvalidFormDataError
-from models import Activity, User
+from models import Activity, User, EditDisallowedError
 from web.utils import Storage
 from utils.pagination import Pagination
+import markdown2
+
+PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
 
 class ListHandler(BaseHandler):
     def get(self):
@@ -41,31 +44,37 @@ class EditHandler(BaseHandler):
         data = self.get_arguments()
         is_edit = data.has_key('is_edit')
         
-        if f.validates(Storage(data)):
-            if is_edit:
-                activity = Activity.one({'slug': data['slug']})
-                activity['author'] = User.one({'username':activity['author']['username']})
-            else:
-                activity = Activity()
-                activity['author'] = self.get_current_user()
-                
-            activity.populate(data)
-            tags = data.get('tags')
-            if tags:
-                tags = [tag.strip() for tag in tags.split(',')]
-                activity['tags'] = tags
-            
-            try:
+        try:
+            if f.validates(Storage(data)):
+                if is_edit:
+                    activity = Activity.one({'slug': data['slug']})
+                    activity.check_edit_permission(self.get_current_user())
+                    #SchemaTypeError: author must be an instance of User not SON
+                    activity['author'] = User.one({'username':activity['author']['username']})
+                else:
+                    activity = Activity()
+                    activity['author'] = self.get_current_user()
+                    activity.fill_slug_field(data['title'])
+                    
+                activity.populate(data)
+                tags = data.get('tags')
+                if tags:
+                    tags = [tag.strip() for tag in tags.split(',')]
+                    activity['tags'] = tags
                 activity.validate()
-                activity.fill_slug_field(data['title'])
-                import markdown2
                 activity['content_html'] = markdown2.markdown(data['content'])
                 activity.save()
                 self.set_flash("Activity has been saved.")
                 self.redirect("/activity/" + str(activity['slug']))
                 return
-            except:
-                raise
-                
-        self.render("activity-edit", f=f)
+            raise Exception("Invalid form data")
+        except EditDisallowedError:
+            self.set_flash(PERMISSION_ERROR_MESSAGE)
+            self.redirect(activity.get_url())
+        except Exception, e:
+            if is_edit:
+                self.render("activity-edit", f=f, slug=data['slug'])
+            else:
+                self.render("activity-edit", f=f, slug=None)
+        
         

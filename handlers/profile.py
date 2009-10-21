@@ -4,18 +4,17 @@ from .main import BaseHandler, authenticated
 from models import User
 from utils.pagination import Pagination
 from forms import profile_public_form, profile_form, register_form
+import tornado.web
 
 class ViewHandler(BaseHandler):
     def get(self, username):
         user = User.one({'username': username})
-        
         if user == self.get_current_user():
             self.redirect("/dashboard")
-             
         if user:
             self.render(user['type'] + "/profile", user=user)
         else:
-            raise self.render('404', message="User with name %s does not exists" % username)
+            raise tornado.web.HTTPError(404)
 
 class RegisterHandler(BaseHandler):
     def get(self):
@@ -46,7 +45,6 @@ class RegisterHandler(BaseHandler):
                 raise
         self.render("register", f=f)
 
-
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):
@@ -75,14 +73,23 @@ class UserListHandler(BaseHandler):
 class CommentsHandler(BaseHandler):
     @authenticated()
     def get(self):
+        user = self.get_current_user()
         pagination = Pagination(self, User, {}, 1)
-        self.render('public/comments', pagination=pagination)
+        self.render(user['type'] + '/comments', pagination=pagination)
     
     @authenticated()
     def post(self):
-        pagination = Pagination(self, User, {}, 1)
-        self.render('public/comments', pagination=pagination)
+        pass
         
-
-
+class ProfileCommentsHandler(BaseHandler):
+    def get(self, username):
+        user = User.one({'username': username})
+        if not user:
+            raise tornado.web.HTTPError(404)
+        pagination = Pagination(self, User, {}, 1)
+        self.render('public/profile-comments', pagination=pagination, user=user)
+    
+    @authenticated()
+    def post(self):
+        pass
         

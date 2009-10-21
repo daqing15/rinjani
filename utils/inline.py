@@ -98,13 +98,12 @@ class TemplateInline(object):
     
 class YoutubeInline(TemplateInline):
     """
-    An inline that takes a youtube URL or video id and returns the proper embed.
         {{ youtube 4R-7ZO4I1pI width=850 height=500 }}
     """
-        
+    base_url = "http://www.youtube.com/v"
     code = """
 <object type="application/x-shockwave-flash" style="width:%(width)spx; height:%(height)spx;" 
-    data="http://www.youtube.com/v/%(id)s">
+    data="%(base_url)/%(id)s">
     <param name="movie" value="http://www.youtube.com/v/%(id)s" />
 </object> 
 """       
@@ -116,6 +115,7 @@ class YoutubeInline(TemplateInline):
         return "<embed youtube string here>"
 
 class VimeoInline(TemplateInline):
+    base_url = ""
     code = """
 <object width='%(width)s' height='%(height)s' type='application/x-shockwave-flash' data='%(url)s'>
 <param name='allowfullscreen' value='true' />

@@ -7,7 +7,7 @@ version: 0.2
 /* mod */
 .mod{margin:10px;}
 .hd,.bd,.ft,{overflow:hidden;_overflow:visible; _zoom:1;}
-.inner{position:relative;}
+/*.inner{position:relative;} */
 b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-index:10;}
 .tl, .tr, .bl, .br{height:10px; width:10px;float:left;}
 .tl{background-position: left top;}
@@ -58,3 +58,4 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 
 .inner { padding-top: 5px; }
 .inner .bd { padding: 10px 0; }
+.inner .leftpadded10 { padding-left: 10px; }

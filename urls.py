@@ -1,20 +1,17 @@
-import os.path
-
-base_path = '' # no trailing slash
-port = 9999
-
-db_host = 'localhost'
-db_port = 27017
-db_name = 'peduli'
 
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
     (r"/l/(\w+)", 'handlers.main.LocaleHandler'),
+    
+    (r"/donation/confirm/([A-Za-z0-9\-]+)", 'handlers.donation.ConfirmHandler'),
+    
     (r"/profile/edit", 'handlers.profile.EditHandler'),
     (r"/profile/donations", 'handlers.donation.ListHandler'),
     (r"/profile/comments", 'handlers.profile.CommentsHandler'),
-    (r"/profile/(\w+)", 'handlers.profile.ViewHandler'),
+    (r"/profile/([A-Za-z0-9\.]+)/comments", 'handlers.profile.ProfileCommentsHandler'),
+    (r"/profile/([A-Za-z0-9\.]+)", 'handlers.profile.ViewHandler'),
     (r"/register", 'handlers.profile.RegisterHandler'),
+    (r"/new_user", 'handlers.profile.RegisterFBHandler'),
     (r"/dashboard", 'handlers.profile.Dashboard'),
     
     (r"/activities", 'handlers.activity.ListHandler'),
@@ -41,22 +38,7 @@ url_handlers = [
     
     (r"/report", 'handlers.report.Handler'),
     
+    (r"/login/fb", 'handlers.auth.FacebookLoginHandler'),
     (r"/login", 'handlers.auth.LoginHandler'),
     (r"/logout.*", 'handlers.auth.LogoutHandler'),
 ]
-
-cache_opts = {
-     'cache.type': 'memory',
- }
-
-app_settings = dict(
-    debug = True,
-    static_path = os.path.join(os.path.dirname(__file__), "static"),
-    blog_title = u"Peduli",
-    template_path = os.path.join(os.path.dirname(__file__), "templates"),
-    xsrf_cookies = True,
-    cookie_secret = "11oETzKXQAGxYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
-    login_url = "/login"
-)
-
-

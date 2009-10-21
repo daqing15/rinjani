@@ -7,12 +7,12 @@
 <div id="subheader">
     <h2>{{ _('Profile of ') }} {{ user['username'] }}</h2>
     <div id="tabs">
-        <a href="{{BP}}/profile/{{ current_user['username'] }}" class="youarehere">{{ _('general info') }}</a>
-        <a href="{{BP}}/profile/comments">{{ _('comments') }}</a>
+        <a href="{{BP}}/profile/{{ user['username'] }}" class="youarehere">{{ _('general info') }}</a>
+        <a href="{{BP}}/profile/{{ user['username'] }}/comments">{{ _('comments') }}</a>
     </div>
 </div>
 
-<div class="mod simple2">
+<div class="mod">
     <div class="inner">
         {% for info in user %}    
         <p>{% if user[info] %}{{ info }}: {{ user[info] }}{% end %}</p>
@@ -23,8 +23,8 @@
 {% end %}
 
 {% block sidebar %}
-    {{ modules.FansOf(current_user) }}
-    {{ modules.FansOf(current_user) }}
+    {{ modules.Fans(user) }}
+    {{ modules.FansOf(user) }}
     
     {{ modules.CommentBox() }}
 {% end %}

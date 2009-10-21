@@ -144,6 +144,18 @@ class ProfileStreams(BaseUIModule):
     def render(self, user=None):
         return self.render_string("modules/profile-streams.html")
 
+class Tabs(BaseUIModule):
+    def get_tabs(self, name):
+        import tabs
+        return getattr(tabs, name, [None,None])
+    
+    def render(self, tabs, selected=0):
+        heading, tabs = self.get_tabs(tabs)
+        if tabs:
+            return self.render_string("modules/tabs.html", heading=heading, tabs=tabs, selected=selected)
+        else:
+            return ''
+    
 class Tags(BaseUIModule):
     def render(self, tags):
         if not tags or not isinstance(tags, list):

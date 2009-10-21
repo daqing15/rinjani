@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
+{% block title %}{{_('Users')}}{% end %}
+
 {% block body %}
 
 <div id="subheader">
     <h2>{{ _('Users') }}</h2>
     <div id="tabs">
-        <a href="/?tab=active" class="youarehere">social org</a>
-		<a href="/?tab=featured">sponsor</a>
-		<a href="/?tab=hot">public</a>
+        <a href="{{BP}}/users?tab=a" class="youarehere">{{_('social org')}}</a>
+		<a href="{{BP}}/users?tab=s">{{_('sponsor')}}</a>
+		<a href="{{BP}}/users?tab=p">{{_('public')}}</a>
     </div>
 </div>
 

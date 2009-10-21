@@ -78,6 +78,22 @@ var Rinjani = {
   /* fades in errors */
   highlightErrors : function(element) { 
     var errors = $('ul.errors', element).hide().fadeIn();
+  },
+  
+  initTabs: function(hd, bd) {
+    $(bd + ' > div').hide();
+    $(bd + ' > div:first').show();
+    $(hd + ' a:first').addClass('youarehere');
+    
+    $(hd + ' a').click(function(){
+    	$t = $(this)
+        $(hd + ' a').removeClass('youarehere');
+        $t.parent().addClass('active');
+        $t.addClass('youarehere');
+        var currentTab = $t.attr('href');
+        $(bd + ' > div').hide();
+        $(currentTab).show();
+    });
   }
 
 
@@ -85,10 +101,15 @@ var Rinjani = {
 
 
 $(function() {
+	$('#hsearch input[type=text]').each(function() {
+        var hint = $(this).val();
+        $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
+    });
+
     /* the ajax setup */
     $.ajaxSetup({
         error: function() {
-        Rinjain.flash(_('Could not contact server. Connection problems?'));
+        Rinjani.flash('Could not contact server. Connection problems?');
         }
     });
   
@@ -138,6 +159,24 @@ $(function() {
             $(".dd_menu img.arrow").attr('src','/static/css/img/arrow.png');
         }
     });
+    
+    
+    var dialog = $("a.dialog[rel]").overlay({ 
+        expose: { 
+            color: '#000', 
+            loadSpeed: 100, 
+            opacity: 0.3
+        }, 
+        effect: 'apple', 
+        closeOnClick: false,
+        onBeforeLoad: function() { 
+            // grab wrapper element inside content 
+            var wrap = this.getContent().find(".contentWrapper"); 
+            // load the page specified in the trigger 
+            wrap.load(this.getTrigger().attr("href")); 
+        } 
+ 
+    }); 
 
 
 });

@@ -1,9 +1,40 @@
 {% extends '../base.html' %}
 
+{% block title %}{{_('Edit Profile')}}{% end %}
 {% block body %}
 
-<div class="main">
-<h1>Edit Profile</h1>
+<div id="subheader">
+    <h2>{{ _('Profile') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
+        <a href="{{BP}}/settings">{{ _('settings') }}</a>
+    </div>
 </div>
+
+<form>
+<div id="accordion">
+    <h3>General Information</h3>
+	<div class="pane">
+	    {{ f.render_css() }}
+	    <div><input class="button" name="submit" type="submit" value="Save"/></div>
+	    {{ xsrf_form_html() }}
+	    </form>
+	</div>
+	
+	<h3>Privacy</h3>
+	<div class="pane">
+	   <p>Blah</p>
+	</div>
+</div>
+</form>
+
+<script type="text/javascript">
+//Rinjani.initTabs('#tabs', '#tab-contents')
+$(function() { 
+    $("#accordion").tabs("#accordion div.pane", {tabs: 'h3', effect: 'slide', initialIndex: null});
+});
+
+</script>
+
 {% end %}
 

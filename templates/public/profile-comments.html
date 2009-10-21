@@ -1,0 +1,45 @@
+{% extends '../base.html' %}
+
+{% block title %}My Profile{% end %}
+
+{% block body %}
+
+<div id="subheader">
+    <h2>{{ _('Profile of ') }} {{ user['username'] }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/profile/{{ user['username'] }}">{{ _('general info') }}</a>
+        <a href="#" class="youarehere">{{ _('comments') }}</a>
+    </div>
+</div>
+
+<div class="mod simple3">
+<b class="top"><b class="tl"></b><b class="tr"></b></b>
+<div class="inner">
+    <div class="bd">
+        <div class="line item-summary">
+           <div class="unit thumb2"></div>
+           <div class="lastUnit">
+               <p>Apito: Apa kabar?<p>
+           </div>
+        </div>
+        <div class="line item-summary">
+           <div class="unit thumb2">
+           </div>
+           <div class="lastUnit">
+               <p>Phajero: Whoo.. where've you been?</p>
+           </div>
+        </div>
+        <p class="grey small">events related to this profile (comment, donations, etc)</p>
+    </div>
+</div>
+<b class="bottom"><b class="bl"></b><b class="br"></b></b>
+</div>
+
+{% end %}
+
+{% block sidebar %}
+    {{ modules.Fans(user) }}
+    {{ modules.FansOf(user) }}
+    
+    {{ modules.CommentBox() }}
+{% end %}

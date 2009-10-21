@@ -1,12 +1,18 @@
 import tornado.auth
+import tornado.escape
 import web.form
 from forms import login_form
 from .main import BaseHandler
 from models import User
 from web.utils import Storage
+import logging
 
 class LoginHandler(BaseHandler):
     def get(self):
+        if self.get_current_user():
+            self.set_flash("You're already logged in")
+            self.redirect("/")
+            return
         next = self.get_argument('next', '/dashboard')
         self.render("login", f=login_form, next=next)
 

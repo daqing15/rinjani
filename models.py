@@ -121,13 +121,14 @@ class Article(BaseDocument):
         'excerpt': unicode,
         'content': unicode,
         'content_html': unicode,
+        'enable_comment': bool,
         'comment_count': int,
         'tags': list,
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
     required_fields = ['author', 'title', 'content']
-    default_values = {'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def get_url(self):
@@ -157,11 +158,12 @@ class Activity(BaseDocument):
         'need_donation': bool,
         'donation_amount_needed': int,
         'donation_amount': float,
+        'enable_comment': bool,
         'comment_count': int,
         'created_at': datetime.datetime
     }
     required_fields = ['author', 'status', 'title', 'content']
-    default_values = {'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def get_url(self):

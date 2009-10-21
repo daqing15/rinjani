@@ -1,10 +1,13 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
-    <title>{% block title %}Title{% end %} - {{ escape(handler.settings["blog_title"]) }}</title>
+    <title>{% block title %}{{_('Welcome')}}{% end %} - {{ escape(handler.settings["blog_title"]) }}</title>
     <link rel="stylesheet" href="{{ static_url('css/libraries.css') }}" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ static_url('css/mod.css') }}" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ static_url('css/app.css') }}" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ static_url('css/uicomponents.css') }}" type="text/css" media="screen, projection" />
     <script type="text/javascript" src="{{ static_url('jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('app.js') }}"></script>
 </head>
 
 <body><div class="page">
@@ -18,15 +21,15 @@
 		  <div class="sub_menu">
 		      <a href="{{BP}}/profile/edit" class="item_line">{{ _('Edit Profile') }}</a>
 		      <a href="{{BP}}/profile/settings/edit">{{ _('Edit Settings') }}</a>
-		      <a href="{{BP}}/article/new" class="item_line">{{ _('New Article') }}</a>
-		      {{ h.link_if_auth(current_user, BP + '/activity/new', _('New Activity'), ['agent','sponsor']) }} 
+		      <a href="{{BP}}/article/new" class="item_line">{{ _('Write Article') }}</a>
+		      {{ h.link_if_auth(current_user, BP + '/activity/new', _('Write Activity'), ['agent','sponsor']) }} 
 		      {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin') }} 
 		  </div>
 		</div>
         <span class="link-separator">|</span>
-		<a href="/logout/?next={{ current_path }}">logout</a>
+		<a href="/logout/?next={{ current_path }}">{{ _('logout') }}</a>
 		{% else %}
-		{{ _('hello, guest') }}. <a href="{{BP}}/login">login</a>
+		{{ _('hello, guest') }}. <a href="{{BP}}/login">{{ _('login') }}</a>
 		{% end %} 
 		<span class="link-separator">|</span> 
 		<a href="/page/about">{{ _('about') }}</a> 
@@ -38,8 +41,7 @@
 	<div id="hsearch">
 		<form method="get" action="/search" id="search">
 		<div><input type="text" value="{{_('search')}}" size="28" maxlength="80"
-			onfocus="if (this.value=='{{_('search')}}') this.value = ''" tabindex="1"
-			class="textbox" name="q" />
+			tabindex="1" class="textbox grey" name="q" />
 		</div>
 		</form>
 	</div>
@@ -66,7 +68,7 @@
             {% block sidebar %}{% end %}
         </div>
         <div class="main">
-            <div class="mainWrapper">
+            <div class="mainWrapper {% block wpclass %}{% end %}">
 		        {{ modules.Flash() }}
 		        {% block body %}{% end %}
             </div>
@@ -83,9 +85,21 @@
             <a href="/page/contact-us">{{ _('Contact Us') }}</a>
         </p>
     </div>
-
-    <script type="text/javascript" src="{{ static_url('app.js') }}"></script>
-
 </div><!-- /.page -->
+<script type="text/javascript" src="{{ static_url('jquery.tools.complete.min.js') }}"></script>
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+    var links = document.getElementsByTagName('a');
+    var query = '?';
+    for(var i = 0; i < links.length; i++) {
+    if(links[i].href.indexOf('#disqus_thread') >= 0) {
+        query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    }
+    }
+    document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/peduli/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
 </body>
 </html>

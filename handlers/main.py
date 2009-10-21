@@ -10,8 +10,6 @@ from forms import MyForm
 from utils.helper import HtmlHelper
 from pymongo.errors import ConnectionFailure
 
-from pymongo.connection import Connection
-
 
 def authenticated(user_type=None, is_admin=False):
     def _authenticated(method):
@@ -74,6 +72,10 @@ class BaseHandler(tornado.web.RequestHandler):
     def cache(self):
         return self.application.cache
     
+    @property 
+    def settings(self): 
+         return self.application.settings
+    
     def set_flash(self, message):
         self.set_secure_cookie("f", message)
         
@@ -88,10 +90,9 @@ class BaseHandler(tornado.web.RequestHandler):
         return d
 
     def get_user_locale(self):
-        loc = self.get_cookie("loc")
-        if loc:
-            return tornado.locale.get(loc)
-        return None # Use the Accept-Language header
+        # defaulted to bahasa
+        loc = self.get_cookie("loc", "id_ID")  
+        return tornado.locale.get(loc)
 
     def get_error_html(self, status_code):
         return self.render_string(str(status_code) + ".html", message=None, **self.template_vars)
@@ -102,19 +103,23 @@ class BaseHandler(tornado.web.RequestHandler):
             current_path = self.request.uri, 
             BP = self.base_path,
             h = HtmlHelper,
+            settings = self.settings,
             markdown=markdown2.markdown
         ) 
+    
+    def is_xhr(self): 
+        xhr = self.request.headers.get('X-Requested-With', '')
+        return  xhr == 'XMLHttpRequest'
     
     # choose template based on request type
     def render(self, template, **kwargs):
         ''' Select appropriate template based on request type and add additional template vars '''
         ext = 'html'
-        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            ext = 'json'
+        if self.is_xhr():
+            ext = 'ajax'
         template = template + "." + ext
         kwargs.update(self.template_vars)
         super(BaseHandler, self).render(template, **kwargs)
-
 
 class MissingHandler(BaseHandler):
     def get(self, path):

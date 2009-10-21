@@ -125,8 +125,8 @@ page_form = MyForm(
 
 profile_form = MyForm(
     Textbox("fullname", form.notnull, size=53, description="Full Name"),
-    Textarea("about", form.notnull, rows=3, cols=50, description="Short description about you"),
-    Textarea("profile_content", form.notnull, rows=10, cols=50, description="Long description about you"),
+    Textarea("about", form.notnull, rows=3, cols=50, description="Short description"),
+    Textarea("profile_content", form.notnull, rows=10, cols=50, description="Long description"),
 )
 
 profile_public_form = MyForm(

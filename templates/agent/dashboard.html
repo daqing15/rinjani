@@ -2,14 +2,7 @@
 
 {% block tabContent %}
 
-<div id="subheader">
-    <h2>{{ _('Dashboard') }} {{ h.link_if_auth(current_user, BP + '/profile/edit', _('Edit Profile'), ['agent','sponsor'], _class='small-link') }}</h2>
-    <div id="tabs">
-        <a href="{{BP}}/dashboard" class="youarehere">{{ _('your messages') }}</a>
-        <a href="{{BP}}/profile/donations">{{ _('donations') }}</a>
-        <a href="{{BP}}/profile/comments">{{ _('comments') }}</a>
-    </div>
-</div>
+{{ modules.Tabs('dashboard_agent', '/dashboard') }}
 
 {{ modules.ProfileStreams(current_user) }}
 
