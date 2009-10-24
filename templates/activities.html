@@ -4,8 +4,6 @@
 
 {% block body %}
 
-{{ h.link_if_auth(current_user, BP + '/activity/new', _('New Activity'), ['agent','sponsor'], _class='button') }}
-
 {{ modules.Tabs('activities', '/activities?tab=latest') }}
 
 <div class="items">

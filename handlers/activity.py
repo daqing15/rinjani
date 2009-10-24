@@ -4,6 +4,8 @@ from models import Activity, User, EditDisallowedError
 from web.utils import Storage
 from utils.pagination import Pagination
 import markdown2
+import tornado.web
+import logging
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
 
@@ -35,7 +37,11 @@ class EditHandler(BaseHandler):
                 raise tornado.web.HTTPError(404)
             if isinstance(activity['tags'], list):
                 activity['tags'] = ', '.join(activity['tags'])
-            f.fill(activity)
+            f.validates(Storage(activity))
+            # aneh
+            f['need_donation'].checked = bool(activity['need_donation'])
+            f['need_volunteer'].checked = bool(activity['need_volunteer'])
+            f['enable_comment'].checked = bool(activity['enable_comment'])
         self.render("activity-edit", f=f, slug=slug)
     
     @authenticated(['agent', 'sponsor'])
@@ -46,35 +52,19 @@ class EditHandler(BaseHandler):
         
         try:
             if f.validates(Storage(data)):
-                if is_edit:
-                    activity = Activity.one({'slug': data['slug']})
-                    activity.check_edit_permission(self.get_current_user())
-                    #SchemaTypeError: author must be an instance of User not SON
-                    activity['author'] = User.one({'username':activity['author']['username']})
-                else:
-                    activity = Activity()
-                    activity['author'] = self.get_current_user()
-                    activity.fill_slug_field(data['title'])
-                    
-                activity.populate(data)
-                tags = data.get('tags')
-                if tags:
-                    tags = [tag.strip() for tag in tags.split(',')]
-                    activity['tags'] = tags
-                activity.validate()
-                activity['content_html'] = markdown2.markdown(data['content'])
-                activity.save()
+                activity = Activity.one({'slug': data['slug']}) if is_edit else Activity() 
+                activity.save(data, user=self.current_user)
                 self.set_flash("Activity has been saved.")
-                self.redirect("/activity/" + str(activity['slug']))
+                self.redirect(activity.get_url())
                 return
-            raise Exception("Invalid form data")
+            raise Exception("Form still have errors. Please correct them before saving.")
         except EditDisallowedError:
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(activity.get_url())
         except Exception, e:
-            if is_edit:
-                self.render("activity-edit", f=f, slug=data['slug'])
-            else:
-                self.render("activity-edit", f=f, slug=None)
+            logging.error(e)
+            f.note = f.note if f.note else e
+            slug = None if not is_edit else data.get('slug', None)
+            self.render("activity-edit", f=f, slug=slug)
         
         

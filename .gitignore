@@ -6,3 +6,4 @@
 .settings/*
 lib/*
 settings.py
+static/uploads*

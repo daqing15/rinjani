@@ -12,7 +12,7 @@ dashboard_public = ('Dashboard', [
     ('/profile/supports', 'supports'),
 ])
 
-profile_public = ('Dashboard', [
+profile_public = ('User Profile', [
     ('/profile/comments', 'comments'),
     ('/profile/supports', 'supports'),
 ])

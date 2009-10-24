@@ -4,8 +4,6 @@
 
 {% block body %}
 
-{{ h.link_if_auth(current_user, BP + '/article/new', _('New Article'), _class='button') }}
-
 {{ modules.Tabs('articles', '/articles?tab=latest') }}
 
 <div class="items">

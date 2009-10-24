@@ -2,12 +2,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
     <title>{% block title %}{{_('Welcome')}}{% end %} - {{ escape(handler.settings["blog_title"]) }}</title>
-    <link rel="stylesheet" href="{{ static_url('css/libraries.css') }}" type="text/css" media="screen, projection" />
-    <link rel="stylesheet" href="{{ static_url('css/mod.css') }}" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ static_url('css/app.css') }}" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ static_url('css/mod.css') }}" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ static_url('css/uicomponents.css') }}" type="text/css" media="screen, projection" />
     <script type="text/javascript" src="{{ static_url('jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ static_url('app.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
+    <script type="text/javascript">window.BP = "{{BP}}";</script>
+    {% block head %}{% end %}
+    <script type="text/javascript" src="{{ static_url('rinjani.js') }}"></script>
 </head>
 
 <body><div class="page">
@@ -86,7 +88,6 @@
         </p>
     </div>
 </div><!-- /.page -->
-<script type="text/javascript" src="{{ static_url('jquery.tools.complete.min.js') }}"></script>
 <!-- 
 <script type="text/javascript">
 //<![CDATA[
@@ -103,5 +104,6 @@
 //]]>
 </script>
 -->
+<div class="tooltip"></div> 
 </body>
 </html>

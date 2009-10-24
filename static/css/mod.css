@@ -58,4 +58,4 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 
 .inner { padding-top: 5px; }
 .inner .bd { padding: 10px 0; }
-.inner .leftpadded10 { padding-left: 10px; }
+.leftpadded10 { padding-left: 10px !important; }

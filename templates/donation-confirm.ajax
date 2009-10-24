@@ -1,8 +1,7 @@
 <div class="content-wrapper">
     <h3>Confirm Your Donation</h3> 
     <p> 
-        You can only interact with elements that are inside this dialog. 
-        To close it click a button or use the ESC key. 
+        This is only shown when donations entered by agent matched with current user's account.
     </p> 
  
 </div>

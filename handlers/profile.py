@@ -7,17 +7,47 @@ from forms import profile_public_form, profile_form, register_form, new_user_for
 import tornado.web
 from tornado.escape import json_decode
 import logging
+import hashlib
 
 class ViewHandler(BaseHandler):
     def get(self, username):
         user = User.one({'username': username})
-        if user == self.get_current_user():
+        if user == self.current_user:
             self.redirect("/dashboard")
-        if user:
-            self.render(user['type'] + "/profile", user=user)
-        else:
+        if not user:
             raise tornado.web.HTTPError(404)
+        self.render(user['type'] + "/profile", user=user)
 
+class RegisterHandler(BaseHandler):
+    def get(self):
+        f = register_form()
+        self.render("register", f=f)
+
+    def post(self):
+        f = register_form()
+        data = self.get_arguments()
+        
+        if data.has_key('username'):
+            user = User.one({'username': data['username']})
+            print "user already exists? %s" % data['username']
+            f.validators.append(web.form.Validator("The username you wanted is already taken", 
+                                lambda x: not bool(user)) )
+        
+        if f.validates(Storage(data)):
+            new_user = User()
+            try:
+                new_user.populate(data)
+                new_user['is_admin'] = False
+                new_user['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
+                new_user['auth_provider'] = u'form'
+                new_user.validate()
+                new_user.save()
+                self.set_flash("You have been successfully registered. You can log in now.")
+                self.redirect("/login-form")
+                return
+            except:
+                raise
+            
 class NewUserHandler(BaseHandler):
     def get(self):
         f = new_user_form()
@@ -34,6 +64,17 @@ class NewUserHandler(BaseHandler):
             
         if f.validates(Storage(data)):
             data.update(json_decode(self.get_secure_cookie("user")))
+            
+            if data['auth_provider'] == 'facebook':
+                from utils import fillin_fb_data
+                fillin_fb_data(
+                        self.settings['facebook_api_key'], 
+                        self.settings['facebook_secret'],
+                        ['pic_square', 'pic_smal', 'sex', 'website', 'birthday_date', 
+                         'timezone', 'interests'],
+                        data
+                        )
+                
             user = User()
             user.populate(data)
             logging.info("\n=============\nNEW USER via %s: %s %s============\n" \
@@ -47,15 +88,15 @@ class NewUserHandler(BaseHandler):
         
         self.render("new-user", f=f)
             
-
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):
         user_type = self.get_user_type()
         if user_type == 'public':
-            f = profile_public_form()
+            f = profile_form()
         else:
             f = profile_form()
+        f.fill(self.current_user)
         self.render(user_type + "/profile-edit", f=f)
     
     @authenticated()

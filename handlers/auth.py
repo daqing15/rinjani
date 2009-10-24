@@ -6,7 +6,39 @@ from .main import BaseHandler
 from models import User
 from web.utils import Storage
 import logging
+import hashlib
 
+class LoginHandler(BaseHandler):
+    def get(self):
+        if self.get_current_user():
+            self.set_flash("You're already logged in")
+            self.redirect("/")
+            return
+        next = self.get_argument('next', '/dashboard')
+        self.render("login", next=next)
+
+class LoginFormHandler(BaseHandler):
+    def get(self):
+        if self.get_current_user():
+            self.set_flash("You're already logged in")
+            self.redirect("/")
+            return
+        next = self.get_argument('next', '/dashboard')
+        self.render("login-form", f=login_form(), next=next)
+        
+    def post(self):
+        username = self.get_argument('username', '')
+        password_hashed = hashlib.sha1(self.get_argument('password', '')).hexdigest()
+        f = login_form()
+        user = User.one({'username': username, 'password_hashed': password_hashed})
+        f.validators = [web.form.Validator("The username or password you entered is incorrect", lambda x: bool(user))]
+        if f.validates(Storage(self.get_arguments())):
+            self.set_secure_cookie("username", username)
+            next = self.get_argument('next', '/dashboard')
+            self.redirect(next)
+        else:
+            self.render("login-form", f=f)
+                                   
 class AuthMixin(object):
     def canonical(self, user):
         logging.error(user)
@@ -48,7 +80,16 @@ class GoogleLoginHandler(BaseHandler, AuthMixin, tornado.auth.GoogleMixin):
             return
         self.set_cookie("ap", "google")
         self.authenticate_redirect()
-    
+
+class TwitterLoginHandler(BaseHandler, AuthMixin, tornado.auth.TwitterMixin):
+    @tornado.web.asynchronous
+    def get(self):
+        if self.get_argument("oauth_token", None):
+            self.get_authenticated_user(self.async_callback(self._on_auth))
+            return
+        self.set_cookie("ap", "twitter")
+        self.authenticate_redirect()
+            
 class LogoutHandler(BaseHandler, tornado.auth.FacebookMixin):
     def get(self):
         loc = self.get_cookie('loc')

@@ -175,8 +175,30 @@ $(function() {
             // load the page specified in the trigger 
             wrap.load(this.getTrigger().attr("href")); 
         } 
- 
     }); 
-
-
+    
+    // select all desired input fields and attach tooltips to them 
+	$("form.withtips :input[title]").tooltip({ 
+	    position: "center right", 
+	    offset: [0,-10], 
+	    effect: "fade", 
+	    tip: '.tooltip' 
+	});
+	
+	if ($.markItUp) {
+	    mySettings = $.extend(mySettings || {}, {
+	        previewParserPath: window.BP + '/preview',
+	        previewPosition: 'after',
+	        previewAutoRefresh: false,
+	        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
+	    } );
+	    $('.rte').markItUp(mySettings);
+	    $('.rte').each(function() {
+		$(this).css('height', $(this).attr('rows') + 'em');
+	    });
+	}
+	
+	//$('#tags-ajax').tagSuggest({ url: 'tagging.php',delay: 250, separator: ', '});
+    $("ul.tabs").tabs("div.panes > div"); 
+    
 });

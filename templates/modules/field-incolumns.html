@@ -1,0 +1,13 @@
+<div class="i">
+<div class="line">
+	{% set n = len(inputs) %}
+	{% for i in inputs %}
+	<div class="unit size1of{{n}}">
+		<label for="{{i.id}}">{{ _(i.description) }}</label>
+		{{ i.render() }}
+		{{ i.rendernote(i.note) }}
+	</div>
+	{% end %}
+</div>
+</div>
+

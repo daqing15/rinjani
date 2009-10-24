@@ -1,10 +1,11 @@
+import tornado.web
+import logging
+from web.utils import Storage
+
 from .main import BaseHandler, authenticated
 from forms import article_form, InvalidFormDataError
 from models import EditDisallowedError, Article, User
-from web.utils import Storage
 from utils.pagination import Pagination
-import tornado.web
-import markdown2
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
@@ -47,35 +48,18 @@ class EditHandler(BaseHandler):
         
         try:
             if f.validates(Storage(data)):
-                if is_edit:
-                    article = Article.one({'slug': data['slug']})
-                    article.check_edit_permission(self.get_current_user())
-                    #SchemaTypeError: author must be an instance of User not SON
-                    article['author'] = User.one({'username':article['author']['username']})
-                else:
-                    article = Article()
-                    article['author'] = self.get_current_user()
-                    article.fill_slug_field(data['title'])
-                    
-                article.populate(data)
-                tags = data.get('tags', None)
-                if tags:
-                    tags = [tag.strip() for tag in tags.split(',')]
-                    article['tags'] = tags
-                article.validate()
-                article['content_html'] = markdown2.markdown(data['content'])
-                article.save()
+                article = Article.one({'slug': data['slug']}) if is_edit else Article() 
+                article.save(data, user=self.current_user)
                 self.set_flash("Article has been saved.")
                 self.redirect(article.get_url())
                 return
-            raise Exception("Invalid form data")
+            raise Exception("Form still have errors. Please correct them before saving.")
         except EditDisallowedError:
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(article.get_url())
         except Exception, e:
-            if is_edit:
-                self.render("article-edit", f=f, slug=data['slug'])
-            else:
-                self.render("article-edit", f=f, slug=None)
+            f.note = f.note if f.note else e
+            slug = None if not is_edit else data.get('slug', None)
+            self.render("article-edit", f=f, slug=slug)
         
         

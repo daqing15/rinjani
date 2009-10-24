@@ -4,10 +4,24 @@
 
 {% block body %}
 <div class="main">
-<h1>{{ _("Home") }}</h1>
-<p>Welcome, coy. Mau bantu-bantu?</p>
 
-{{ modules.ActivityLatest(style='simple', limit=5) }}
+<div id="activity-hilite" class="haccordion"> 
+    <img src="/static/uploads/streaminge.png" /> 
+    <div style="width:200px; display:block">excerpt of the activity #1</div> 
+ 
+    <img src="/static/uploads/flash.png" /> 
+    <div>excerpt of the activity #2</div> 
+ 
+    <img src="/static/uploads/streaming.png" /> 
+    <div>excerpt of the activity #3</div> 
+</div
+<script type="text/javascript">
+$("#activity-hilite").tabs("#activity-hilite div", { 
+    tabs: 'img',  
+    effect: 'horizontal' 
+});
+</script>
+
 {{ modules.ArticleLatest(limit=5) }}
 
 <hr />

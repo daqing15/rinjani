@@ -1,6 +1,6 @@
 {% extends '../base.html' %}
 
-{% block title %}My Profile{% end %}
+{% block title %} Profile{% end %}
 
 {% block body %}
 
@@ -37,9 +37,3 @@
 
 {% end %}
 
-{% block sidebar %}
-    {{ modules.Fans(user) }}
-    {{ modules.FansOf(user) }}
-    
-    {{ modules.CommentBox() }}
-{% end %}

@@ -82,7 +82,17 @@ class Flash(BaseUIModule):
             return self.render_string("modules/flash.html", message=message) 
         else:
             return ''
-        
+
+class Formfield(BaseUIModule):
+    def render(self, i):
+        import forms
+        is_checkbox = isinstance(i, forms.Checkbox)
+        return self.render_string('modules/field.html', i=i, is_checkbox=is_checkbox)
+
+class FormfieldInColumns(BaseUIModule):
+    def render(self, *inputs):
+        return self.render_string('modules/field-incolumns.html', inputs=inputs)
+                                      
 class HtmlComponent(BaseUIModule):
     ''' Render html widget '''
     def select(self, **kwargs):
@@ -161,7 +171,12 @@ class Tags(BaseUIModule):
         if not tags or not isinstance(tags, list):
             return ''
         return self.render_string("modules/tags.html", tags=tags)
-    
+
+class TagContent(BaseUIModule):
+    def render(self, slug, type='article'):
+        action = '/%s/tag/%s' % (type, slug)
+        return self.render_string("modules/tag-content.html", action=action)
+        
 class User(BaseUIModule):
     def embedded_css(self):
         return ".entry { margin-bottom: 1em; }"
@@ -175,5 +190,4 @@ class UserBlock(BaseUIModule):
     def render(self, user):
         return self.render_string("modules/user-block.html", user=user)
     
-
     

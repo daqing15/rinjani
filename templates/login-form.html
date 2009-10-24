@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Login')}}{% end %}
+
+{% block body %}
+
+<div id="subheader">
+    <h2>{{ _('Come on in!') }}</h2>
+    <div id="tabs">
+        <a href="#" class="youarehere">{{ _('Login') }}</a>
+        <a href="{{BP}}/register">{{ _('register') }}</a>
+    </div>
+</div>
+
+<div class="line" style="padding: 10px 0">
+	<div class="size1of3 unit">
+	   <h4>{{ _('Use Your Facebook Account') }}</h4>
+	   <p class="grey tip">You dont need to register</p>
+	   <div style="margin-right:10px;">
+		    <div style="margin:5px 0; ">&nbsp;</div>
+		    <div style="padding-left: 10px;"><a class="button" href="{{BP}}/login/fb">Facebook Connect</a></div>
+	    </div>
+	</div>
+	<div class="size2of3 lastUnit">
+	   <div class="sep-left">
+		   <h4>{{ _('Use Login Form') }}</h4>
+	        <form method="post">
+	        {{ f.render_css() }}
+	        <div>
+	            <input class="button" type="submit" value="{{ _('Login') }}"/>
+	            <input type="hidden" name="next" value="{{next}}" />
+	        </div>
+	          {{ xsrf_form_html() }}
+	        </form>
+	        <script type="text/javascript">
+	            $('input[name=username]').focus();
+	        </script>
+	    </div>
+	    <p class="grey small">This form is for development only</p>
+    </div>
+    
+</div>
+
+{% end %}

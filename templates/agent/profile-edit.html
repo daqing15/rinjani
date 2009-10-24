@@ -1,40 +1,111 @@
 {% extends '../base.html' %}
 
 {% block title %}{{_('Edit Profile')}}{% end %}
+
+{% block head %}
+{{ modules.Static('markitup') }}
+{% end %}
+
 {% block body %}
+
+<form method="post" class="withtips">
 
 <div id="subheader">
     <h2>{{ _('Profile') }}</h2>
     <div id="tabs">
         <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
-        <a href="{{BP}}/settings">{{ _('settings') }}</a>
+        <a href="#{{BP}}/settings">{{ _('settings') }}</a>
     </div>
 </div>
 
-<form>
-<div id="accordion">
-    <h3>General Information</h3>
-	<div class="pane">
-	    {{ f.render_css() }}
-	    <div><input class="button" name="submit" type="submit" value="Save"/></div>
-	    {{ xsrf_form_html() }}
-	    </form>
+<div class="line tabWrapper">
+	<div class="unit size1of5">
+		<!-- the tabs --> 
+		<ul class="tabs"> 
+		    <li><a href="#fac">{{_('Account')}}</a></li> 
+		    <li><a href="#fay">{{_('Full Length Profile')}}</a></li> 
+		    <li><a href="#fdo">{{_('Bank Account')}}</a></li>
+		</ul> 
 	</div>
-	
-	<h3>Privacy</h3>
-	<div class="pane">
-	   <p>Blah</p>
+	<div class="lastUnit size4of5">
+		<div class="panes"><div class="pane">
+		    	<h3>{{_('Account')}}</h3>
+		    	<div class="line">
+		    		<div class="unit size2of3">
+				    	{{ modules.Formfield(f['fullname']) }}
+				    	{{ modules.Formfield(f['about']) }}
+				    	{{ modules.Formfield(f['password']) }}
+				    	{{ modules.Formfield(f['password2']) }}
+				    </div>
+				    <div class="lastUnit size1of3">
+				    	<div style="padding:10px;">
+				    		<div style="background: #f6f6f6; padding: 10px;">
+				    			<div style="margin: 10px 0; ">
+				    				{% if current_user['avatar'] %}
+				    				<!--<img src="{{ current_user['avatar'] }}" />-->
+				    				{% end %}
+				    			</div>
+				    			Avatar from your Facebook profile.
+				    		</div>
+				    	</div>
+				    </div>
+				 </div>
+		    </div> 
+		    <div class="pane">
+		    	<h3>{{_('About You')}}</h3>
+		    	{{ modules.Formfield(f['profile_content']) }}
+		    </div>
+		    <div class="pane">
+		    	<h3>{{_('Bank Account')}}</h3>
+		    	<label class="grey small">Used to match your donation</label>
+				<div class="line bank-header" style="display:none">
+					<div class="unit size1of5 grey">Label</div>
+					<div class="unit size1of5 grey">Bank</div>
+					<div class="unit size1of5 grey">Number</div>
+					<div class="unit size1of5 grey">Name</div
+					<div class="lastUnit size1of5"></div>
+				</div>
+				<div class="banks">
+					<div class="line banksrc" style="display:none">
+						<div class="unit size1of5"><input type="text" name="label[]" size="13" /></div>
+						<div class="unit size1of5">
+							<select name="bank[]">
+								<option value="bca">BCA</option>
+								<option value="mandiri">Bank Mandiri</option>
+								<option value="muamalat">Bank Muamalat</option>
+							</select> 
+						</div>
+						<div class="unit size1of5"><input type="text" name="number[]" size="12" /></div>
+						<div class="unit size1of5"><input type="text" name="alias[]" size="12" /></div>
+						<div class="lastUnit size1of5"><a href="#" class="rm small">{{ _('Remove') }}</a></div>
+					</div>
+				</div>
+				<button class="cp button">{{ _('Add') }}</button>
+				<script type="text/javascript">
+					$('.bank .rm').live('click', function() { 
+						$(this).parents('.bank').remove();
+						if ($('.banks .bank').length < 1) { $('.bank-header').hide(); } 
+					});
+					$bank = $('.banksrc').clone(true).removeClass('banksrc').addClass('bank');
+					$('.cp').click(function() {
+						$('.banks').append($bank.clone(true).show());
+						if ($('.banks .bank').length > 0) { $('.bank-header').show(); } 
+						return false;
+					});
+				</script>
+		    </div> 
+		</div>
 	</div>
 </div>
+
+<div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
+
+{{ xsrf_form_html() }}
+
 </form>
 
-<script type="text/javascript">
-//Rinjani.initTabs('#tabs', '#tab-contents')
-$(function() { 
-    $("#accordion").tabs("#accordion div.pane", {tabs: 'h3', effect: 'slide', initialIndex: null});
-});
-
-</script>
 
 {% end %}
+
+
 

@@ -3,7 +3,9 @@ from mongokit.mongo_exceptions import *
 from pymongo.objectid import ObjectId
 import datetime
 import settings
+import markdown2
 import web
+import logging
 from utils.string import force_unicode
 
 class EditDisallowedError(Exception): pass
@@ -46,7 +48,7 @@ class BaseDocument(MongoDocument):
             self['tags'] = tags
     
     def save(self, uuid=True, validate=None, safe=True, *args, **kwargs):
-        super(BaseDocument, self).save(uuid=True, validate=None, safe=True, *args, **kwargs)
+        super(BaseDocument, self).save(uuid, validate, safe, *args, **kwargs)
     
     def check_edit_permission(self, user):
         if user['_id'] == self['author']['_id'] or user['is_admin']:
@@ -68,29 +70,37 @@ class User(BaseDocument):
     structure = {
         # account info
         'username': unicode,
+        'password_hashed': unicode,
         'uid': unicode,
-        'auth_provider': IS(u'facebook', u'google', u'twitter'),
+        'avatar': unicode,
+        'fb_session_key': unicode,
+        'auth_provider': IS(u'facebook', u'google', u'form'),
         'status': IS(u'active', u'disabled', u'deleted'), 
         'type': IS(u'agent', u'sponsor', u'public'), 
         'is_admin': bool,
+        'is_verified': bool,
         'last_login': datetime.datetime,
         'created_at': datetime.datetime,
         
-        # personnal information
+        # information
+        'sex': unicode,
         'last_name': unicode,
         'first_name': unicode,
-        'dateofbirth': datetime.datetime,
+        'birthday_date': datetime.datetime,
+        'timezone': unicode,
+        'location': list,
+        'website': unicode,
+        'proxied_email': unicode,
+        
         'about': unicode,
         'profile_content': unicode, 
         'profile_content_html': unicode,
-        'contacts': list,
-        'is_verified': bool, 
-        'scanned_image': unicode,
+        'phones': list,
+        'contact_person': unicode,
+        'document_scan': unicode,
         'address': unicode,
-        'location': list,
-        'website': unicode,
+        'bank_accounts': [ {'label': unicode, 'bank': unicode, 'number': unicode, 'name': unicode}],
         'tags': list,
-        'bank_accounts': [ {'label': unicode, 'bank': unicode, 'number': unicode}],
         
         # site-related
         'followed_users': list,
@@ -108,7 +118,8 @@ class User(BaseDocument):
         'created_at':datetime.datetime.utcnow, 
         'type': u'public'
     }
-    #indexes = [ { 'fields': 'username', 'unique': True} ]
+    
+    indexes = [ { 'fields': 'username', 'unique': True} ]
     
 class Article(BaseDocument):
     collection_name = 'articles'
@@ -130,6 +141,22 @@ class Article(BaseDocument):
     default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
+    def save(self, data, user):
+        self.populate(data)
+        
+        if '_id' in self:
+            self['author'] = User.one({'username':self['author']['username']})
+            self.check_edit_permission(user)
+        else:
+            self['author'] = user
+            self.fill_slug_field(self['title'])
+        tags = data.get('tags', None)
+        if tags:
+            tags = list(set([tag.strip() for tag in tags.split(',') if tag]))
+            self['tags'] = tags
+        self['content_html'] = markdown2.markdown(data['content'])
+        super(Article, self).save(True, True)
+        
     def get_url(self):
         return "/article/" + self['slug']
 
@@ -144,6 +171,8 @@ class Activity(BaseDocument):
         'title': unicode,
         'slug': unicode,
         'excerpt': unicode,
+        'date_start': datetime.datetime,
+        'date_end': datetime.datetime, 
         'content': unicode,
         'content_html': unicode,
         'deliverable': unicode,
@@ -153,20 +182,49 @@ class Activity(BaseDocument):
         'tags': list,
         'checked_by': list,
         'links': list,
-        'need_volunteer': bool,
-        'need_donation': bool,
+        'need_volunteer': unicode,
+        'need_donation': unicode,
         'donation_amount_needed': int,
         'donation_amount': float,
-        'enable_comment': bool,
+        'enable_comment': unicode,
         'comment_count': int,
         'created_at': datetime.datetime
     }
     required_fields = ['author', 'status', 'title', 'content']
-    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'enable_comment': u"1", 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def get_url(self):
         return "/activity/" + self['slug']
+    
+    def save(self, data, user):
+        self.populate(data)
+        #logging.error(data)
+        if not data.has_key('need_donation'):
+            self['need_donation'] = None
+        if not data.has_key('need_volunteer'):
+            self['need_volunteer'] = None
+            
+        if '_id' in self:
+            self['author'] = User.one({'username':self['author']['username']})
+            self.check_edit_permission(user)
+        else:
+            self['author'] = user
+            self.fill_slug_field(self['title'])
+        
+        tags = data.get('tags', None)
+        if tags:
+            tags = list(set([tag.strip() for tag in tags.split(',') if tag]))
+            self['tags'] = tags
+        
+        if data.get('date_start', None):
+            self['date_start'] = datetime.datetime.strptime(data['date_start'], '%d/%m/%Y')
+        
+        if data.get('date_end', None):
+            self['date_end'] = datetime.datetime.strptime(data['date_end'], '%d/%m/%Y')
+            
+        self['content_html'] = markdown2.markdown(data['content'])
+        super(Activity, self).save(True, True)
 
 class Comment(BaseDocument):
     collection_name = 'comments'

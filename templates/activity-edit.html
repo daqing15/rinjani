@@ -1,5 +1,19 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ _('Activity') }}{% end %}
+
+{% block head %}
+{{ modules.Static('markitup') }}
+<script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
+<link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
+<script type="text/javascript">
+$(function() {
+	$('.date').datePicker().trigger('change');
+});
+</script>
+{% end %}
+
 {% block body %}
 {% if slug %}
 <h1>{{ _('Edit Activity') }}</h1>
@@ -7,16 +21,53 @@
 <h1>{{ _('New Activity') }}</h1>
 {% end %}
 
-<div class="form-area">
-    <form method="post" action="{{BP}}/activity/edit">
-    {{ f.render_css() }}
-    <div><input class="button" name="submit" type="submit" value="{{_('Save')}}"/></div>
-    {% if slug %}
-    <input type="hidden" name="is_edit" value="1" />
-    <input type="hidden" name="slug" value="{{slug}}" />
-    {% end %}
-    {{ xsrf_form_html() }}
-    </form>
-</div>
-{% end %}
+<form method="post" action="{{BP}}/activity/edit" class="withtips">
 
+{{ f.rendernote(f.note) }}
+
+<div class="line tabWrapper linetop">
+	<div class="unit size1of5">
+		<!-- the tabs --> 
+		<ul class="tabs"> 
+		    <li><a href="#fi">{{_('Meta')}}</a></li> 
+		    <li><a href="#fc">{{_('Content')}}</a></li>
+		    <li><a href="#fc">{{_('Miscellaneous')}}</a></li>  
+		</ul> 
+	</div>
+	<div class="lastUnit size4of5">
+		<div class="panes">
+			<div class="pane">
+				{{ modules.Formfield(f.title) }}
+				{{ modules.Formfield(f.excerpt) }}
+				<div style="width: 360px">
+					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
+				</div>
+				{{ modules.Formfield(f.tags) }}
+			</div>
+			<div class="pane">
+				{{ modules.Formfield(f.content) }}
+			</div>
+			<div class="pane">
+				{{ modules.Formfield(f.deliverable) }}
+				{{ modules.Formfield(f.need_donation) }}
+				{{ modules.Formfield(f.need_volunteer) }}
+				{{ modules.Formfield(f.enable_comment) }}
+				<br />
+				<span class="grey small">See also <a href="http://localhost:9999/profile/edit#fdo">Bank Account</a></span>
+			</div>
+		</div>
+	</div>
+</div>
+			
+<div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
+
+{{ xsrf_form_html() }}
+
+{% if slug %}
+<input type="hidden" name="is_edit" value="1" />
+<input type="hidden" name="slug" value="{{slug}}" />
+{% end %}
+    
+</form>
+
+{% end %}
