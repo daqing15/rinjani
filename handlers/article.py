@@ -3,22 +3,22 @@ import logging
 from web.utils import Storage
 
 from .main import BaseHandler, authenticated
-from forms import article_form, InvalidFormDataError
-from models import EditDisallowedError, Article, User
+from forms import article_form
+from models import EditDisallowedError, Article
 from utils.pagination import Pagination
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Article, {})
+        pagination = Pagination(self, Article, {'status':'published'})
         self.render('articles', pagination=pagination)
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
         article = Article.one({"slug": slug})
         if not article:
-             raise tornado.web.HTTPError(404)
+            raise tornado.web.HTTPError(404)
         self.render("article", article=article)
 
 class EditHandler(BaseHandler):
@@ -49,7 +49,7 @@ class EditHandler(BaseHandler):
         try:
             if f.validates(Storage(data)):
                 article = Article.one({'slug': data['slug']}) if is_edit else Article() 
-                article.save(data, user=self.current_user)
+                article.save(data, user=self.get_current_user())
                 self.set_flash("Article has been saved.")
                 self.redirect(article.get_url())
                 return
@@ -62,4 +62,13 @@ class EditHandler(BaseHandler):
             slug = None if not is_edit else data.get('slug', None)
             self.render("article-edit", f=f, slug=slug)
         
+class RemoveHandler(BaseHandler):
+    def post(self, slug):
+        article = Article.one({"slug": slug})
+        if not article:
+            raise tornado.web.HTTPError(404)
         
+        article.status = u'deleted'
+        article.save()
+        self.set_flash("That article has been removed")
+        self.redirect("/articles")           

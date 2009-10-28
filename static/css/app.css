@@ -139,6 +139,8 @@ margin-right: 15px; margin-top: -17px; margin-left: -20px;
 .ultrabig { font-size: 350%; font-weight: bold; }
 .grey { color: #999; }
 .small { font-size: 85%; }
+.lined { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px;}
+.tip { font-size:90%; color: #999; padding: 0;}
 
 .link-separator {
 color:#CCCCCC;

@@ -79,26 +79,8 @@ var Rinjani = {
   highlightErrors : function(element) { 
     var errors = $('ul.errors', element).hide().fadeIn();
   },
-  
-  initTabs: function(hd, bd) {
-    $(bd + ' > div').hide();
-    $(bd + ' > div:first').show();
-    $(hd + ' a:first').addClass('youarehere');
-    
-    $(hd + ' a').click(function(){
-    	$t = $(this)
-        $(hd + ' a').removeClass('youarehere');
-        $t.parent().addClass('active');
-        $t.addClass('youarehere');
-        var currentTab = $t.attr('href');
-        $(bd + ' > div').hide();
-        $(currentTab).show();
-    });
-  }
-
 
 }
-
 
 $(function() {
 	$('#hsearch input[type=text]').each(function() {

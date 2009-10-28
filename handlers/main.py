@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
 import urllib
 import tornado.web
-import logging
 import functools
-import markdown2
-from beakercache import cache
 from forms import MyForm
 from utils.helper import HtmlHelper
-from pymongo.errors import ConnectionFailure
-
 
 def authenticated(user_type=None, is_admin=False):
     def _authenticated(method):
@@ -51,7 +45,6 @@ class BaseHandler(tornado.web.RequestHandler):
         super(BaseHandler, self).__init__(application, request, transforms)
         MyForm.locale = self.get_user_locale()
     
-    @cache.cache('current_user')
     def get_current_user(self):
         username = self.get_secure_cookie("username")
         if not username: return None
@@ -64,17 +57,12 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.user is not None
     
     @property
-    def base_path(self):
-        import settings
-        return getattr(settings, 'base_path', '')
-    
-    @property
     def cache(self):
         return self.application.cache
     
     @property 
     def settings(self): 
-         return self.application.settings
+        return self.application.settings
     
     def set_flash(self, message):
         self.set_secure_cookie("f", message)
@@ -101,10 +89,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def template_vars(self):
         return dict(
             current_path = self.request.uri, 
-            BP = self.base_path,
+            BP = self.settings['base_path'],
             h = HtmlHelper,
-            settings = self.settings,
-            markdown=markdown2.markdown
+            settings = tornado.web._O(self.settings)
         ) 
     
     def is_xhr(self): 

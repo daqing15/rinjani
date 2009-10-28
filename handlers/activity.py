@@ -1,9 +1,8 @@
 from .main import BaseHandler, authenticated
-from forms import activity_form, InvalidFormDataError
-from models import Activity, User, EditDisallowedError
+from forms import activity_form
+from models import Activity, EditDisallowedError
 from web.utils import Storage
 from utils.pagination import Pagination
-import markdown2
 import tornado.web
 import logging
 
@@ -11,14 +10,14 @@ PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Activity, {})
+        pagination = Pagination(self, Activity, {'status':u'published'})
         self.render('activities', pagination=pagination)
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
         activity = Activity.one({"slug": slug})
         if not activity:
-             raise tornado.web.HTTPError(404)
+            raise tornado.web.HTTPError(404)
         self.render("activity", activity=activity)
 
 class EditHandler(BaseHandler):
@@ -35,25 +34,24 @@ class EditHandler(BaseHandler):
                 return
             except:
                 raise tornado.web.HTTPError(404)
-            if isinstance(activity['tags'], list):
-                activity['tags'] = ', '.join(activity['tags'])
-            f.validates(Storage(activity))
-            # aneh
             f['need_donation'].checked = bool(activity['need_donation'])
             f['need_volunteer'].checked = bool(activity['need_volunteer'])
             f['enable_comment'].checked = bool(activity['enable_comment'])
+            activity.formify()
+            f.fill(activity)
         self.render("activity-edit", f=f, slug=slug)
     
     @authenticated(['agent', 'sponsor'])
     def post(self):
         f = activity_form()
         data = self.get_arguments()
+        logging.error(data)
         is_edit = data.has_key('is_edit')
         
         try:
             if f.validates(Storage(data)):
-                activity = Activity.one({'slug': data['slug']}) if is_edit else Activity() 
-                activity.save(data, user=self.current_user)
+                activity = Activity.one({'slug': data['slug']}) if is_edit else Activity()
+                activity.save(data, user=self.get_current_user())
                 self.set_flash("Activity has been saved.")
                 self.redirect(activity.get_url())
                 return
@@ -67,4 +65,15 @@ class EditHandler(BaseHandler):
             slug = None if not is_edit else data.get('slug', None)
             self.render("activity-edit", f=f, slug=slug)
         
+
+class RemoveHandler(BaseHandler):
+    def post(self, slug):
+        activity = Activity.one({"slug": slug})
+        if not activity:
+            raise tornado.web.HTTPError(404)
         
+        #activity.delete()
+        activity.status = u'deleted'
+        activity.save()
+        self.set_flash("That activity has been removed")
+        self.redirect("/activities")        

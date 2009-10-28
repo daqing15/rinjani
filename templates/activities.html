@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs('activities', '/activities?tab=latest') }}
+{{ modules.Tabs('activities', 'latest') }}
 
 <div class="items">
 {% for activity in pagination.get_objects() %}

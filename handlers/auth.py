@@ -32,17 +32,16 @@ class LoginFormHandler(BaseHandler):
         f = login_form()
         user = User.one({'username': username, 'password_hashed': password_hashed})
         f.validators = [web.form.Validator("The username or password you entered is incorrect", lambda x: bool(user))]
+        next = self.get_argument('next', '/dashboard')
         if f.validates(Storage(self.get_arguments())):
             self.set_secure_cookie("username", username)
-            next = self.get_argument('next', '/dashboard')
             self.redirect(next)
         else:
-            self.render("login-form", f=f)
+            self.render("login-form", f=f, next=next)
                                    
 class AuthMixin(object):
     def canonical(self, user):
         logging.error(user)
-        
         uids = {'facebook': 'uid', 'google': 'email'}
         auth_provider = self.get_cookie("ap", None)
         user['auth_provider'] = auth_provider

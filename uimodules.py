@@ -3,6 +3,7 @@ import time
 import tornado.web
 from pymongo.connection import Connection
 from beakercache import cache
+import logging
 
 class BaseUIModule(tornado.web.UIModule):
     def render_string(self, path, **kwargs):
@@ -120,7 +121,8 @@ class Locale(BaseUIModule):
 
 class Map(BaseUIModule):
     def render(self, location):
-        return self.render_string("modules/map.html")
+        locale = ('id', 'ID')
+        return self.render_string("modules/map.html", locale=locale)
            
 class Poll(BaseUIModule):
     def render(self):
@@ -159,10 +161,13 @@ class Tabs(BaseUIModule):
         import tabs
         return getattr(tabs, name, [None,None])
     
-    def render(self, tabs, selected=0):
+    def render(self, tabs, selected=0, **kwargs):
         heading, tabs = self.get_tabs(tabs)
         if tabs:
-            return self.render_string("modules/tabs.html", heading=heading, tabs=tabs, selected=selected)
+            html = self.render_string("modules/tabs.html", heading=heading, tabs=tabs, selected=selected)
+            if kwargs:
+                html = html % kwargs
+            return html
         else:
             return ''
     

@@ -1,5 +1,5 @@
 dashboard_agent = ('Dashboard', [
-    ('/dashboard', 'messages'),
+    ('/dashboard', 'dashboard'),
     ('/profile/donations', 'donations'),
     ('/profile/comments', 'comments'),
     ('/profile/supporters', 'supporters'),
@@ -12,9 +12,10 @@ dashboard_public = ('Dashboard', [
     ('/profile/supports', 'supports'),
 ])
 
-profile_public = ('User Profile', [
-    ('/profile/comments', 'comments'),
-    ('/profile/supports', 'supports'),
+profile_public = ('Profile of %(fullname)s', [
+    ('/profile/%(username)s', 'profile'),
+    ('/profile/comments/%(username)s', 'comments'),
+    ('/profile/articles/%(username)s', 'articles'),
 ])
 
 articles = ('Articles', [

@@ -1,19 +1,22 @@
 from web.utils import Storage
 import web.form
 from .main import BaseHandler, authenticated
-from models import User
+from models import User, BankAccount
 from utils.pagination import Pagination
-from forms import profile_public_form, profile_form, register_form, new_user_form
+from utils import extract_input_array
+from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
 import tornado.web
 from tornado.escape import json_decode
 import logging
 import hashlib
+from pymongo.dbref import DBRef
 
 class ViewHandler(BaseHandler):
     def get(self, username):
         user = User.one({'username': username})
         if user == self.current_user:
             self.redirect("/dashboard")
+            return
         if not user:
             raise tornado.web.HTTPError(404)
         self.render(user['type'] + "/profile", user=user)
@@ -29,24 +32,25 @@ class RegisterHandler(BaseHandler):
         
         if data.has_key('username'):
             user = User.one({'username': data['username']})
-            print "user already exists? %s" % data['username']
             f.validators.append(web.form.Validator("The username you wanted is already taken", 
                                 lambda x: not bool(user)) )
         
-        if f.validates(Storage(data)):
-            new_user = User()
-            try:
-                new_user.populate(data)
-                new_user['is_admin'] = False
-                new_user['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
-                new_user['auth_provider'] = u'form'
-                new_user.validate()
-                new_user.save()
+        try:
+            if f.validates(Storage(data)):
+                new_user = User()
+                data['is_admin'] = False
+                data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
+                data['auth_provider'] = u'form'
+                new_user.save(data)
                 self.set_flash("You have been successfully registered. You can log in now.")
                 self.redirect("/login-form")
                 return
-            except:
-                raise
+            raise InvalidFormDataError("Form still have errors.")
+        except Exception, e:
+            raise
+            f.note = f.note if f.note else e
+            self.render("register", f=f)
+        
             
 class NewUserHandler(BaseHandler):
     def get(self):
@@ -62,52 +66,95 @@ class NewUserHandler(BaseHandler):
             f.validators.append(web.form.Validator("The username you wanted is already taken", 
                                 lambda x: not bool(user)) )
             
-        if f.validates(Storage(data)):
-            data.update(json_decode(self.get_secure_cookie("user")))
-            
-            if data['auth_provider'] == 'facebook':
-                from utils import fillin_fb_data
-                fillin_fb_data(
-                        self.settings['facebook_api_key'], 
-                        self.settings['facebook_secret'],
-                        ['pic_square', 'pic_smal', 'sex', 'website', 'birthday_date', 
-                         'timezone', 'interests'],
-                        data
-                        )
+        try:
+            if f.validates(Storage(data)):
+                data.update(json_decode(self.get_secure_cookie("user")))
                 
-            user = User()
-            user.populate(data)
-            logging.info("\n=============\nNEW USER via %s: %s %s============\n" \
-                             % (user['auth_provider'], user['first_name'], user['last_name']))
-            user.save()
-            self.set_secure_cookie("username", user['username'])
-            self.clear_cookie("user")
-            self.clear_cookie("ap")
-            self.redirect("/")
-            return
-        
-        self.render("new-user", f=f)
-            
-class EditHandler(BaseHandler):
+                """
+                if data['auth_provider'] == 'facebook':
+                    from utils import fillin_fb_data
+                    fillin_fb_data(
+                            self.settings['facebook_api_key'], 
+                            self.settings['facebook_secret'],
+                            ['pic_square', 'pic_smal', 'sex', 'website', 'birthday_date', 
+                             'timezone', 'interests'],
+                            data
+                            )
+                """
+                 
+                user = User()
+                logging.info("\n=============\nNEW USER via %s: %s %s============\n" \
+                                 % (user['auth_provider'], user['first_name'], user['last_name']))
+                user.save(data)
+                self.set_secure_cookie("username", user['username'])
+                self.clear_cookie("user")
+                self.clear_cookie("ap")
+                self.set_flash("Thank your for joining with us. You may log in anytime.")
+                self.redirect("/")
+                return
+            raise InvalidFormDataError("Form still have errors.")
+        except Exception, e:
+            f.note = f.note if f.note else e
+            self.render("new-user", f=f)
+
+class AccountHandler(BaseHandler):
     @authenticated()
     def get(self):
-        user_type = self.get_user_type()
-        if user_type == 'public':
-            f = profile_form()
-        else:
-            f = profile_form()
-        f.fill(self.current_user)
-        self.render(user_type + "/profile-edit", f=f)
+        f = account_form()
+        self.render('profile-account', f=f)
     
     @authenticated()
     def post(self):
-        self.set_flash("Profile saved")
-        self.redirect("/dashboard")
+        f = account_form()
+        data = self.get_arguments()
+        user = self.current_user
+        try:
+            if f.validates(Storage(data)):
+                if data.get(user, 'password', None):
+                    data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
+                    user.save(data)
+                    self.set_flash("Your password has been changed.")
+        except: pass
+        self.render('profile-account', f=f)
+                    
+class EditHandler(BaseHandler):
+    @authenticated()
+    def get(self):
+        f = profile_form()
+        user = self.current_user
+        accounts = user.related.bank_accounts()
+        accounts = BankAccount.listify(accounts) if accounts else []
+        user.formify()
+        f.fill(user)
+        self.render(user.type + "/profile-edit", f=f, accounts=accounts)
+    
+    @authenticated()
+    def post(self):
+        f = profile_form()
+        data = self.get_arguments()
+        user = self.current_user
+        accounts = extract_input_array(self.request.arguments, 'acc_')
+        accounts = User.filter_valid_accounts(accounts)
+        try:
+            if f.validates(Storage(data)):
+                data['bank_accounts'] = accounts
+                if data.get('password', None):
+                    data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
+                user.save(data, user)
+                self.set_flash("Profile saved.")
+                self.redirect("/dashboard")
+                return
+            raise InvalidFormDataError("Form still have errors. Please correct them before saving.")
+        except Exception, e:
+            #if not isinstance(e, InvalidFormDataError): raise
+            f.note = f.note if f.note else e
+            self.render(user.type + '/profile-edit', f=f, accounts=accounts)
+        
         
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
-        self.render(self.get_user_type() + "/dashboard")
+        self.render(self.current_user.type + "/dashboard")
 
 class UserListHandler(BaseHandler):
     def get(self):
@@ -117,9 +164,8 @@ class UserListHandler(BaseHandler):
 class CommentsHandler(BaseHandler):
     @authenticated()
     def get(self):
-        user = self.get_current_user()
         pagination = Pagination(self, User, {}, 1)
-        self.render(user['type'] + '/comments', pagination=pagination)
+        self.render(self.current_user.type + '/comments', pagination=pagination)
     
     @authenticated()
     def post(self):

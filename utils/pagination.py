@@ -47,7 +47,7 @@ class Pagination(object):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
             raise NotFound()
-        rv = self.doc_class.all().skip(self.offset).limit(self.per_page)
+        rv = self.doc_class.all(self.query).skip(self.offset).limit(self.per_page)
         if raise_not_found and self.page > 1 and not rv:
             raise NotFound()
         return rv

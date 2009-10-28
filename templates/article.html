@@ -5,36 +5,35 @@
 {% block body %}
 
 <div class="post">	
-	<h2>{{ escape(article['title']) }}</h2>
+	<h2>{{ escape(article.title) }} - {{ h.pretty_date(h.utc_to_local(article.created_at)) }}</h2>
 
 	<div class="editbar">	
-		{{ h.link_if_editor(current_user, article['author'], BP + '/article/edit/' + article['slug'], _('Edit'), _class='button') }} 
-		{{ h.link_if_editor(current_user, article['author'], BP + '/article/remove/' + article['slug'], _('Remove'), _class='button') }}
-		{{ modules.TagContent(article['slug'], 'article') }}
+		{{ h.link_if_editor(current_user, article.author, BP + '/article/edit/' + article.slug, _('Edit'), _class='button') }} 
+		{{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }} 
+		{{ modules.TagContent(article.slug, 'article') }}
 		
 	</div>
 
 	<div class="cb">
-	   {{ article['content_html'] }}
+	   {{ article.content_html }}
 	</div>
     
-    {{ modules.Tags(article['tags']) }}
+    {{ modules.Tags(article.tags) }}
     
 </div>
 
-{{ modules.Disqus(article['_id']) }}  
+{{ modules.Disqus(article._id) }}  
     
 {% end %}
 
 
 {% block sidebar %}
-    {{ modules.UserBlock(article['author']) }}
-    
-    {{ modules.ArticleLatest() }}
+    {{ modules.UserBlock(article.author) }}
     
     {% if article %}
         {{ modules.ReportBox(current_path) }}
-        {{ modules.ArticleStat(article['_id']) }}
-        {{ modules.ArticlesRelated(article['tags']) }}
+        {{ modules.ArticleStat(article._id) }}
+        {{ modules.ArticlesRelated(article.tags) }}
     {% end %}    
 {% end %}
+

@@ -10,11 +10,13 @@
 
 <form method="post" class="withtips">
 
+{{ f.rendernote(f.note) }}
+
 <div id="subheader">
     <h2>{{ _('Profile') }}</h2>
     <div id="tabs">
         <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
-        <a href="#{{BP}}/settings">{{ _('settings') }}</a>
+        <a href="{{BP}}/account">{{ _('account') }}</a>
     </div>
 </div>
 
@@ -22,8 +24,9 @@
 	<div class="unit size1of5">
 		<!-- the tabs --> 
 		<ul class="tabs"> 
-		    <li><a href="#fac">{{_('Account')}}</a></li> 
-		    <li><a href="#fay">{{_('Full Length Profile')}}</a></li> 
+		    <li><a href="#fac">{{_('About You')}}</a></li> 
+		    <li><a href="#fay">{{_('Profile')}}</a></li> 
+		    <li><a href="#fdo">{{_('Contact')}}</a></li>
 		    <li><a href="#fdo">{{_('Bank Account')}}</a></li>
 		</ul> 
 	</div>
@@ -32,64 +35,119 @@
 		    	<h3>{{_('Account')}}</h3>
 		    	<div class="line">
 		    		<div class="unit size2of3">
-				    	{{ modules.Formfield(f['fullname']) }}
-				    	{{ modules.Formfield(f['about']) }}
-				    	{{ modules.Formfield(f['password']) }}
-				    	{{ modules.Formfield(f['password2']) }}
+		    			<!-- <div class="i">
+		    				<label>Username: <span class="grey">{{ current_user.username}}</span></label>
+		    			</div> -->
+				    	{{ modules.Formfield(f.last_name) }}
+				    	{{ modules.Formfield(f.about) }}
+				    	{{ modules.Formfield(f.tags) }}
 				    </div>
 				    <div class="lastUnit size1of3">
 				    	<div style="padding:10px;">
 				    		<div style="background: #f6f6f6; padding: 10px;">
+				    		    <p>Username: {{ current_user.username}}</p>
 				    			<div style="margin: 10px 0; ">
-				    				{% if current_user['avatar'] %}
+				    				{% if current_user.avatar %}
 				    				<!--<img src="{{ current_user['avatar'] }}" />-->
 				    				{% end %}
 				    			</div>
-				    			Avatar from your Facebook profile.
+				    			<p>Avatar from your Facebook profile.</p>
 				    		</div>
 				    	</div>
+				    	<p>Validate...</p>
 				    </div>
 				 </div>
 		    </div> 
 		    <div class="pane">
 		    	<h3>{{_('About You')}}</h3>
-		    	{{ modules.Formfield(f['profile_content']) }}
+		    	{{ modules.Formfield(f.profile_content) }}
+		    	<label>Media upload form here...</label>
+		    </div>
+		     <div class="pane">
+		    	<h3>{{_('Info')}}</h3>
+		    	<div class="line">
+		    		<div class="unit size3of5">
+		    			{{ modules.Formfield(f.phones) }}
+				    	{{ modules.Formfield(f.email) }}
+				    	{{ modules.Formfield(f.website) }}
+				    	{{ modules.Formfield(f.address) }}
+				    </div>
+				    <div class="lastUnit size2of5">
+				    	<label>{{_('Select your location in map')}}</label>
+				    	<div style="width:400px; height: 200px; background:#eee;">
+				    	</div>
+				    </div>
+				 </div>
 		    </div>
 		    <div class="pane">
 		    	<h3>{{_('Bank Account')}}</h3>
-		    	<label class="grey small">Used to match your donation</label>
-				<div class="line bank-header" style="display:none">
+		    	<label class="grey lined tips">Displayed when your activity marked as needs donation.</label>
+				<div class="line account-header" style="{% if not accounts %}display:none{% end %}">
 					<div class="unit size1of5 grey">Label</div>
 					<div class="unit size1of5 grey">Bank</div>
 					<div class="unit size1of5 grey">Number</div>
-					<div class="unit size1of5 grey">Name</div
+					<div class="unit size1of5 grey">Name</div>
 					<div class="lastUnit size1of5"></div>
 				</div>
-				<div class="banks">
-					<div class="line banksrc" style="display:none">
-						<div class="unit size1of5"><input type="text" name="label[]" size="13" /></div>
+				<div class="accounts">
+					<div class="line accountsrc" style="display:none">
+						<div class="unit size1of5"><input type="text" name="acc_" size="13" /></div>
 						<div class="unit size1of5">
-							<select name="bank[]">
+							<select name="acc_">
 								<option value="bca">BCA</option>
 								<option value="mandiri">Bank Mandiri</option>
 								<option value="muamalat">Bank Muamalat</option>
 							</select> 
 						</div>
-						<div class="unit size1of5"><input type="text" name="number[]" size="12" /></div>
-						<div class="unit size1of5"><input type="text" name="alias[]" size="12" /></div>
-						<div class="lastUnit size1of5"><a href="#" class="rm small">{{ _('Remove') }}</a></div>
+						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
+						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
+						<div class="lastUnit size1of5">
+						  <a href="#" class="rm small">{{ _('Remove') }}</a>
+						  <input type="hidden" name="acc_" value="0" />
+						  {% comment kalu ada id %}
+						</div>
 					</div>
+					{% if accounts %}
+					{% set i=0 %}
+					{% for account in accounts %}
+					{% set i=i+1 %}
+					<div class="line account">
+                        <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="13" value="{{ account[0]}}" /></div>
+                        <div class="unit size1of5">
+                            <select name="acc_{{i}}">
+                                <option value="bca">BCA</option>
+                                <option value="mandiri">Bank Mandiri</option>
+                                <option value="muamalat">Bank Muamalat</option>
+                            </select> 
+                        </div>
+                        <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[2]}}" /></div>
+                        <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[3]}}" /></div>
+                        <div class="lastUnit size1of5">
+                          <a href="#" class="rm small">{{ _('Remove') }}</a>
+                          <input type="hidden" name="acc_{{i}}" value="{{h.getarr(account,4,1)}}" />
+                        </div>
+                    </div>
+					{% end %}{% end %}
 				</div>
 				<button class="cp button">{{ _('Add') }}</button>
 				<script type="text/javascript">
-					$('.bank .rm').live('click', function() { 
-						$(this).parents('.bank').remove();
-						if ($('.banks .bank').length < 1) { $('.bank-header').hide(); } 
+					$('.account .rm').live('click', function() { 
+						//alert($(this).parents('.bank').find('input');
+						$(this).parents('.account').remove();
+						if ($('.account').length < 1) { $('.account-header').hide(); } 
 					});
-					$bank = $('.banksrc').clone(true).removeClass('banksrc').addClass('bank');
+					$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
 					$('.cp').click(function() {
-						$('.banks').append($bank.clone(true).show());
-						if ($('.banks .bank').length > 0) { $('.bank-header').show(); } 
+						$new_account = $account.clone(true);
+						$new_account.find(':input').each(function() {
+							$i = $(this)
+							if ($i.attr('name') != undefined) {
+								idx = $i.attr('name') + ($('.account').length + 1);
+							    $i.attr('name', idx);
+							}
+						})
+						$('.accounts').append($new_account.show());
+						if ($('.account').length > 0) { $('.account-header').show(); } 
 						return false;
 					});
 				</script>

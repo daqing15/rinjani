@@ -2,7 +2,7 @@
     <h2>{{ _(heading) }}</h2>
     <div id="tabs">
     {% for tab in tabs %}
-        {% if selected != tab[0] %}
+        {% if selected != tab[1] %}
         <a href="{{BP}}{{tab[0]}}">{{ _(tab[1]) }}</a>
         {% else %}
         <a href="{{BP}}{{tab[0]}}" class="youarehere">{{ _(tab[1]) }}</a>

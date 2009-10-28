@@ -1,5 +1,9 @@
 import re
 
+def listify(value, separator=','):
+    if value and value.strip():
+        return [item.strip() for item in value.split(separator)if item.strip()]
+
 def capfirst(value):
     """Capitalizes the first character of the value."""
     return value and value[0].upper() + value[1:]
@@ -32,7 +36,7 @@ def force_unicode(s, encoding='utf-8', errors='strict'):
                     # without raising a further exception. We do an
                     # approximation to what the Exception's standard str()
                     # output should be.
-                    s = ' '.join([force_unicode(arg, encoding, strings_only,
+                    s = ' '.join([force_unicode(arg, encoding, True,
                             errors) for arg in s])
         elif not isinstance(s, unicode):
             # Note: We use .decode() here, instead of unicode(s, encoding,

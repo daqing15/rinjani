@@ -4,7 +4,7 @@ Blah blah
 """
 
 import tornado.web
-from tornado.web import ErrorHandler, RequestHandler
+from tornado.web import ErrorHandler, RequestHandler, RedirectHandler
 
 from utils.mod import get_mod_handler, import_module
 
@@ -28,7 +28,6 @@ class BaseApplication(tornado.web.Application):
                     # here comes the patch
                     if not callable(handler_class):
                         mod_name, handler_classname = get_mod_handler(handler_class)
-                        # print mod_name + '-' + handler_classname
                         handler_class = import_module(mod_name, handler_classname)
                     # end of patch
                     handler = handler_class(self, request, **kwargs)
@@ -36,7 +35,12 @@ class BaseApplication(tornado.web.Application):
                     break
             if not handler:
                 handler = ErrorHandler(self, request, 404)
-
+        
+        # force debug if ip in registered remote debugger ips
+        if self.settings.get("debug_ip"):
+            if request.remote_ip in self.settings.get("debug_ip"):
+                self.settings['debug'] = True
+                
         # In debug mode, re-compile templates and reload static files on every
         # request so you don't need to restart to see changes
         if self.settings.get("debug"):

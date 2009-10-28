@@ -5,6 +5,7 @@ url_handlers = [
     
     (r"/donation/confirm/([A-Za-z0-9\-]+)", 'handlers.donation.ConfirmHandler'),
     
+    (r"/account", 'handlers.profile.AccountHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
     (r"/profile/donations", 'handlers.donation.ListHandler'),
     (r"/profile/comments", 'handlers.profile.CommentsHandler'),
@@ -19,19 +20,21 @@ url_handlers = [
     
     (r"/activities", 'handlers.activity.ListHandler'),
     (r"/activity/new", 'handlers.activity.EditHandler'),
-    (r"/activity/edit", 'handlers.activity.EditHandler'),
     (r"/activity/edit/([A-Za-z0-9\-]+)", 'handlers.activity.EditHandler'),
+    (r"/activity/edit", 'handlers.activity.EditHandler'),
+    (r"/activity/remove/([A-Za-z0-9\-]+)", 'handlers.activity.RemoveHandler'),
     (r"/activity/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
     
     (r"/articles", 'handlers.article.ListHandler'),
     (r"/article/new", 'handlers.article.EditHandler'),
-    (r"/article/edit", 'handlers.article.EditHandler'),
     (r"/article/edit/([A-Za-z0-9\-]+)", 'handlers.article.EditHandler'),
+    (r"/article/edit", 'handlers.article.EditHandler'),
+    (r"/article/remove/([A-Za-z0-9\-]+)", 'handlers.article.RemoveHandler'),
     (r"/article/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
     
     (r"/page/new", 'handlers.page.EditHandler'),
+    (r"/page/edit/(.+)", 'handlers.page.EditHandler'),
     (r"/page/edit", 'handlers.page.EditHandler'),
-    (r"/page/edit/(.*)", 'handlers.page.EditHandler'),
     (r"/page/(.*)", 'handlers.page.ViewHandler'),
     
     (r"/users", 'handlers.profile.UserListHandler'),

@@ -1,15 +1,15 @@
-import web
 from web import form
-from tornado.escape import xhtml_escape
-import logging
 from datetime import datetime
+from utils.string import listify
+import re
+import logging
 
 class InvalidFormDataError(Exception): pass
 
 def _(str):
     if getattr(MyForm, 'locale', None):
         str = MyForm.locale.translate(str)
-    #return web.net.websafe(str)
+    #return tornado.escape.xhtml_escape(str)
     return str
 
 
@@ -40,7 +40,14 @@ class MyForm(form.Form):
 
     def rendernote(self, note):
         if note:
-            return '<p class="invalid">%s</p>' % _(note)
+            html = """
+<div id="flash_message">
+    <script type="text/javascript">
+        document.getElementById('flash_message').style.display = 'none';
+    </script>
+    <span>%s</span>
+</div>"""
+            return html % _(note)
         return ""
 
 class Input(form.Input):
@@ -85,13 +92,31 @@ class MaxLength(form.Validator):
         return bool(len(value) <= self.len) 
 
 class MaxChunks(form.Validator):
-    def __init__(self, len, separator, msg):
+    def __init__(self, len, sep, msg):
         self.len = len
+        self.msg = msg
+        self.sep = sep
+        
     def valid(self, value):
         if not value: return True
-        #return bool(len(value) <= self.len)
-        return True 
-            
+        chunks = listify(value, self.sep)
+        return bool(len(chunks)) 
+
+class PassValidator(form.Validator):
+    def __init__(self): pass 
+        
+    def valid(self, f):
+        p1 = f.get('password', None)
+        p2 = f.get('password2', None)
+        if not p1 and not p2:
+            return True
+        elif p1 and p2 and p1 == p2:
+            self.msg = "Password length must be between 3-20"
+            return bool(re.compile(".{3,20}").match(f.password))
+        
+        self.msg = "Password didn't match"
+        return False
+    
 vpass = form.regexp(r".{3,20}", 'Must be between 3 and 20 characters')
 vemail = form.regexp(r".*@.*", "Must be a valid email address")
 
@@ -117,12 +142,12 @@ login_form = MyForm(
 )
 
 activity_form = MyForm(
-    Textbox("title", form.notnull, size=53, description="Title"),
+    Textbox("title", form.notnull, size=43, description="Title"),
     Datefield("date_start", _class="date", size=12, description="Start"),
     Datefield("date_end", _class="date", size=12, description="End"),
-    Textarea("excerpt", rows=2, cols=50, description="Excerpt"),
+    Textarea("excerpt", rows=2, cols=40, description="Excerpt"),
     Textarea("content", form.notnull, _class="rte", rows=19, cols=50, description="Content"),
-    Textarea("deliverable", _class="rte", rows=9, cols=50, description="Deliverable"),
+    Textarea("deliverable", _class="rte", rows=9, cols=40, description="Deliverable"),
     Checkbox("need_donation", value="1", description="Need donation"),
     Checkbox("need_volunteer", value="1", description="Need volunteer"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
@@ -143,20 +168,26 @@ commentbox_form = MyForm(
 page_form = MyForm(
     Textbox("title", form.notnull, size=53, description="Title"),
     Textbox("slug", form.notnull, size=53, description="Slug - use alphabet and dash (-)"),
-    Textarea("content", form.notnull, rows=6, cols=50, description="Content"),
+    Textarea("content", form.notnull, rows=6, cols=50, description="Content", _class="rte"),
+)
+
+account_form = MyForm(
+    Password("password", size=20, description="Password", title="Combine alphabet with numbers"),
+    Password("password2", size=20, description="Repeat Password"),
+    validators = [PassValidator()]
 )
 
 profile_form = MyForm(
-    Textbox("fullname", form.notnull, size=40, description="Full name"),
-    Textbox("password", form.notnull, vpass, size=20, description="Password", title="Combine alphabet with numbers"),
-    Textbox("password2", form.notnull,vpass, size=20, description="Repeat Password"),
-    Textarea("about", form.notnull, rows=3, cols=40, description="Description",title="Describe your entity in short paragraph"),
-    Textarea("profile_content", form.notnull, _class="rte", rows=10, cols=70, description="Your Profile", title="Tulis yang panjang"),
-    Textbox("address", size=40, description="Mail Address"),
+    Textbox("last_name", form.notnull, size=40, description="Full Name", title="Your organization/ corporate full name, eg. ACT Dompet Dhuafa"),
+    Textarea("about", form.notnull, rows=3, cols=40, description="About You",title="Describe your entity in short paragraph"),
+    Textarea("profile_content", form.notnull, _class="rte", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
+    Textbox("contact_person", size=40, description="Contact Person Name"),
+    Textbox("phones", size=40, description="Phones", title="You can enter more than one number. Separate them with comma"),
+    Textbox("fax", size=40, description="Fax"),
+    Textarea("address", rows=3, cols=40, description="Address"),
     Textbox("email", size=40, description="E-Mail"),
-    Textbox("website", size=50, description="Website"),
-    Textbox("location", size=40, description="Location"),
-    Textbox("tags", size=40, description="Location"),
+    Textbox("website", size=40, description="Website"),
+    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Tags", title="Blah")
 )
 
 profile_public_form = MyForm(

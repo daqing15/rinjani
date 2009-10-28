@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Account')}}{% end %}
+
+{% block head %}
+{{ modules.Static('markitup') }}
+{% end %}
+
+{% block body %}
+
+<form method="post" class="withtips">
+
+{{ f.rendernote(f.note) }}
+
+<div id="subheader">
+    <h2>{{ _('Account') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/profile/edit">{{ _('profile') }}</a>
+        <a href="{{BP}}/account" class="youarehere">{{ _('account') }}</a>
+    </div>
+</div>
+
+<div class="leftpadded10">
+
+{{ modules.Formfield(f.password) }}
+{{ modules.Formfield(f.password2) }}
+
+<p class="tip">{{_('Leave password empty if you dont want to change password')}}</p>
+<div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
+</div>
+
+
+{{ xsrf_form_html() }}
+
+</form>
+
+
+{% end %}
+
+
+
