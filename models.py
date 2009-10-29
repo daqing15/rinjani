@@ -1,3 +1,4 @@
+from pymongo.dbref import DBRef
 from mongokit import *
 from mongokit.mongo_exceptions import *
 import datetime
@@ -197,6 +198,14 @@ class User(BaseDocument):
     @classmethod
     def filter_valid_accounts(cls, accounts):
         return [account for account in accounts if len(account) > 4]
+    
+    def get_bank_accounts(self):
+        """
+        not using self.related.bank_accounts since spec produced includes
+        checking index field ($exists: true) that somehow skewing result
+        """
+        spec = {'owner': DBRef(self.collection_name, self._id)}
+        return BankAccount.collection.find(spec)
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'
@@ -211,7 +220,7 @@ class BankAccount(BaseDocument):
     required_fields = ['owner', 'label', 'bank', 'number', 'holder']
     fields = ['label', 'bank', 'number', 'holder']
     default_values = {'created_at':datetime.datetime.utcnow}
-    #indexes = [ { 'fields': ['bang', 'number'], 'unique': True} ]
+    indexes = [ { 'fields': ['bank', 'number'], 'unique': True} ]
     
     @classmethod
     def add_account(cls, user, acc):

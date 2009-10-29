@@ -9,7 +9,6 @@ import tornado.web
 from tornado.escape import json_decode
 import logging
 import hashlib
-from pymongo.dbref import DBRef
 
 class ViewHandler(BaseHandler):
     def get(self, username):
@@ -133,7 +132,7 @@ class EditHandler(BaseHandler):
         from forms import BANKS
         f = profile_form()
         user = self.current_user
-        accounts = user.related.bank_accounts()
+        accounts = user.get_bank_accounts()
         accounts = BankAccount.listify(accounts) if accounts else []
         user.formify()
         f.fill(user)
