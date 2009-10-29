@@ -14,9 +14,28 @@
 </div>
 
 <div class="items">
+{% set c = ['rodd','rodd', 'reven', 'reven'] %}
 {% for user in pagination.get_objects() %}
-<div class="item-summary">
-    <p><a href="{{BP}}/profile/{{ user['username'] }}">{{ user['username'] }}</a></p>
+<div class="unit size1of3 {{h.alternate(c)}}">
+      <div class="mod bubble bubbleBottom discuss"> 
+         <b class="top"><b class="tl"></b><b class="tr"></b></b> 
+         <div class="inner">
+             <div class="bd">
+               <h3>{{user.type}}</h3>
+               <p>{{user.about}}</p>
+             </div>
+         </div>
+         <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
+     </div>
+       <div class="media attribution atb2">
+          <a href="{{user.get_url()}}" class="img"><img src="/static/uploads/tattoo.jpg" alt="Stubbornella" /></a>
+          <div class="bd">
+            <a href="{{user.get_url()}}">{{ user.username}}</a> 
+            <span class="detail">
+            {{_('joined since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+            </span>
+          </div>
+      </div>      
 </div>
 {% end %}
 </div>

@@ -6,9 +6,12 @@
 
 {{ modules.Tabs('articles', 'latest') }}
 
-<div class="items">
+<div class="items line">
+{% set c = ['rodd','rodd', 'reven', 'reven'] %}
 {% for article in pagination.get_objects() %}
+    <div class="unit size1of2 {{h.alternate(c)}}">
         {{ modules.ItemSummary(article) }}
+    </div>
 {% end %}
 </div>
 

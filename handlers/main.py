@@ -90,7 +90,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return dict(
             current_path = self.request.uri, 
             BP = self.settings['base_path'],
-            h = HtmlHelper,
+            h = HtmlHelper(),
             settings = tornado.web._O(self.settings)
         ) 
     

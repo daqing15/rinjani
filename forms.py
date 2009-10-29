@@ -13,6 +13,7 @@ def _(str):
     return str
 
 BANKS = [('bca', 'BCA'), ('mandiri','Bank Mandiri'), ('muamalat', 'Bank Muamalat')]
+USERTYPE = [('public', 'Individu/Public'), ('agent','Staff of NGO/Social Organization'), ('sponsor', 'Representative of Corporate/Donor entity')]
 
 class MyForm(form.Form):
     def __init__(self, *inputs, **kw):
@@ -34,7 +35,7 @@ class MyForm(form.Form):
             else:
                 out.append('<label for="%s">%s</label>' % (i.id, _(i.description)))
                 out.append(i.render())
-            out.append(self.rendernote(i.note))
+            out.append(i.rendernote(i.note))
             out.append('</div>')
             out.append('\n')
         return ''.join(out)
@@ -56,7 +57,7 @@ class Input(form.Input):
         if note: return '<p class="invalid">%s</p>' % _(note)
         else: return ""
 
-class Textarea(form.Textarea, Input): pass
+class Textarea(Input, form.Textarea): pass
 class Textbox(Input, form.Textbox): pass
 class Password(Input, form.Password): pass
 class Dropdown(Input, form.Dropdown): pass
@@ -73,7 +74,7 @@ class Datefield(Textbox):
         else:
             self.value = value
         
-class Checkbox(form.Checkbox, Input): 
+class Checkbox(Input, form.Checkbox): 
     def set_value(self, value):
         pass
     
@@ -126,7 +127,7 @@ register_form = MyForm(
     Textbox("username", form.notnull, description="User Name"),
     Password("password", form.notnull, vpass, description="Password"),
     Password("password2", form.notnull, vpass, description="Repeat password"),
-    Dropdown(name='type', args=[('public', 'Public/None of above'), ('agent', 'Staff of Social Organization'), ('sponsor', 'Corporate Representative')], description='I am a'),
+    Dropdown(name='type', args=USERTYPE, description='I am a'),
     Checkbox("agree", form.notnull, checked=False, value="1", pre_separator=True, description="I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"),
     validators = [form.Validator("Passwords didn't match", lambda i: i.password == i.password2)]
 )

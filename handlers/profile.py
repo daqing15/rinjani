@@ -46,7 +46,6 @@ class RegisterHandler(BaseHandler):
                 return
             raise InvalidFormDataError("Form still have errors.")
         except Exception, e:
-            raise
             f.note = f.note if f.note else e
             self.render("register", f=f)
         
@@ -169,7 +168,7 @@ class Dashboard(BaseHandler):
 
 class UserListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, User, {}, 1)
+        pagination = Pagination(self, User, {})
         self.render('users', pagination=pagination)
 
 class CommentsHandler(BaseHandler):

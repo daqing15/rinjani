@@ -7,8 +7,11 @@
 {{ modules.Tabs('activities', 'latest') }}
 
 <div class="items">
+{% set c = ['rodd','rodd', 'reven', 'reven'] %}
 {% for activity in pagination.get_objects() %}
-        {{ modules.ItemSummary(activity, 'modules/item-activity.html') }}
+    <div class="unit size1of2 {{h.alternate(c)}}">
+        {{ modules.ItemSummary(activity) }}
+    </div>
 {% end %}
 </div>
 

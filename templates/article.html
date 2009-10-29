@@ -5,7 +5,7 @@
 {% block body %}
 
 <div class="post">	
-	<h2>{{ escape(article.title) }} - {{ h.pretty_date(h.utc_to_local(article.created_at)) }}</h2>
+	<h2>{{ escape(article.title) }} - {{ h.timesince(h.utc_to_local(article.created_at)) }}</h2>
 
 	<div class="editbar">	
 		{{ h.link_if_editor(current_user, article.author, BP + '/article/edit/' + article.slug, _('Edit'), _class='button') }} 

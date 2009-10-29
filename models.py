@@ -206,6 +206,9 @@ class User(BaseDocument):
         """
         spec = {'owner': DBRef(self.collection_name, self._id)}
         return BankAccount.collection.find(spec)
+    
+    def get_url(self):
+        return "/profile/" + self['username']
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'

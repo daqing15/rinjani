@@ -36,7 +36,7 @@ class AgentFeatured(BaseUIModule):
 class ArticleLatest(BaseUIModule):
     def render(self, **kwargs):
         from models import Article
-        articles = Article.all().sort([('created_at', -1)]).limit(5)
+        articles = Article.all().sort([('created_at', -1)]).limit(3)
         if articles:
             return self.render_string("modules/articles-latest.html", articles=articles)
         else: return ''

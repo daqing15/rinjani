@@ -1,3 +1,27 @@
-<div class="item-summary">
-    <p><a href="/article/{{ item['slug'] }}">{{ escape(item['title']) }}</a></p>
+
+<div class="line item-summary">
+      <div class="unit size1of3">
+            <div class="media attribution">
+                  <a href="{{BP}}/profile/{{item.author.username}}" class="img"><img src="/static/uploads/tattoo.jpg" alt="Stubbornella" /></a>
+                  <div class="bd">
+                    <a href="{{BP}}/profile/{{item.author.username}}">{{ item.author.username}}</a> 
+                    <span class="detail">
+                    {{ h.timesince(h.utc_to_local(item.created_at))}}
+                    <span><a href="#">2 articles</a>. <a href="#">3 activities</a>.</span>
+                    </span>
+                  </div>
+              </div>      
+      </div>
+      <div class="lastUnit size2of3">
+          <div class="mod bubble bubbleLeft lol"> 
+              <b class="top"><b class="tl"></b><b class="tr"></b></b> 
+              <div class="inner">
+                  <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(item.title) }}</a></h3></div>
+                  <div class="bd">
+                    {{ h.truncate_html_words(item.content_html, 20) }}
+                  </div>
+              </div>
+              <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
+          </div>
+      </div>
 </div>

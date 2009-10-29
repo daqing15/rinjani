@@ -4,7 +4,7 @@ Adapted from solace.utils.pagination
 
 import math
 from werkzeug import url_encode
-from werkzeug.exceptions import NotFound
+from tornado.web import HTTPError
 
 class Pagination(object):
     """Pagination helper."""
@@ -17,7 +17,7 @@ class Pagination(object):
     commata = u'<span class="commata">,\n</span>'
     ellipsis = u'<span class="ellipsis">...\n</span>'
 
-    def __init__(self, req, doc_class, query, per_page=3, link_func=None):
+    def __init__(self, req, doc_class, query, per_page=15, link_func=None):
         self.page = int(req.get_argument('page', 1))
         self.doc_class = doc_class
         self.query = query
@@ -46,10 +46,10 @@ class Pagination(object):
     def get_objects(self, raise_not_found=True):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
-            raise NotFound()
+            raise HTTPError(404)
         rv = self.doc_class.all(self.query).skip(self.offset).limit(self.per_page)
         if raise_not_found and self.page > 1 and not rv:
-            raise NotFound()
+            raise HTTPError()
         return rv
 
     @property
