@@ -12,6 +12,7 @@ def _(str):
     #return tornado.escape.xhtml_escape(str)
     return str
 
+BANKS = [('bca', 'BCA'), ('mandiri','Bank Mandiri'), ('muamalat', 'Bank Muamalat')]
 
 class MyForm(form.Form):
     def __init__(self, *inputs, **kw):
@@ -111,13 +112,13 @@ class PassValidator(form.Validator):
         if not p1 and not p2:
             return True
         elif p1 and p2 and p1 == p2:
-            self.msg = "Password length must be between 3-20"
-            return bool(re.compile(".{3,20}").match(f.password))
+            self.msg = "Password length must be between 6-20"
+            return bool(re.compile(".{6,20}").match(f.password))
         
         self.msg = "Password didn't match"
         return False
     
-vpass = form.regexp(r".{3,20}", 'Must be between 3 and 20 characters')
+vpass = form.regexp(r".{6,20}", 'Must be between 6 and 20 characters')
 vemail = form.regexp(r".*@.*", "Must be a valid email address")
 
 
@@ -172,9 +173,10 @@ page_form = MyForm(
 )
 
 account_form = MyForm(
-    Password("password", size=20, description="Password", title="Combine alphabet with numbers"),
-    Password("password2", size=20, description="Repeat Password"),
+    Password("password", form.notnull, vpass, size=20, description="Password", title="Combine alphabet with numbers"),
+    Password("password2", form.notnull, vpass, size=20, description="Repeat Password"),
     validators = [PassValidator()]
+    
 )
 
 profile_form = MyForm(

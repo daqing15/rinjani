@@ -25,6 +25,9 @@
 {{ modules.Formfield(f.password) }}
 {{ modules.Formfield(f.password2) }}
 
+<script type="text/javascript">
+    $('input[name=password]').focus();
+</script>
 <p class="tip">{{_('Leave password empty if you dont want to change password')}}</p>
 <div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
 </div>
@@ -33,7 +36,6 @@
 {{ xsrf_form_html() }}
 
 </form>
-
 
 {% end %}
 

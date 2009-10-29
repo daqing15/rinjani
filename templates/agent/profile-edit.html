@@ -81,7 +81,7 @@
 		    </div>
 		    <div class="pane">
 		    	<h3>{{_('Bank Account')}}</h3>
-		    	<label class="grey lined tips">Displayed when your activity marked as needs donation.</label>
+		    	<label class="grey lined tips">{{_('Public Bank Accounts')}}</label>
 				<div class="line account-header" style="{% if not accounts %}display:none{% end %}">
 					<div class="unit size1of5 grey">Label</div>
 					<div class="unit size1of5 grey">Bank</div>
@@ -89,15 +89,12 @@
 					<div class="unit size1of5 grey">Name</div>
 					<div class="lastUnit size1of5"></div>
 				</div>
+				
 				<div class="accounts">
 					<div class="line accountsrc" style="display:none">
 						<div class="unit size1of5"><input type="text" name="acc_" size="13" /></div>
 						<div class="unit size1of5">
-							<select name="acc_">
-								<option value="bca">BCA</option>
-								<option value="mandiri">Bank Mandiri</option>
-								<option value="muamalat">Bank Muamalat</option>
-							</select> 
+							{{ h.select('acc_', BANKS, value='mandiri') }} 
 						</div>
 						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
 						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
@@ -114,11 +111,7 @@
 					<div class="line account">
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="13" value="{{ account[0]}}" /></div>
                         <div class="unit size1of5">
-                            <select name="acc_{{i}}">
-                                <option value="bca">BCA</option>
-                                <option value="mandiri">Bank Mandiri</option>
-                                <option value="muamalat">Bank Muamalat</option>
-                            </select> 
+                            {{ h.select('acc_'+str(i), BANKS, value=account[1]) }}
                         </div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[2]}}" /></div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[3]}}" /></div>
@@ -132,8 +125,13 @@
 				<button class="cp button">{{ _('Add') }}</button>
 				<script type="text/javascript">
 					$('.account .rm').live('click', function() { 
-						//alert($(this).parents('.bank').find('input');
-						$(this).parents('.account').remove();
+						$parent = $(this).parents('.account')
+						if ($parent.find('input[type=hidden]').val() != "0") {
+							if (!confirm("Are you sure?")) {
+								return false;
+							}
+						}
+						$parent.remove();
 						if ($('.account').length < 1) { $('.account-header').hide(); } 
 					});
 					$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');

@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 import markdown2
+from tornado.escape import url_escape 
 
 def attrs_to_str(attrs):
     if not isinstance(attrs, dict):
@@ -65,23 +66,6 @@ def _utc_to_local(dt, tz="Asia/Jakarta"):
 
 class HtmlHelper:
     @classmethod
-    def link_to(cls, to, label=None, **attrs):
-        attrs = attrs_to_str(attrs)
-        if not label:
-            label = to
-        return "<a href='%s' %s>%s</a>" % (to, attrs, label)
-    
-    @classmethod
-    def link_if_auth(cls, user, to, label, usertype_needed='all', **attrs):
-        if user:
-            if (isinstance(usertype_needed, list) and usertype_needed.count(user['type'])) \
-                or user['type'] == usertype_needed \
-                or usertype_needed == 'all' \
-                or user['is_admin']:
-                return cls.link_to(to, label, **attrs)
-        return ''
-    
-    @classmethod
     def markdown(cls, s):
         return markdown2.markdown(s)
     
@@ -101,6 +85,23 @@ class HtmlHelper:
         return default
     
     @classmethod
+    def link_to(cls, to, label=None, **attrs):
+        attrs = attrs_to_str(attrs)
+        if not label:
+            label = to
+        return "<a href='%s' %s>%s</a>" % (to, attrs, label)
+    
+    @classmethod
+    def link_if_auth(cls, user, to, label, usertype_needed='all', **attrs):
+        if user:
+            if (isinstance(usertype_needed, list) and usertype_needed.count(user['type'])) \
+                or user['type'] == usertype_needed \
+                or usertype_needed == 'all' \
+                or user['is_admin']:
+                return cls.link_to(to, label, **attrs)
+        return ''
+    
+    @classmethod
     def link_if_editor(cls, user, author, to, label, **attrs):
         if user and (user['is_admin'] or user == author):
             return cls.link_to(to, label, **attrs)
@@ -110,9 +111,15 @@ class HtmlHelper:
     def link_button_if_editor(cls, user, author, to, label, token):
         attrs = {
                     '_class':'button', 
-                    'onclick': 'if (confirm("Are you sure?")) { var f = $("<form><input type=hidden name=_xsrf value=%s /></form>").get(0); this.parentNode.appendChild(f); f.method = "POST"; f.action = this.href;f.submit(); };return false;' % token
+                    'onclick': 'if (confirm("Are you sure?")) { var f = $("<form method=post ><input type=hidden name=_xsrf value=%s /></form>").get(0); this.parentNode.appendChild(f); f.action = this.href;f.submit(); };return false;' % token
                 }
         return cls.link_if_editor(user, author, to, label, **attrs)
+    
+    @classmethod
+    def select(cls, name, args, *validators, **attrs):
+        from forms import Dropdown
+        dropdown = Dropdown(name, args, *validators, **attrs)
+        return dropdown.render()
     
 
     

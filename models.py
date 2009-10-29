@@ -156,33 +156,47 @@ class User(BaseDocument):
         
         self.populate(data)
         
-        _accounts = list(user.related.bank_accounts())
-        prev_accounts = [acc['_id'] for acc in _accounts]
-        updated_accounts = []
-        logging.error(data)
-        if 'bank_accounts' in data:
-            for acc in data['bank_accounts']:
-                try:
-                    if acc[4] == "0":
-                        logging.warning("Adding account")
-                        BankAccount.add_account(user, acc)
-                    else:
-                        logging.warning("Updating account")
-                        updated_accounts.append(acc[4])
-                        BankAccount.update_account(acc)
-                except:
-                    raise
-        removed_accounts = set(prev_accounts).difference(set(updated_accounts))
-        logging.error(removed_accounts)
-        for accid in list(removed_accounts):
-            logging.warning("Removing BankAccount#%s" % accid)
-            #BankAccount.remove({'_id': accid})
+        if user:
+            _accounts = list(user.related.bank_accounts())
+            prev_accounts = [acc['_id'] for acc in _accounts]
+            updated_accounts = []
+            
+            if 'bank_accounts' in data:
+                for acc in data['bank_accounts']:
+                    try:
+                        if acc[4] == "0":
+                            logging.warning("Adding account %s" % acc[0])
+                            BankAccount.add_account(user, acc)
+                        elif acc[4] in prev_accounts:
+                            i = prev_accounts.index(acc[4])
+                            del(prev_accounts[i])
+                            if self.is_dirty(acc, _accounts[i]):
+                                logging.warning("%s is dirty. Updating..." % acc[4])
+                                updated_accounts.append(acc[4])
+                                BankAccount.update_account(acc)
+                    except:
+                        raise
+            
+            removed_accounts = set(prev_accounts).difference(set(updated_accounts))
+            for accid in list(removed_accounts):
+                logging.warning("Removing %s" % accid)
+                BankAccount.remove({'_id': accid})
             
         super(User, self).save(True, True)
     
+    def is_dirty(self, current, _prev):
+        prev = []
+        fields = BankAccount.fields[:]
+        fields.append('_id')
+        for field in fields:
+            prev.append(_prev[field])
+        logging.warning(prev)
+        logging.warning(current)
+        return prev != current
+    
     @classmethod
     def filter_valid_accounts(cls, accounts):
-        return [account for account in accounts if len(account) != 4]
+        return [account for account in accounts if len(account) > 4]
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'
@@ -195,17 +209,14 @@ class BankAccount(BaseDocument):
         'created_at': datetime.datetime
     }  
     required_fields = ['owner', 'label', 'bank', 'number', 'holder']
+    fields = ['label', 'bank', 'number', 'holder']
     default_values = {'created_at':datetime.datetime.utcnow}
     #indexes = [ { 'fields': ['bang', 'number'], 'unique': True} ]
     
     @classmethod
-    def get_fields(cls):
-        return ['label', 'bank', 'number', 'holder']
-    
-    @classmethod
     def add_account(cls, user, acc):
         account = cls()
-        data = dict([(field, acc[idx]) for idx, field in enumerate(cls.get_fields())])
+        data = dict([(field, acc[idx]) for idx, field in enumerate(cls.fields)])
         account.populate(data)
         account['owner'] = user
         account.save()
@@ -214,7 +225,8 @@ class BankAccount(BaseDocument):
     def update_account(cls, acc):
         account = cls.one({'_id': acc[4]})
         if account:
-            [account[field] for field in cls.get_fields()]
+            for i, field in enumerate(cls.fields):
+                account[field] = unicode(acc[i])  
         account.save()
     
     @classmethod

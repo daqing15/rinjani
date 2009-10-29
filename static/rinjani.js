@@ -13,7 +13,7 @@ jQuery.postJSON = function(url, args, callback) {
             type: "POST",
             success: function(response) {
                 //callback(eval("(" + response + ")"));
-                alert('ok')
+                alert('ok');
             }
         });
 };
@@ -78,9 +78,8 @@ var Rinjani = {
   /* fades in errors */
   highlightErrors : function(element) { 
     var errors = $('ul.errors', element).hide().fadeIn();
-  },
-
-}
+  }
+};
 
 $(function() {
 	$('#hsearch input[type=text]').each(function() {
@@ -124,8 +123,8 @@ $(function() {
         }
     });
     
-    $(".dd_menu .head_menu").mouseover(function(){ $(this).addClass('over') })
-    .mouseout(function(){ $(this).removeClass('over') });
+    $(".dd_menu .head_menu").mouseover(function(){ $(this).addClass('over'); })
+    .mouseout(function(){ $(this).removeClass('over'); });
     
     $(".dd_menu .sub_menu").mouseover(function(){ $(this).fadeIn(); })
     .blur(function(){
@@ -171,7 +170,7 @@ $(function() {
 	    mySettings = $.extend(mySettings || {}, {
 	        previewParserPath: window.BP + '/preview',
 	        previewPosition: 'after',
-	        previewAutoRefresh: false,
+	        previewAutoRefresh: false
 	        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
 	    } );
 	    $('.rte').markItUp(mySettings);

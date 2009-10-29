@@ -55,11 +55,18 @@ class RegisterHandler(BaseHandler):
 class NewUserHandler(BaseHandler):
     def get(self):
         f = new_user_form()
+        user_cookie = self.get_secure_cookie("user")
+        if not user_cookie:
+            raise tornado.web.HTTPError(403, "Direct access to new-user page")
+        
         self.render("new-user", f=f)
     
     def post(self):
         f = new_user_form()
         data = self.get_arguments()
+        user_cookie = self.get_secure_cookie("user")
+        if not user_cookie:
+            raise tornado.web.HTTPError(403, "Direct access to new-user page")
         
         if data.has_key('username'):
             user = User.one({'username': data['username']})
@@ -68,7 +75,7 @@ class NewUserHandler(BaseHandler):
             
         try:
             if f.validates(Storage(data)):
-                data.update(json_decode(self.get_secure_cookie("user")))
+                data.update(json_decode(user_cookie))
                 
                 """
                 if data['auth_provider'] == 'facebook':
@@ -110,23 +117,27 @@ class AccountHandler(BaseHandler):
         user = self.current_user
         try:
             if f.validates(Storage(data)):
-                if data.get(user, 'password', None):
+                if data.get('password', None):
                     data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
                     user.save(data)
                     self.set_flash("Your password has been changed.")
+                    self.redirect("/account")
+                    return
+            raise InvalidFormDataError("Form still have errors.")
         except: pass
         self.render('profile-account', f=f)
                     
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):
+        from forms import BANKS
         f = profile_form()
         user = self.current_user
         accounts = user.related.bank_accounts()
         accounts = BankAccount.listify(accounts) if accounts else []
         user.formify()
         f.fill(user)
-        self.render(user.type + "/profile-edit", f=f, accounts=accounts)
+        self.render(user.type + "/profile-edit", f=f, accounts=accounts, BANKS=BANKS)
     
     @authenticated()
     def post(self):
@@ -135,6 +146,7 @@ class EditHandler(BaseHandler):
         user = self.current_user
         accounts = extract_input_array(self.request.arguments, 'acc_')
         accounts = User.filter_valid_accounts(accounts)
+        logging.warning(accounts)
         try:
             if f.validates(Storage(data)):
                 data['bank_accounts'] = accounts
@@ -146,7 +158,7 @@ class EditHandler(BaseHandler):
                 return
             raise InvalidFormDataError("Form still have errors. Please correct them before saving.")
         except Exception, e:
-            #if not isinstance(e, InvalidFormDataError): raise
+            if not isinstance(e, InvalidFormDataError): raise
             f.note = f.note if f.note else e
             self.render(user.type + '/profile-edit', f=f, accounts=accounts)
         
