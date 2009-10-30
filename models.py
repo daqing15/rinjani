@@ -83,6 +83,8 @@ class BaseDocument(MongoDocument):
                         self[k] = False
                     else:
                         self[k] = False if not k in data  else bool(int(data[k]))
+                else:
+                    self[k] = data[k]
             else: 
                 if t is bool and not k in data:
                     # self.__generate_skeleton None-ing bool field. change to bool
@@ -138,12 +140,17 @@ class User(BaseDocument):
         'badges': list,
         'reputation': int,
         'up_votes': int,
-        'down_votes': int
+        'down_votes': int,
+        'article_count': int,
+        'activity_count': int,
+        'donation_count': int,
+        
     }
     required_fields = ['username']
     default_values = {
         'status': u'active',
         'is_admin': False,
+        'article_count': 0, 'activity_count': 0, 'donation_count': 0,  
         'created_at':datetime.datetime.utcnow, 
         'type': u'public'
     }
@@ -280,13 +287,17 @@ class Article(BaseDocument):
         
         self.populate(data)
         
+        new = False
         if '_id' in self:
             self.check_edit_permission(user)
         else:
             self['author'] = user
+            new = True
             self.fill_slug_field(self['title'])
         
         super(Article, self).save(True, True)
+        if new:
+            User.collection.update({'username': user.username}, {'$inc': { 'article_count': 1}})
         
     def get_url(self):
         return "/article/" + self['slug']
@@ -335,13 +346,17 @@ class Activity(BaseDocument):
         
         self.populate(data)
         
+        new = False
         if '_id' in self:
             self.check_edit_permission(user)
         else:
             self['author'] = user
+            new = True
             self.fill_slug_field(self['title'])
         
         super(Activity, self).save(True, True)
+        if new:
+            User.collection.update({'username': user.username}, {'$inc': { 'activity_count': 1}})
 
 class Comment(BaseDocument):
     collection_name = 'comments'

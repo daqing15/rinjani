@@ -8,7 +8,7 @@ import tornado.web
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Article, {})
+        pagination = Pagination(self, Article, {}, 2)
         self.render('tags', pagination=pagination)
 
 class ViewHandler(BaseHandler):

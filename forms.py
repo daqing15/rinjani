@@ -170,7 +170,7 @@ commentbox_form = MyForm(
 page_form = MyForm(
     Textbox("title", form.notnull, size=53, description="Title"),
     Textbox("slug", form.notnull, size=53, description="Slug - use alphabet and dash (-)"),
-    Textarea("content", form.notnull, rows=6, cols=50, description="Content", _class="rte"),
+    Textarea("content", form.notnull, rows=18, cols=50, _class="rte", description="Content"),
 )
 
 account_form = MyForm(

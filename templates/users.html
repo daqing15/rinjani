@@ -17,12 +17,13 @@
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
 {% for user in pagination.get_objects() %}
 <div class="unit size1of3 {{h.alternate(c)}}">
-      <div class="mod bubble bubbleBottom discuss"> 
+      <div class="mod bubble bubbleBottom yoyo bubbleVerticalExt"> 
          <b class="top"><b class="tl"></b><b class="tr"></b></b> 
          <div class="inner">
              <div class="bd">
                <h3>{{user.type}}</h3>
-               <p>{{user.about}}</p>
+               <p>{{user.article_count}} articles</p>
+               <p>{{user.activity_count}} activities</p>
              </div>
          </div>
          <b class="bottom"><b class="bl"></b><b class="br"></b></b> 

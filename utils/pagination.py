@@ -5,6 +5,7 @@ Adapted from solace.utils.pagination
 import math
 from werkzeug import url_encode
 from tornado.web import HTTPError
+import logging
 
 class Pagination(object):
     """Pagination helper."""
@@ -24,6 +25,7 @@ class Pagination(object):
         self.per_page = per_page
         self.translate = req.locale.translate
         self.total = doc_class.all(query).count()
+        
         self.pages = int(math.ceil(self.total / float(self.per_page)))
         self.necessary = self.pages > 1
         

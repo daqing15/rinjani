@@ -67,8 +67,6 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 /* discuss (extends bubbleBottom) */
 .discuss .inner{background-color:#F8E9DD}
 .discuss b b{border-top-color:#F8E9DD;}
-.rodd .discuss .inner{background-color:#F3EFE2;}
-.rodd .discuss b b{border-top-color:#F3EFE2;}
 
 /* lol (extends bubbleLeft) */
 .lol .inner{background-color:#F8F8D2;}
@@ -80,12 +78,15 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .meep .inner{background-color:#ECEFDC;}
 .meep b b{border-left-color:#ECEFDC;}
 /* yoyo (extends bubbleBottom) */
-.yoyo .inner{background-color:#52a583;}
-.yoyo b b{border-top-color:#52a583;}
+.yoyo .inner{background-color:#F8E9DD;}
+.yoyo b b{border-top-color:#F8E9DD;}
+.rodd .yoyo .inner{background-color:#F3EFE2;}
+.rodd .yoyo b b{border-top-color:#F3EFE2;}
+
 /* header */
 .fire, .fire *{color: #000; font-size:18px; border-bottom: 1px dashed #fff;}
 .attribution{margin-left:0;}
-.atb2 { margin-left: 27px; }
+.atb2 { margin-left: 120px; }
 
 .bubble h3 { font-size: 100%; padding: 3px 10px;}
 .bubble h3, .bubble p { line-height: 1em; }

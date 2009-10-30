@@ -161,10 +161,11 @@ class Tabs(BaseUIModule):
         import tabs
         return getattr(tabs, name, [None,None])
     
-    def render(self, tabs, selected=0, **kwargs):
-        heading, tabs = self.get_tabs(tabs)
+    def render(self, tabs, selected=0, title=None, **kwargs):
+        _title, tabs = self.get_tabs(tabs)
         if tabs:
-            html = self.render_string("modules/tabs.html", heading=heading, tabs=tabs, selected=selected)
+            title = title if title else _title 
+            html = self.render_string("modules/tabs.html", title=title, tabs=tabs, selected=selected)
             if kwargs:
                 html = html % kwargs
             return html

@@ -6,16 +6,31 @@ dashboard_agent = ('Dashboard', [
     ('/profile/supports', 'supports'),
 ])
 
+new_public = ('New', [
+    ('/article/new', 'new article')
+])
+
+new_agent = new_sponsor = ('New', [
+    ('/article/new', 'new article'),
+    ('/activity/new', 'new activity'),    
+])
+
+new_admin = ('New', [
+    ('/article/new', 'new article'),
+    ('/activity/new', 'new activity'),    
+    ('/page/new', 'new page'),
+])
+
 dashboard_public = ('Dashboard', [
     ('/dashboard', 'messages'),
     ('/profile/comments', 'comments'),
     ('/profile/supports', 'supports'),
 ])
 
-profile_public = ('Profile of %(fullname)s', [
+profile_public = ('%(fullname)s', [
     ('/profile/%(username)s', 'profile'),
-    ('/profile/comments/%(username)s', 'comments'),
     ('/profile/articles/%(username)s', 'articles'),
+    ('/profile/activities/%(username)s', 'activities'),
 ])
 
 articles = ('Articles', [

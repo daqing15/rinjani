@@ -7,7 +7,7 @@
                     <a href="{{BP}}/profile/{{item.author.username}}">{{ item.author.username}}</a> 
                     <span class="detail">
                     {{ h.timesince(h.utc_to_local(item.created_at))}}
-                    <span><a href="#">2 articles</a>. <a href="#">3 activities</a>.</span>
+                    <span>{% if item.author.article_count %}<a href="#">{{ item.author.article_count }} articles</a>.{% end %} {% if item.author.activity_count %}<a href="#">{{ item.author.activity_count }} activities</a>.{% end %}</span>
                     </span>
                   </div>
               </div>      

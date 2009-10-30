@@ -1,19 +1,14 @@
 {% extends '../base.html' %}
 
-{% block title %} {{ user.username }} - Profile{% end %}
+{% block title %} {{ user.username }} -  {{_('Profile')}}{% end %}
 
 {% block body %}
 
 {{ modules.Tabs('profile_public', 'profile', fullname=user.username, username=user.username) }}
 
-<div class="mod simple">
-    <div class="inner">
-        {% for info in user %}    
-        <p>{% if user[info] %}{{ info }}: {{ user[info] }}{% end %}</p>
-        {% end %}
-    </div>
-    
-</div>
+{% if user.website %}{{ user.website }}{% end %}
+{% if user.phones %}{{ user.phones }}{% end %}    
+<p>Joined us {{ h.timesince(user.created_at) }}</p>
 
 {% end %}
 

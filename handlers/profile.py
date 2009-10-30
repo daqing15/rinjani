@@ -2,6 +2,7 @@ from web.utils import Storage
 import web.form
 from .main import BaseHandler, authenticated
 from models import User, BankAccount
+from pymongo.dbref import DBRef
 from utils.pagination import Pagination
 from utils import extract_input_array
 from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
@@ -18,7 +19,7 @@ class ViewHandler(BaseHandler):
             return
         if not user:
             raise tornado.web.HTTPError(404)
-        self.render(user['type'] + "/profile", user=user)
+        self.render("public/profile", user=user)
 
 class RegisterHandler(BaseHandler):
     def get(self):
@@ -36,6 +37,7 @@ class RegisterHandler(BaseHandler):
         
         try:
             if f.validates(Storage(data)):
+                logging.error(data)
                 new_user = User()
                 data['is_admin'] = False
                 data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
@@ -192,4 +194,26 @@ class ProfileCommentsHandler(BaseHandler):
     @authenticated()
     def post(self):
         pass
+
+class ArticlesHandler(BaseHandler):
+    def get(self, username):
+        from models import Article
+        user = User.one({'username': username})
+        if not user:
+            raise tornado.web.HTTPError(404)
+        spec = {'author': DBRef(User.collection_name, user._id)}
+        pagination = Pagination(self, Article, spec)
+        self.render('public/profile-items', pagination=pagination, user=user, type='articles')
+            
+class ActivitiesHandler(BaseHandler):
+    def get(self, username):
+        from models import Activity
+        user = User.one({'username': username})
+        if not user:
+            raise tornado.web.HTTPError(404)
+        spec = {'author': DBRef(User.collection_name, user._id)}
+        pagination = Pagination(self, Activity, spec)
+        self.render('public/profile-items', pagination=pagination, user=user, type='activities')
+    
+
         

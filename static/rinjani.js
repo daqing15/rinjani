@@ -78,7 +78,27 @@ var Rinjani = {
   /* fades in errors */
   highlightErrors : function(element) { 
     var errors = $('ul.errors', element).hide().fadeIn();
-  }
+  },
+  
+  insert_tag: function(tag, el) {
+		tag_el = el || getEl('tags');
+        var value = tag_el.value;
+        var usedTags = new Array;
+        if (value.length) {
+            usedTags = value.split(/\s*\,\s*/);
+        }
+        tag = tag.replace(new RegExp('(__SINGLE_QUOTE__)', 'g'), "'");
+        for (var i in usedTags) {
+            if (usedTags[i] == tag) {
+		if (!el) alert('' + tag + ' is already in the list.  To remove a tag, edit the field above.');
+		return;
+           }
+        }
+        usedTags.push(tag);
+        tag_el.value = usedTags.join(', ');
+        tag_el.focus(1);
+	}
+  
 };
 
 $(function() {

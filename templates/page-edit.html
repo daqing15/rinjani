@@ -1,17 +1,28 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ _('New Page') }}{% end %}
+
+{% block head %}
+{{ modules.Static('markitup') }}
+{% end %}
+
 {% block body %}
-<h1>{{ _('New Page') }}</h1>
+
+<form method="post" action="{{BP}}/page/edit">
+
+{% set title = 'edit page' if slug else 'new page' %}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new page', title) }}
 
 <div class="form-area">
-	<form method="post" action="{{BP}}/page/edit">
 	{{ f.render_css() }}
 	<div><input class="button" name="submit" type="submit" value="{{_('Save')}}"/></div>
-    {{ xsrf_form_html() }}
-    {% if slug %}
-    <input type="hidden" name="ori_slug" value="{{slug}}" />
-    {% end %}
-	</form>
 </div>
+
+{{ xsrf_form_html() }}
+{% if slug %}
+<input type="hidden" name="ori_slug" value="{{slug}}" />
+{% end %}
+</form>
+
 {% end %}
 

@@ -6,17 +6,14 @@
 s
 {% block body %}
 
-{% if slug %}
-<h1>{{ _('Edit Article') }}</h1>
-{% else %}
-<h1>{{ _('New Article') }}</h1>
-{% end %}
-
 <form action="{{BP}}/article/edit" method="post" class="withtips">
+
+{% set title = 'edit article' if slug else 'new article' %}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new article', title) }}
 
 {{ f.rendernote(f.note) }}
 
-<div class="line tabWrapper linetop">
+<div class="line tabWrapper">
 	<div class="unit size1of5">
 		<!-- the tabs --> 
 		<ul class="tabs"> 

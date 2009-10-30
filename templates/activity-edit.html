@@ -15,17 +15,15 @@ $(function() {
 {% end %}
 
 {% block body %}
-{% if slug %}
-<h1>{{ _('Edit Activity') }}</h1>
-{% else %}
-<h1>{{ _('New Activity') }}</h1>
-{% end %}
 
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
 
+{% set title = 'edit activity' if slug else 'new activity' %}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new activity', title) }}
+
 {{ f.rendernote(f.note) }}
 
-<div class="line tabWrapper linetop">
+<div class="line tabWrapper">
 	<div class="unit size1of5">
 		<!-- the tabs --> 
 		<ul class="tabs"> 

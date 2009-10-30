@@ -1,0 +1,24 @@
+{% extends '../base.html' %}
+
+{% block title %} {{ user.username }} -  {{_('Profile')}}{% end %}
+
+{% block body %}
+
+{{ modules.Tabs('profile_public', type, fullname=user.username, username=user.username) }}
+
+<div class="items line">
+{% set c = ['rodd','rodd', 'reven', 'reven'] %}
+{% for item in pagination.get_objects() %}
+    <div class="unit size1of2 {{h.alternate(c)}}">
+        {{ modules.ItemSummary(item) }}
+    </div>
+{% end %}
+</div>
+
+<p class="clear"></p>
+
+{{ pagination }}
+    
+
+{% end %}
+
