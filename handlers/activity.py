@@ -1,5 +1,5 @@
 from .main import BaseHandler, authenticated
-from forms import activity_form
+from forms import activity_form, CONTENT_TAGS_COLLECTION
 from models import Activity, EditDisallowedError
 from web.utils import Storage
 from utils.pagination import Pagination
@@ -28,18 +28,20 @@ class EditHandler(BaseHandler):
             try:
                 activity = Activity.one({"slug": slug})
                 activity.check_edit_permission(self.get_current_user())
+                f['need_donation'].checked = bool(activity['need_donation'])
+                f['need_volunteer'].checked = bool(activity['need_volunteer'])
+                f['enable_comment'].checked = bool(activity['enable_comment'])
+                activity.formify()
+                f.fill(activity)
             except EditDisallowedError:
                 self.set_flash(PERMISSION_ERROR_MESSAGE)
                 self.redirect(activity.get_url())
                 return
             except:
                 raise tornado.web.HTTPError(404)
-            f['need_donation'].checked = bool(activity['need_donation'])
-            f['need_volunteer'].checked = bool(activity['need_volunteer'])
-            f['enable_comment'].checked = bool(activity['enable_comment'])
-            activity.formify()
-            f.fill(activity)
-        self.render("activity-edit", f=f, slug=slug)
+        else:
+            activity = None
+        self.render("activity-edit", f=f, slug=slug, activity=activity, suggested_tags=CONTENT_TAGS_COLLECTION)
     
     @authenticated(['agent', 'sponsor'])
     def post(self):

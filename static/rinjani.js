@@ -80,8 +80,8 @@ var Rinjani = {
     var errors = $('ul.errors', element).hide().fadeIn();
   },
   
-  insert_tag: function(tag, el) {
-		tag_el = el || getEl('tags');
+  add_tag: function(tag, el) {
+		tag_el = el || $('input[name=tags]').get(0);
         var value = tag_el.value;
         var usedTags = new Array;
         if (value.length) {

@@ -1,18 +1,18 @@
 
 <div class="line item-summary">
-      <div class="unit size1of3">
+      <div class="unit size1of4">
             <div class="media attribution">
-                  <a href="{{BP}}/profile/{{item.author.username}}" class="img"><img src="/static/uploads/tattoo.jpg" alt="Stubbornella" /></a>
+                  {{ modules.Avatar(item.author) }}
                   <div class="bd">
                     <a href="{{BP}}/profile/{{item.author.username}}">{{ item.author.username}}</a> 
                     <span class="detail">
                     {{ h.timesince(h.utc_to_local(item.created_at))}}
-                    <span>{% if item.author.article_count %}<a href="#">{{ item.author.article_count }} articles</a>.{% end %} {% if item.author.activity_count %}<a href="#">{{ item.author.activity_count }} activities</a>.{% end %}</span>
+                    <span>{% if item.author.article_count %}<a href="#">{{ item.author.article_count }} articles</a>.<br />{% end %} {% if item.author.activity_count %}<a href="#">{{ item.author.activity_count }} activities</a>.{% end %}</span>
                     </span>
                   </div>
               </div>      
       </div>
-      <div class="lastUnit size2of3">
+      <div class="lastUnit size3of4">
           <div class="mod bubble bubbleLeft lol"> 
               <b class="top"><b class="tl"></b><b class="tr"></b></b> 
               <div class="inner">

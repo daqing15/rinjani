@@ -29,7 +29,7 @@
          <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
      </div>
        <div class="media attribution atb2">
-          <a href="{{user.get_url()}}" class="img"><img src="/static/uploads/tattoo.jpg" alt="Stubbornella" /></a>
+          {{ modules.Avatar(user) }}
           <div class="bd">
             <a href="{{user.get_url()}}">{{ user.username}}</a> 
             <span class="detail">

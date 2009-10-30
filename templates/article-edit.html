@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
+{% block title %}
+{% set title = 'edit article' if slug else 'new article' %}
+{{ title.title() }}{% end %}
+
 {% block head %}
 {{ modules.Static('markitup') }}
+<script type="text/javascript" src="{{ static_url('jquery.metadata.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.multifile.pack.js') }}"></script>
 {% end %}
-s
+
 {% block body %}
-
-<form action="{{BP}}/article/edit" method="post" class="withtips">
-
 {% set title = 'edit article' if slug else 'new article' %}
+<form action="{{BP}}/article/edit" method="post" enctype="multipart/form-data" class="withtips">
+
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new article', title) }}
 
 {{ f.rendernote(f.note) }}
@@ -18,7 +23,8 @@ s
 		<!-- the tabs --> 
 		<ul class="tabs"> 
 		    <li><a href="#fi">{{_('Information')}}</a></li> 
-		    <li><a href="#fc">{{_('Content')}}</a></li> 
+		    <li><a href="#fc">{{_('Content')}}</a></li>
+		    <li><a href="#fc">{{_('Photos')}}</a></li> 
 		</ul> 
 	</div>
 	<div class="lastUnit size4of5">
@@ -26,11 +32,40 @@ s
 			<div class="pane">
 				{{ modules.Formfield(f.title) }}
 				{{ modules.Formfield(f.excerpt) }}
-				{{ modules.Formfield(f.tags) }}
+				
+                {{ modules.Formfield(f.tags) }}
+                <div class="tags suggestedtags">
+                    {{ modules.TagSuggestion(suggested_tags)}}
+                </div>
 			</div>
 			<div class="pane">
 				{{ modules.Formfield(f.content) }}
 			</div>
+			<div class="pane">
+                {% if article %}
+                    {{ modules.PhotoThumbnails(article.photos)}}
+                {% end %}
+                
+                <div class="line">
+                    <div class="unit size1of2">
+                        {{ modules.Formfield(f.photo) }}
+                    </div>
+                    <div class="lastUnit size1of2">
+                        <div class="mod highlight">
+                            <div class="inner">
+                                <div class="bd">
+                                    <p>TIPS:</p>
+                                    <ul>
+                                        <li>tips #1 blah blah</li>
+                                        <li>tips #2 lorem ipsum</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			    
+            </div>
 		</div>
 	</div>
 </div>

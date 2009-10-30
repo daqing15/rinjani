@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ _('Activity') }}{% end %}
+{% block title %}
+{% set title = 'edit activity' if slug else 'new activity' %}
+{{ title.title() }}{% end %}
 
 {% block head %}
 {{ modules.Static('markitup') }}
@@ -15,10 +17,9 @@ $(function() {
 {% end %}
 
 {% block body %}
-
+{% set title = 'edit activity' if slug else 'new activity' %}
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
 
-{% set title = 'edit activity' if slug else 'new activity' %}
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new activity', title) }}
 
 {{ f.rendernote(f.note) }}
@@ -30,6 +31,7 @@ $(function() {
 		    <li><a href="#fi">{{_('Meta')}}</a></li> 
 		    <li><a href="#fc">{{_('Content')}}</a></li>
 		    <li><a href="#fc">{{_('Miscellaneous')}}</a></li>  
+            <li><a href="#fc">{{_('Photos')}}</a></li>  
 		</ul> 
 	</div>
 	<div class="lastUnit size4of5">
@@ -41,18 +43,22 @@ $(function() {
 					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
 				</div>
 				{{ modules.Formfield(f.tags) }}
+                <div class="tags suggestedtags">
+                    {{ modules.TagSuggestion(suggested_tags)}}
+                </div>
 			</div>
 			<div class="pane">
 				{{ modules.Formfield(f.content) }}
 			</div>
 			<div class="pane">
-				{{ modules.Formfield(f.deliverable) }}
-				{{ modules.Formfield(f.need_donation) }}
-				{{ modules.Formfield(f.need_volunteer) }}
-				{{ modules.Formfield(f.enable_comment) }}
+                {{ modules.Formfield(f.deliverable) }}
+				{{ modules.FormfieldInColumns(f.need_donation, f.enable_comment, [], []) }}
 				<br />
-				<span class="grey small">See also <a href="http://localhost:9999/profile/edit#fdo">Bank Account</a></span>
+                <span class="grey small">See also <a href="http://localhost:9999/profile/edit#fdo">Bank Account</a></span>
 			</div>
+            <div class="pane">
+                <p>INi photo</p>
+            </div>
 		</div>
 	</div>
 </div>

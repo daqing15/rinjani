@@ -49,3 +49,7 @@ class BaseApplication(tornado.web.Application):
 
         handler._execute(transforms, *args)
         return handler
+    
+    @property
+    def queue(self):
+        pass

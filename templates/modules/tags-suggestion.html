@@ -1,0 +1,11 @@
+<script type="text/javascript">
+r = Rinjani
+</script>
+<p class="small grey" style="padding-left:0"><span>Suggestion (click to add):</span>
+
+{% set n = len(tags) %}
+{% for i, tag in enumerate(tags) %}
+    {% set ending = ', ' if (i < n-1) else '.' %} 
+    <a href="#" onclick="r.add_tag('{{tag}}')">{{tag}}</a>{{ending}}
+{% end %}
+</p>

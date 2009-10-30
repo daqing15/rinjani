@@ -2,6 +2,7 @@ import logging
 import re
 from datetime import datetime
 import markdown2
+import hashlib
 
 def attrs_to_str(attrs):
     if not isinstance(attrs, dict):
@@ -66,13 +67,29 @@ def timeuntil(dt, now=None):
     now = datetime.datetime.now()
     return timesince(now, dt)
 
-class HtmlHelper:
+def unique_filename(parts):
+    uf = "-".join(parts)
+    return hashlib.sha1(uf).hexdigest()
+
+def save_user_upload(dir, filename, file_content):
+    import os.path
+    path =  os.path.join(dir, filename)
+    with open(path, mode="wb") as f:
+        f.write(file_content)
+        logging.warning("done writing %s" % path)
+        return True
+    return False
+        
+class DefaultHelper:
     """
     Functions to help creating/altering template's output
     """
-    alt = {}
     
+    def __init__(self, req):
+        self.req = req
+        
     #### misc
+    alt = {}
     def alternate(self, items):
         k = id(items)
         if not self.alt.has_key(k):
@@ -80,6 +97,13 @@ class HtmlHelper:
         self.alt[k]  = 0 if self.alt[k] >= len(items) - 1 else self.alt[k] + 1
         return items[self.alt[k]]
     
+    def get(self, val, default):
+        return val if val else default
+    
+    def avatar(self, user):
+        return self.get(user.avatar, self.req.settings['default_avatar'])
+    
+                             
     #### string helpers
     def markdown(self, s):
         return markdown2.markdown(s)

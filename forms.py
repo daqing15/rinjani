@@ -14,6 +14,8 @@ def _(str):
 
 BANKS = [('bca', 'BCA'), ('mandiri','Bank Mandiri'), ('muamalat', 'Bank Muamalat')]
 USERTYPE = [('public', 'Individu/Public'), ('agent','Staff of NGO/Social Organization'), ('sponsor', 'Representative of Corporate/Donor entity')]
+CONTENT_TAGS_COLLECTION = ['education', 'media', 'CSR', 'news', ]
+USER_TAGS_COLLECTION = ['education', 'media', 'CSR']
 
 class MyForm(form.Form):
     def __init__(self, *inputs, **kw):
@@ -159,8 +161,9 @@ activity_form = MyForm(
 article_form = MyForm(
     Textbox("title", form.notnull, size=53, description="Title"),
     Textarea("excerpt", form.notnull, rows=3, cols=60, description="Excerpt", title="Write it short and sweet. "),
-    Textarea("content", form.notnull, rows=14, cols=60, _class="rte", description="Article Content", title="You can enter some formatting blah blah"),
-    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=53, description="Tags", title="Separate with comma")
+    Textarea("content", form.notnull, rows=18, cols=60, _class="rte", description="Article Content", title="You can enter some formatting blah blah"),
+    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=53, description="Tags", title="Separate with comma"),
+    File("photo", _class="multi accept-gif|jpg|png max-3", description="Add Photo/Images. You can select up to 3 files.")
  )
 
 commentbox_form = MyForm(

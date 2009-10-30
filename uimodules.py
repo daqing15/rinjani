@@ -50,6 +50,10 @@ class ArticlesRelated(BaseUIModule):
     def render(self, tags):
         return self.render_string("modules/articles-related.html", articles={}) 
 
+class Avatar(BaseUIModule):
+    def render(self, user):
+        return self.render_string("modules/avatar.html", user=user) 
+    
 class Cloud(BaseUIModule):
     def render(self, **kwargs):
         return self.render_string("modules/cloud.html")
@@ -151,6 +155,11 @@ class Slideshow(BaseUIModule):
 class Streams(BaseUIModule):
     def render(self, user=None):
         return self.render_string("modules/streams.html")
+
+class PhotoThumbnails(BaseUIModule):
+    def render(self, photos):
+        if not photos: return ''
+        return self.render_string("modules/item-photo-thumbnails.html", photos=photos)
     
 class ProfileStreams(BaseUIModule):
     def render(self, user=None):
@@ -178,6 +187,10 @@ class Tags(BaseUIModule):
             return ''
         return self.render_string("modules/tags.html", tags=tags)
 
+class TagSuggestion(BaseUIModule):
+    def render(self, tags):
+        return self.render_string("modules/tags-suggestion.html", tags=tags)
+    
 class TagContent(BaseUIModule):
     def render(self, slug, type='article'):
         action = '/%s/tag/%s' % (type, slug)

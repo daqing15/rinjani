@@ -3,7 +3,7 @@ import logging
 from web.utils import Storage
 
 from .main import BaseHandler, authenticated
-from forms import article_form
+from forms import article_form, CONTENT_TAGS_COLLECTION
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
 
@@ -29,16 +29,17 @@ class EditHandler(BaseHandler):
             try:
                 article = Article.one({"slug": slug})
                 article.check_edit_permission(self.get_current_user())
+                article.formify()
+                f.fill(article)
             except EditDisallowedError:
                 self.set_flash(PERMISSION_ERROR_MESSAGE)
                 self.redirect(article.get_url())
                 return
             except:
                 raise tornado.web.HTTPError(404)
-            if isinstance(article['tags'], list):
-                article['tags'] = ', '.join(article['tags'])
-            f.fill(article)
-        self.render("article-edit", f=f, slug=slug)
+        else:
+            article = None
+        self.render("article-edit", f=f, slug=slug, article=article, suggested_tags=CONTENT_TAGS_COLLECTION)
     
     @authenticated()
     def post(self):
@@ -48,8 +49,10 @@ class EditHandler(BaseHandler):
         
         try:
             if f.validates(Storage(data)):
-                article = Article.one({'slug': data['slug']}) if is_edit else Article() 
-                article.save(data, user=self.get_current_user())
+                article = Article.one({'slug': data['slug']}) if is_edit else Article()
+                if self.request.files.has_key('photo'):
+                    self.update_article_photos(article, self.request.files['photo'])                        
+                article.save(data, user=self.current_user)
                 self.set_flash("Article has been saved.")
                 self.redirect(article.get_url())
                 return
@@ -61,6 +64,19 @@ class EditHandler(BaseHandler):
             f.note = f.note if f.note else e
             slug = None if not is_edit else data.get('slug', None)
             self.render("article-edit", f=f, slug=slug)
+    
+    def update_article_photos(self, article, photos):
+        from utils.helper import unique_filename, save_user_upload
+        if photos:
+            uploaded_photos = []
+            for p in photos:
+                filename = unique_filename([self.current_user.username, 'article', p['filename']])
+                save_user_upload(self.upload_dir, filename, p['body'])
+                uploaded_photos.append(filename)
+                logging.error("%s - %s" % (p['content_type'], p['filename']))
+        
+        if article._id:
+            pass
         
 class RemoveHandler(BaseHandler):
     def post(self, slug):

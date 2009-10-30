@@ -273,6 +273,7 @@ class Article(BaseDocument):
         'enable_comment': bool,
         'comment_count': int,
         'tags': list,
+        'photos': list,
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
@@ -322,6 +323,7 @@ class Activity(BaseDocument):
         'location': {'lat': float, 'lang': float},
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
         'tags': list,
+        'photos': list,
         'checked_by': list,
         'links': list,
         'enable_comment': bool,

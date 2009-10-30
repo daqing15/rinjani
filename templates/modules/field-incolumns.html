@@ -1,12 +1,22 @@
+{% import forms %}
 <div class="i">
 <div class="line">
 	{% set n = len(inputs) %}
-	{% for i in inputs %}
-	<div class="unit size1of{{n}}">
-		<label for="{{i.id}}">{{ _(i.description) }}</label>
-		{{ i.render() }}
-		{{ i.rendernote(i.note) }}
-	</div>
+	{% for h, i in enumerate(inputs) %}
+        {% set unitclass = 'unit' if h < (n-1) else 'lastUnit' %}
+        {% if i %}
+        	<div class="{{unitclass}} size1of{{n}}">
+                {% if type(i) is forms.Checkbox %}
+                    <label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ _(i.description) }}</span></label> 
+                {% else %}
+                    <label for="{{i.id}}">{{ _(i.description) }}</label>
+                    {{ i.render() }}
+                {% end %}
+        		{{ i.rendernote(i.note) }}
+        	</div>
+        {% else %}
+            <div class="{{unitclass}} size1of{{n}}"></div>
+        {% end %}
 	{% end %}
 </div>
 </div>

@@ -299,6 +299,8 @@ text-decoration:none;
 .thumb { width: 60px; height: 60px; background: #ccc; }
 .thumb2, .thumb3 { width: 30px; height: 30px; background: #FFA500; }
 .thumb3 { background: #EFC7EE; }
+.MultiFile-title { font-size: 90%; color: #999; }
+.MultiFile-remove { color: #9E2323; }
 
 /*=====: DISQUS =====*/
 .dsq-brlink, .dsq-dc-logo { display: none; }

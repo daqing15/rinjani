@@ -3,7 +3,7 @@ import urllib
 import tornado.web
 import functools
 from forms import MyForm
-from utils.helper import HtmlHelper
+from utils.helper import DefaultHelper
 
 def authenticated(user_type=None, is_admin=False):
     def _authenticated(method):
@@ -64,6 +64,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def settings(self): 
         return self.application.settings
     
+    @property
+    def upload_dir(self):
+        import os.path
+        return os.path.join(self.settings['static_path'], 'uploads')
+    
     def set_flash(self, message):
         self.set_secure_cookie("f", message)
         
@@ -90,7 +95,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return dict(
             current_path = self.request.uri, 
             BP = self.settings['base_path'],
-            h = HtmlHelper(),
+            h = DefaultHelper(self),
             settings = tornado.web._O(self.settings)
         ) 
     
