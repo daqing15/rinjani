@@ -6,6 +6,9 @@
 
 {% block head %}
 {{ modules.Static('markitup') }}
+{% end %}
+
+{% block inlinejs %}
 <script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
 <link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
@@ -17,12 +20,14 @@ $(function() {
 {% end %}
 
 {% block body %}
-{% set title = 'edit activity' if slug else 'new activity' %}
-<form method="post" action="{{BP}}/activity/edit" class="withtips">
-
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new activity', title) }}
 
 {{ f.rendernote(f.note) }}
+
+<form method="post" action="{{BP}}/activity/edit" class="withtips">
+
+{% set title = 'edit activity' if slug else 'new activity' %}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title) }}
+
 
 <div class="line tabWrapper">
 	<div class="unit size1of5">
@@ -63,7 +68,15 @@ $(function() {
 	</div>
 </div>
 			
-<div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
+<div class="actionbar">
+<input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
+{% if slug %}
+<input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
+{% else %}
+<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
+<input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
+{% end %}
+</div>
 
 {{ xsrf_form_html() }}
 

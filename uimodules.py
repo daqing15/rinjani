@@ -1,9 +1,6 @@
 import os
-import time
-import tornado.web
-from pymongo.connection import Connection
-from beakercache import cache
 import logging
+import tornado.web
 
 class BaseUIModule(tornado.web.UIModule):
     def render_string(self, path, **kwargs):
@@ -69,7 +66,6 @@ class Disqus(BaseUIModule):
         return self.render_string("modules/disqus.html", url=url)
            
 class FansOf(BaseUIModule):
-    @cache.cache('fans_of', expire=10)
     def render(self, user):
         fans = []
         return self.render_string("modules/fans-of.html", user=user, fans=fans)
@@ -197,9 +193,6 @@ class TagContent(BaseUIModule):
         return self.render_string("modules/tag-content.html", action=action)
         
 class User(BaseUIModule):
-    def embedded_css(self):
-        return ".entry { margin-bottom: 1em; }"
-
     def render(self):
         from models import User
         users = User.all().sort([('popularity', 1)]).limit(5)

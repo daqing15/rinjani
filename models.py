@@ -1,11 +1,9 @@
-from pymongo.dbref import DBRef
-from mongokit import *
-from mongokit.mongo_exceptions import *
 import datetime
-from settings import app_settings
-import markdown2
 import logging
-from utils.string import force_unicode, listify
+import markdown2
+from mongokit import DBRef, MongoDocument, IS, ObjectId, SchemaTypeError
+from settings import app_settings
+from utils.string import force_unicode, listify, sanitize
 
 class EditDisallowedError(Exception): pass
 
@@ -17,19 +15,10 @@ class BaseDocument(MongoDocument):
     use_dot_notation = True
     use_autorefs = True
     structure = {}
+    sanitized_fields = []
     
     def authored_by(self, user):
         return self['author'] is user
-    
-    def populatex(self, doc):
-        if not isinstance(doc, dict):
-            raise SchemaTypeError()
-        
-        doc_in_struct = set(doc).intersection(set(self.structure))
-        for field in doc_in_struct:
-            self[field] = force_unicode(doc[field])
-        
-        self.deformify(doc)
     
     def fill_slug_field(self, s):
         from utils.string import slugify
@@ -74,6 +63,8 @@ class BaseDocument(MongoDocument):
             if k in data:
                 if t is unicode:
                     self[k] = force_unicode(data[k])
+                    if k in self.sanitized_fields:
+                        self[k] = sanitize(self[k])
                 elif t is list:
                     self[k] = listify(data[k], ',')
                 elif t is datetime.datetime:
@@ -94,7 +85,12 @@ class BaseDocument(MongoDocument):
             if t is unicode and k.endswith('_html'):
                 src = k.replace('_html', '')
                 if src in data and self[src]:
-                    self[k] = markdown2.markdown(self[src])
+                    s = self.process_inline(src, self[src])
+                    self[k] = markdown2.markdown(s)
+    
+    # override this
+    def process_inline(self, field, src):
+        return src
                     
 class User(BaseDocument):
     collection_name = 'users'
@@ -147,6 +143,7 @@ class User(BaseDocument):
         
     }
     required_fields = ['username']
+    sanitized_fields = ['address', 'email', 'website', 'about']
     default_values = {
         'status': u'active',
         'is_admin': False,
@@ -163,36 +160,35 @@ class User(BaseDocument):
             return
         
         self.populate(data)
-        
-        if user:
-            _accounts = list(user.related.bank_accounts())
-            prev_accounts = [acc['_id'] for acc in _accounts]
-            updated_accounts = []
-            
-            if 'bank_accounts' in data:
-                for acc in data['bank_accounts']:
-                    try:
-                        if acc[4] == "0":
-                            logging.warning("Adding account %s" % acc[0])
-                            BankAccount.add_account(user, acc)
-                        elif acc[4] in prev_accounts:
-                            i = prev_accounts.index(acc[4])
-                            del(prev_accounts[i])
-                            if self.is_dirty(acc, _accounts[i]):
-                                logging.warning("%s is dirty. Updating..." % acc[4])
-                                updated_accounts.append(acc[4])
-                                BankAccount.update_account(acc)
-                    except:
-                        raise
-            
-            removed_accounts = set(prev_accounts).difference(set(updated_accounts))
-            for accid in list(removed_accounts):
-                logging.warning("Removing %s" % accid)
-                BankAccount.remove({'_id': accid})
-            
+        if user and 'bank_accounts' in data:
+            self.update_bank_accounts(user, data['bank_accounts'])
         super(User, self).save(True, True)
     
-    def is_dirty(self, current, _prev):
+    def update_bank_accounts(self, user, data):
+        _accounts = list(user.related.bank_accounts())
+        prev_accounts = [acc['_id'] for acc in _accounts]
+        updated_accounts = []
+        
+        for acc in data['bank_accounts']:
+            try:
+                if acc[4] == "0":
+                    logging.warning("Adding account %s" % acc[0])
+                    BankAccount.add_account(user, acc)
+                elif acc[4] in prev_accounts:
+                    i = prev_accounts.index(acc[4])
+                    del(prev_accounts[i])
+                    if self.is_bank_data_dirty(acc, _accounts[i]):
+                        logging.warning("%s is dirty. Updating..." % acc[4])
+                        updated_accounts.append(acc[4])
+                        BankAccount.update_account(acc)
+            except: pass
+        
+        removed_accounts = set(prev_accounts).difference(set(updated_accounts))
+        for accid in list(removed_accounts):
+            logging.warning("Removing %s" % accid)
+            BankAccount.remove({'_id': accid})
+                
+    def is_bank_data_dirty(self, current, _prev):
         prev = []
         fields = BankAccount.fields[:]
         fields.append('_id')
@@ -216,6 +212,179 @@ class User(BaseDocument):
     
     def get_url(self):
         return "/profile/" + self['username']
+
+class Article(BaseDocument):
+    collection_name = 'articles'
+    structure = {
+        'author': User,
+        'status': IS(u'published', u'draft', u'deleted'), 
+        'title': unicode,
+        'slug': unicode, 
+        'excerpt': unicode,
+        'content': unicode,
+        'content_html': unicode,
+        'enable_comment': bool,
+        'comment_count': int,
+        'tags': list,
+        'attachments': [{'src':unicode, 'type':unicode}], 
+        'created_at': datetime.datetime,
+        'updated_at': datetime.datetime
+    }
+    required_fields = ['author', 'title', 'content']
+    sanitized_fields = ['excerpt', 'content']
+    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
+    
+    def save(self, data=None, user=None):
+        if not data:
+            super(Article,self).save(True, True)
+            return
+        
+        self.populate(data)
+        
+        new = False
+        if '_id' in self:
+            self.check_edit_permission(user)
+        else:
+            self['author'] = user
+            new = True
+            self.fill_slug_field(self['title'])
+        
+        super(Article, self).save(True, True)
+        if new:
+            User.collection.update({'username': user.username}, {'$inc': { 'article_count': 1}})
+    
+    def remove(self):
+        self.status = u'deleted'
+        self.save()
+        User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
+        
+    def process_inline(self, field, src):
+        if field != 'content':
+            return src
+        
+        from utils.inline import processor, AttachmentInline
+        
+        #if not self.photos:
+        #    return src
+        
+        x = ['apito-fafc3161759961d6e1b980d1049e8da6a0142ee8.jpg']
+        pip = AttachmentInline(x)
+        processor.register('attachment', pip)
+        return processor.process(src)
+    
+    def get_url(self):
+        return "/article/" + self['slug']
+    
+class ArticleVote(BaseDocument):
+    pass    
+
+class Activity(BaseDocument):
+    collection_name = 'activities'
+    structure = {
+        'author': User,
+        'status': IS(u'published', u'draft', u'deleted'), 
+        'title': unicode,
+        'slug': unicode,
+        'excerpt': unicode,
+        'date_start': datetime.datetime,
+        'date_end': datetime.datetime, 
+        'content': unicode,
+        'content_html': unicode,
+        'deliverable': unicode,
+        'deliverable_html': unicode,
+        'location': {'lat': float, 'lang': float},
+        'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
+        'tags': list,
+        'attachments': [{'src':unicode, 'thumb':unicode,'type':unicode}], 
+        'checked_by': list,
+        'links': list,
+        'enable_comment': bool,
+        'need_volunteer': bool,
+        'need_donation': bool,
+        'donation_amount_needed': int,
+        'donation_amount': float,
+        'comment_count': int,
+        'created_at': datetime.datetime
+    }
+    required_fields = ['author', 'status', 'title', 'content']
+    sanitized_fields = ['excerpt', 'content', 'deliverable']
+    default_values = {'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
+    
+    def get_url(self):
+        return "/activity/" + self['slug']
+    
+    def save(self, data=None, user=None):
+        if not data:
+            super(Activity,self).save(True, True)
+            return
+        
+        self.populate(data)
+        
+        new = False
+        if '_id' in self:
+            self.check_edit_permission(user)
+        else:
+            self['author'] = user
+            new = True
+            self.fill_slug_field(self['title'])
+        
+        super(Activity, self).save(True, True)
+        if new:
+            User.collection.update({'username': user.username}, {'$inc': { 'activity_count': 1}})
+    
+    def remove(self):
+        self.status = u'deleted'
+        self.save()
+        User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
+
+
+class Page(BaseDocument):
+    collection_name = 'pages'
+    structure = {
+        'author': User,
+        'title': unicode,
+        'slug': unicode,
+        'content': unicode,
+        'content_html': unicode,
+        'created_at': datetime.datetime,
+        'updated_at': datetime.datetime
+    }
+    required_fields = ['title', 'content']
+    sanitized_fields = ['content']
+    default_values = {'created_at':datetime.datetime.utcnow}
+    
+    def get_url(self):
+        return "/page/" + self['slug']
+
+
+
+class Comment(BaseDocument):
+    collection_name = 'comments'
+    structure = {
+       'author': User,
+       'parent_type': IS(u'art', u'act', u'usr'), 
+       'parent_id': ObjectId, 
+       'text': unicode, 
+       'html': unicode,
+       'created_at': datetime.datetime,
+       'updated_at': datetime.datetime
+    }
+    required_fields = ['author', 'text']
+    default_values = {'created_at':datetime.datetime.utcnow}
+    
+class Volunteer(BaseDocument):
+    collection_name = 'volunteers'
+    structure = {
+        'user': User,
+        'activity': Activity,
+        'status': IS(u'approved', u'pending', u'rejected'),
+        'asked_at': datetime.datetime,
+        'status_updated_at': datetime.datetime 
+    } 
+    required_fields = ['user', 'activity']
+    default_values = {'status': u'pending', 'asked_at':datetime.datetime.utcnow}
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'
@@ -259,132 +428,6 @@ class BankAccount(BaseDocument):
 User.related_to = {
         'bank_accounts':{'class':BankAccount, 'target':'owner', 'autoref': True},
     }
-        
-class Article(BaseDocument):
-    collection_name = 'articles'
-    structure = {
-        'author': User,
-        'status': IS(u'published', u'draft', u'deleted'), 
-        'title': unicode,
-        'slug': unicode, 
-        'excerpt': unicode,
-        'content': unicode,
-        'content_html': unicode,
-        'enable_comment': bool,
-        'comment_count': int,
-        'tags': list,
-        'photos': list,
-        'created_at': datetime.datetime,
-        'updated_at': datetime.datetime
-    }
-    required_fields = ['author', 'title', 'content']
-    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
-    indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
-    
-    def save(self, data=None, user=None):
-        if not data:
-            super(Article,self).save(True, True)
-            return
-        
-        self.populate(data)
-        
-        new = False
-        if '_id' in self:
-            self.check_edit_permission(user)
-        else:
-            self['author'] = user
-            new = True
-            self.fill_slug_field(self['title'])
-        
-        super(Article, self).save(True, True)
-        if new:
-            User.collection.update({'username': user.username}, {'$inc': { 'article_count': 1}})
-        
-    def get_url(self):
-        return "/article/" + self['slug']
-
-class ArticleVote(BaseDocument):
-    pass    
-
-class Activity(BaseDocument):
-    collection_name = 'activities'
-    structure = {
-        'author': User,
-        'status': IS(u'published', u'draft', u'deleted'), 
-        'title': unicode,
-        'slug': unicode,
-        'excerpt': unicode,
-        'date_start': datetime.datetime,
-        'date_end': datetime.datetime, 
-        'content': unicode,
-        'content_html': unicode,
-        'deliverable': unicode,
-        'deliverable_html': unicode,
-        'location': {'lat': float, 'lang': float},
-        'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
-        'tags': list,
-        'photos': list,
-        'checked_by': list,
-        'links': list,
-        'enable_comment': bool,
-        'need_volunteer': bool,
-        'need_donation': bool,
-        'donation_amount_needed': int,
-        'donation_amount': float,
-        'comment_count': int,
-        'created_at': datetime.datetime
-    }
-    required_fields = ['author', 'status', 'title', 'content']
-    default_values = {'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
-    indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
-    
-    def get_url(self):
-        return "/activity/" + self['slug']
-    
-    def save(self, data=None, user=None):
-        if not data:
-            super(Activity,self).save(True, True)
-            return
-        
-        self.populate(data)
-        
-        new = False
-        if '_id' in self:
-            self.check_edit_permission(user)
-        else:
-            self['author'] = user
-            new = True
-            self.fill_slug_field(self['title'])
-        
-        super(Activity, self).save(True, True)
-        if new:
-            User.collection.update({'username': user.username}, {'$inc': { 'activity_count': 1}})
-
-class Comment(BaseDocument):
-    collection_name = 'comments'
-    structure = {
-       'author': User,
-       'parent_type': IS(u'art', u'act', u'usr'), 
-       'parent_id': ObjectId, 
-       'text': unicode, 
-       'html': unicode,
-       'created_at': datetime.datetime,
-       'updated_at': datetime.datetime
-    }
-    required_fields = ['author', 'text']
-    default_values = {'created_at':datetime.datetime.utcnow}
-    
-class Volunteer(BaseDocument):
-    collection_name = 'volunteers'
-    structure = {
-        'user': User,
-        'activity': Activity,
-        'status': IS(u'approved', u'pending', u'rejected'),
-        'asked_at': datetime.datetime,
-        'status_updated_at': datetime.datetime 
-    } 
-    required_fields = ['user', 'activity']
-    default_values = {'status': u'pending', 'asked_at':datetime.datetime.utcnow}
     
 class Donation(BaseDocument):
     collection_name = 'donations'
@@ -403,21 +446,3 @@ class Donation(BaseDocument):
     required_fields = ['from', 'to', 'transfer_no', 'amount']
     default_values = {'is_validated': False, 'created_at':datetime.datetime.utcnow}
     validators = { "amount": lambda x: x > 0}
-
-class Page(BaseDocument):
-    collection_name = 'pages'
-    structure = {
-        'author': User,
-        'title': unicode,
-        'slug': unicode,
-        'content': unicode,
-        'content_html': unicode,
-        'created_at': datetime.datetime,
-        'updated_at': datetime.datetime
-    }
-    required_fields = ['title', 'content']
-    default_values = {'created_at':datetime.datetime.utcnow}
-    
-    def get_url(self):
-        return "/page/" + self['slug']
-

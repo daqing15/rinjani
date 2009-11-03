@@ -8,14 +8,18 @@
 
 {% block body %}
 
+{% set title = 'edit page' if slug else 'new page' %}
 <form method="post" action="{{BP}}/page/edit">
 
-{% set title = 'edit page' if slug else 'new page' %}
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new page', title) }}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'page', title) }}
 
-<div class="form-area">
-	{{ f.render_css() }}
-	<div><input class="button" name="submit" type="submit" value="{{_('Save')}}"/></div>
+{{ f.rendernote(f.note) }}
+
+    {{ modules.FormfieldInColumns(f.title, f.slug) }}
+    {{ modules.Formfield(f.content) }}
+    
+<div class="actionbar">
+<input class="button" name="submit" type="submit" value="{{_('Save')}}"/>
 </div>
 
 {{ xsrf_form_html() }}

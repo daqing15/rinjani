@@ -16,10 +16,9 @@
 </div>
 
 <script type="text/javascript">
-$("#activity-hilite").tabs("#activity-hilite div", { 
-    tabs: 'img',  
-    effect: 'horizontal' 
-});
+$(function() {
+  $("#activity-hilite").tabs("#activity-hilite div", {tabs: 'img', effect: 'horizontal'});
+})
 </script>
 
 {{ modules.ArticleLatest(limit=5) }}

@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% set title = 'edit article' if slug else 'new article' %}
+{% set title = 'edit article' if article.slug else 'new article' %}
 {{ title.title() }}{% end %}
 
 {% block head %}
 {{ modules.Static('markitup') }}
-<script type="text/javascript" src="{{ static_url('jquery.metadata.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.multifile.pack.js') }}"></script>
+{% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
 {% end %}
 
 {% block body %}
-{% set title = 'edit article' if slug else 'new article' %}
-<form action="{{BP}}/article/edit" method="post" enctype="multipart/form-data" class="withtips">
-
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'new article', title) }}
 
 {{ f.rendernote(f.note) }}
+
+<form action="{{BP}}/article/edit" method="post" class="withtips">
+
+{% set title = 'edit article' if article.slug else 'new article' %}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'article', title) }}
 
 <div class="line tabWrapper">
 	<div class="unit size1of5">
@@ -24,7 +28,6 @@
 		<ul class="tabs"> 
 		    <li><a href="#fi">{{_('Information')}}</a></li> 
 		    <li><a href="#fc">{{_('Content')}}</a></li>
-		    <li><a href="#fc">{{_('Photos')}}</a></li> 
 		</ul> 
 	</div>
 	<div class="lastUnit size4of5">
@@ -40,46 +43,107 @@
 			</div>
 			<div class="pane">
 				{{ modules.Formfield(f.content) }}
-			</div>
-			<div class="pane">
-                {% if article %}
-                    {{ modules.PhotoThumbnails(article.photos)}}
-                {% end %}
                 
                 <div class="line">
-                    <div class="unit size1of2">
-                        {{ modules.Formfield(f.photo) }}
+                    <div class="unit size2of3 photos">
+                        <div class="line thumbs">
+                            <!-- 
+                            <div class="thumb tt" title="click to insert">
+                                <a href="#" onclick="R.insertAtCaret('#content', '\{\{photo 1 title=\'Photo Title Here\'}\}\n')">
+                                <img title="Click to insert" src="/static/uploads/tmp/t.s.apito-fafc3161759961d6e1b980d1049e8da6a0142ee8.png" />
+                                <span>1</span>
+                                </a>
+                            </div> -->
+                        </div>
+                        <div class="line uploader">
+                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                            <div id="loading" style="display:none">uploading...</div>
+                        </div>
                     </div>
-                    <div class="lastUnit size1of2">
+                    <div class="lastUnit size1of3">
                         <div class="mod highlight">
                             <div class="inner">
                                 <div class="bd">
                                     <p>TIPS:</p>
-                                    <ul>
-                                        <li>tips #1 blah blah</li>
-                                        <li>tips #2 lorem ipsum</li>
-                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-			    
-            </div>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
+<div class="actionbar">
+<input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
+{% if article.slug %}
+<input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
+<input class="button" name="remove" type="button" onclick="if (confirm('Hapus?')) { alert('apused');}" value="{{_('Hapus')}}"/>
+{% else %}
+<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
+<input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
+{% end %}
+</div>
+
+<input type="hidden" name="attachments" value="{{ "$".join(["%s#%s" % a for a in article.attachments]) }}" />
+<input type="hidden" name="attachment_counter" value="{{len(article.attachments)}}" />
 
 {{ xsrf_form_html() }}
 
-{% if slug %}
+{% if article.slug %}
 <input type="hidden" name="is_edit" value="1" />
-<input type="hidden" name="slug" value="{{slug}}" />				
+<input type="hidden" name="slug" value="{{article.slug}}" />				
 {% end %}
 
 </form>
 
+<script type="text/javascript">
+$(function() {
+    $_counter = $('input[name=attachment_counter]');
+    $_attachments = $(':input[name=attachments]');
+    $_attachments.attachments();
+    
+	settings = {
+        action: '/upload',
+        name: 'doc',
+        responseType: 'json',
+        errorInvalidType: '{{ _("Please select only photo or PDF file")}}',
+        data: {
+            _xsrf: getCookie('_xsrf'),
+            type: 'article',
+            is_new_doc: {{ int(not bool(article.slug)) }},
+            slug: '{{ slug if article.slug else '' }}',
+            name: 'doc', 
+        }, 
+        onSubmit: function(file , ext){
+            if (!ext || !/^(jpg|png|jpeg|gif|pdf)$/.test(ext)){
+                alert(this._settings.errorInvalidType);
+                return false;
+            }
+            settings.data.attachments = $_attachments.val()
+            settings.data.attachment_counter = $_counter.val()
+            $('#loading').show();
+            this.disable();       
+        },
+        onComplete: function(file, res) {
+            if (res.status == 'OK') {
+                   $('.thumbs').append($(res.response.html));
+                   $('input[name=attachments]').val(res.response.attachments)
+                   $('input[name=attachment_counter]').val(res.response.counter)
+            } else {
+                R.flash("Uploading failed. Please contact administrator");
+            }
+            $('#loading').hide();
+            this.enable();
+        }
+    },
+    new AjaxUpload('#upload-button', settings);
+});
+</script>
+
+<noscript>
+<div id="nojs">You need to enable javascript support in your browser if you want to write Article/Activity.</div>
+</noscript>
 {% end %}
 

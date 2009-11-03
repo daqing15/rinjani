@@ -1,12 +1,15 @@
-put these libraries in lib/:
+install these apps: 
+    nginx
+    mongodb
+    rabbitmq
 
-markdown2.py    # markdown2 
-mongokit/       # wrapper for pymongo
-t.o.rnado/      # t.o.rnado web server + framework
-web/            # web.py framework. i use it form component.
-beaker/         # beaker caching lib
-scrappy/        # will be used for last-resort data migration
-
-also, install mongodb (statically compiled ver available), pymongo (c-opt), 
-and python-simplejson.
-
+install these or put into lib/ :
+    markdown2 
+    pymongo 
+    mongokit 
+    tornado 
+    web
+    python-json/python-simplejson
+    py-amqplib
+    python-magic
+    python-imaging

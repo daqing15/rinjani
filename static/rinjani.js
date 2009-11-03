@@ -3,21 +3,6 @@ function getCookie(name) {
     return r ? r[1] : undefined;
 }
 
-jQuery.postJSON = function(url, args, callback) {
-    args._xsrf = getCookie("_xsrf");
-    $.ajax(
-        {
-            url: url, 
-            data: $.param(args), 
-            dataType: "json", 
-            type: "POST",
-            success: function(response) {
-                //callback(eval("(" + response + ")"));
-                alert('ok');
-            }
-        });
-};
-
 var Rinjani = {
 	/* flash container enhanced? */
   _flash_container_enhanced : false,
@@ -80,7 +65,7 @@ var Rinjani = {
     var errors = $('ul.errors', element).hide().fadeIn();
   },
   
-  add_tag: function(tag, el) {
+  addTag: function(tag, el) {
 		tag_el = el || $('input[name=tags]').get(0);
         var value = tag_el.value;
         var usedTags = new Array;
@@ -97,70 +82,140 @@ var Rinjani = {
         usedTags.push(tag);
         tag_el.value = usedTags.join(', ');
         tag_el.focus(1);
+	},
+	
+	setupDropdownMenu: function() {
+		$(".dd_menu img.arrow").hover(function(){
+	        $(".head_menu").removeClass('active');
+	        submenu = $(this).parent().parent().find(".sub_menu");
+	        if(submenu.css('display')=="block") {
+	            $(this).parent().removeClass("active");
+	            submenu.hide();
+	            $(this).attr('src','/static/css/img/arrow_hover.png');
+	        }else {
+	            $(this).parent().addClass("active");
+	            submenu.fadeIn();
+	            $(this).attr('src','/static/css/img/arrow_select.png');
+	        }
+	        $(".sub_menu:visible").not(submenu).hide();
+	        $(".dd_menu img.arrow").not(this).attr('src','/static/css/img/arrow.png');
+	    })
+	    .mouseover(function(){
+	        $(this).attr('src','/static/css/img/arrow_hover.png');
+	    })
+	    .mouseout(function(){
+	        if($(this).parent().parent().find("div.sub_menu").css('display')!="block"){
+	            $(this).attr('src','/static/css/img/arrow.png');
+	        }else{
+	            $(this).attr('src','/static/css/img/arrow_select.png');
+	        }
+	    });
+	    
+	    $(".dd_menu .head_menu").mouseover(function(){ $(this).addClass('over'); })
+	    .mouseout(function(){ $(this).removeClass('over'); });
+	    
+	    $(".dd_menu .sub_menu").mouseover(function(){ $(this).fadeIn(); })
+	    .blur(function(){
+	        $(this).hide();
+	        $(".head_menu").removeClass('active');
+	    });
+	    
+	    $(document).click(function(event){
+	        var target = $(event.target);
+	        if (target.parents(".dd_menu").length == 0) {
+	            $(".dd_menu .head_menu").removeClass('active');
+	            $(".dd_menu .sub_menu").hide();
+	            $(".dd_menu img.arrow").attr('src','/static/css/img/arrow.png');
+	        }
+	    });
+	},
+	
+	insertAtCaret: function (target, s) {
+		// mod from http://www.mail-archive.com/jquery-en@googlegroups.com/msg08708.html
+		t = $(target).get(0);
+	    //IE support
+	    if (document.selection) {
+	        t.focus();
+	        sel = document.selection.createRange();
+	        sel.text = s;
+	        t.focus();
+	    }
+	    //MOZILLA/NETSCAPE support
+	    else if (this.selectionStart || this.selectionStart == '0') {
+	        var startPos = this.selectionStart;
+	        var endPos = this.selectionEnd;
+	        var scrollTop = this.scrollTop;
+	        t.value = t.value.substring(0, startPos)
+	              + s
+	              + t.value.substring(endPos, t.value.length);
+	        t.focus();
+	        t.selectionStart = startPos + s.length;
+	        t.selectionEnd = startPos + s.length;
+	        t.scrollTop = scrollTop;
+	    } else {
+	        t.value += s;
+	        t.focus();
+	    }
 	}
-  
 };
 
+$.fn.attachments = function(options) {
+	var opts = $.extend($.fn.attachments.defaults, options);
+    opts.parser = opts.parser? opts.parser : $.fn.attachments.fieldParser;
+    if (!opts.template) return; 
+
+	return this.filter(':input').each(function() {
+        if ($(this).val() == '') return;
+		var s = $(this).val().split(opts.separator);
+        
+	    attachments = [];
+	    if (s.length) {               
+	        $.each(s, function(i, val) {
+	            val = val.split(opts.field_separator);
+	            attachment = opts.parser(val);
+	            attachments.push(attachment);
+	        });
+	    }
+	    $.each(attachments, function(i, val) {
+	    	$(opts.target).append(opts.template, val);
+	    });
+	});
+};
+
+$.fn.attachments.fieldParser = function(val) {
+    return {no: val[0], src: val[1], title: val[2]};
+};
+
+$.fn.attachments.defaults = { 
+  template: null,
+  target: '.attachments',
+  separator: '$',
+  field_separator: '#',
+  parser: null
+};
+
+if ($.fn.template) {
+	var attachmentTemplate = $.template("<div class='thumb tt' title='${title}'><a href='#' onclick='R.insertAtCaret(\"#content\", \"{{attachment ${no} caption=\\\"Edit the caption\\\"}}\n\")'><img title='Click to insert ${title}' src='${src}' /><span>${no}</span></a></div>");
+	$.fn.attachments.defaults.template = attachmentTemplate;
+}
+
+var R = Rinjani;
+
 $(function() {
+	R.fadeInFlashMessages();
+    R.setupDropdownMenu();
+    
 	$('#hsearch input[type=text]').each(function() {
         var hint = $(this).val();
         $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
     });
 
-    /* the ajax setup */
+    // the ajax setup
     $.ajaxSetup({
         error: function() {
         Rinjani.flash('Could not contact server. Connection problems?');
         }
     });
-  
-    /* flash messages get a close button and are nicely faded in */
-    Rinjani.fadeInFlashMessages();
-  
-    $(".dd_menu img.arrow").hover(function(){
-        $(".head_menu").removeClass('active');
-        submenu = $(this).parent().parent().find(".sub_menu");
-        if(submenu.css('display')=="block") {
-            $(this).parent().removeClass("active");
-            submenu.hide();
-            $(this).attr('src','/static/css/img/arrow_hover.png');
-        }else {
-            $(this).parent().addClass("active");
-            submenu.fadeIn();
-            $(this).attr('src','/static/css/img/arrow_select.png');
-        }
-        $(".sub_menu:visible").not(submenu).hide();
-        $(".dd_menu img.arrow").not(this).attr('src','/static/css/img/arrow.png');
-    })
-    .mouseover(function(){
-        $(this).attr('src','/static/css/img/arrow_hover.png');
-    })
-    .mouseout(function(){
-        if($(this).parent().parent().find("div.sub_menu").css('display')!="block"){
-            $(this).attr('src','/static/css/img/arrow.png');
-        }else{
-            $(this).attr('src','/static/css/img/arrow_select.png');
-        }
-    });
-    
-    $(".dd_menu .head_menu").mouseover(function(){ $(this).addClass('over'); })
-    .mouseout(function(){ $(this).removeClass('over'); });
-    
-    $(".dd_menu .sub_menu").mouseover(function(){ $(this).fadeIn(); })
-    .blur(function(){
-        $(this).hide();
-        $(".head_menu").removeClass('active');
-    });
-    
-    $(document).click(function(event){
-        var target = $(event.target);
-        if (target.parents(".dd_menu").length == 0) {
-            $(".dd_menu .head_menu").removeClass('active');
-            $(".dd_menu .sub_menu").hide();
-            $(".dd_menu img.arrow").attr('src','/static/css/img/arrow.png');
-        }
-    });
-    
     
     var dialog = $("a.dialog[rel]").overlay({ 
         expose: { 
@@ -179,27 +234,27 @@ $(function() {
     }); 
     
     // select all desired input fields and attach tooltips to them 
-	$("form.withtips :input[title]").tooltip({ 
+	$("form.withtips :input[title], .tt").tooltip({ 
 	    position: "center right", 
 	    offset: [0,-10], 
 	    effect: "fade", 
 	    tip: '.tooltip' 
 	});
 	
+	// setup rich text editor
 	if ($.markItUp) {
 	    mySettings = $.extend(mySettings || {}, {
 	        previewParserPath: window.BP + '/preview',
 	        previewPosition: 'after',
 	        previewAutoRefresh: false
 	        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
-	    } );
+	    });
 	    $('.rte').markItUp(mySettings);
 	    $('.rte').each(function() {
-		$(this).css('height', $(this).attr('rows') + 'em');
+	    	$(this).css('height', $(this).attr('rows') + 'em');
 	    });
 	}
 	
-	//$('#tags-ajax').tagSuggest({ url: 'tagging.php',delay: 250, separator: ', '});
     $("ul.tabs").tabs("div.panes > div"); 
     
 });

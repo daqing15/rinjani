@@ -4,7 +4,7 @@ from .main import BaseHandler, authenticated
 from models import User, BankAccount
 from pymongo.dbref import DBRef
 from utils.pagination import Pagination
-from utils import extract_input_array
+from utils.utils import extract_input_array
 from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
 import tornado.web
 from tornado.escape import json_decode
@@ -79,8 +79,8 @@ class NewUserHandler(BaseHandler):
                 
                 """
                 if data['auth_provider'] == 'facebook':
-                    from utils import fillin_fb_data
-                    fillin_fb_data(
+                    from utils import fill_fb_data
+                    data = fillin_fb_data(
                             self.settings['facebook_api_key'], 
                             self.settings['facebook_secret'],
                             ['pic_square', 'pic_smal', 'sex', 'website', 'birthday_date', 
