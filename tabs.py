@@ -7,18 +7,18 @@ dashboard_agent = ('Dashboard', [
 ])
 
 new_public = ('New', [
-    ('/article/new', 'new article')
+    ('/article/new', 'article')
 ])
 
 new_agent = new_sponsor = ('New', [
-    ('/article/new', 'new article'),
-    ('/activity/new', 'new activity'),    
+    ('/article/new', 'article'),
+    ('/activity/new', 'activity'),    
 ])
 
 new_admin = ('New', [
-    ('/article/new', 'new article'),
-    ('/activity/new', 'new activity'),    
-    ('/page/new', 'new page'),
+    ('/article/new', 'article'),
+    ('/activity/new', 'activity'),    
+    ('/page/new', 'page'),
 ])
 
 dashboard_public = ('Dashboard', [

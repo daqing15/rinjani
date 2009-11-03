@@ -1,2 +1,2 @@
 
-<a href="{{user.get_url()}}" class="img"><img src="{{BP}}/static/{{h.avatar(user)}}" alt="{{user.username}}" /></a>
+<a href="{{user.get_url()}}" class="img"><img src="{{BP}}/static/uploads/avatars/{{get(user.avatar, settings.avatar)}}" alt="{{user.username}}" /></a>

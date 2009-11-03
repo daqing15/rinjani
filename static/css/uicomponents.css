@@ -1,6 +1,6 @@
 
 .tabWrapper { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-ul.tabs { padding: 0; padding-bottom: 20px; }
+ul.tabs { padding: 0 0 10px 0; }
 ul.tabs a { 
 	font-size: 1em; 
 	display: block;

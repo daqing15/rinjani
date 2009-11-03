@@ -1,5 +1,6 @@
 import re
 import settings
+import sys
 
 """
 Code taken from django_inlines and slighly modified to be working 
@@ -13,7 +14,7 @@ INLINE_SPLITTER = re.compile(r"""
     """, re.VERBOSE)
 
 INLINE_KWARG_PARSER = re.compile(r"""
-    (?P<kwargs>(?:\s\b[a-z_]+=\w+\s?)+)?\Z # kwargs match everything at the end in groups " name=arg"
+    (?P<kwargs>(?:\s\b[a-z_]+=([\"\'][^\"\']+[\"\']|\w+))+)?\Z # kwargs match everything at the end in groups " name=arg"
     """, re.VERBOSE)
 
 class InlineUnrenderableError(Exception): pass
@@ -43,9 +44,17 @@ def parse_inline(text):
     if m.group('variant'):
         kwargs['variant'] = m.group('variant')
     if kwtxt:
+        """
         for kws in kwtxt.split():
             k, v = kws.split('=')
             kwargs[str(k)] = v
+            """
+        print "kwtxt:",kwtxt
+        patt = r"([a-z]+)=([\"\'][^\"\']+[\"\']|\w+)"
+        for k,v in re.findall(patt, kwtxt):
+            print "%s: %s" % (k,re.sub("[\'\"]",'', v))
+        #sys.exit()
+        
     return (name, value, kwargs)
 
 class InlineProcessor(object):
@@ -108,56 +117,56 @@ class YoutubeInline(TemplateInline):
 </object> 
 """       
     def render(self):
+        return "YOUTUBE"
         video_id = self.value
         match = re.search(r'(?<=v\=)[\w]+', video_id)
         if match:
             video_id = match.group()
+        print self.kwargs
         return "<embed youtube string here>"
 
-class VimeoInline(TemplateInline):
-    base_url = ""
-    code = """
-<object width='%(width)s' height='%(height)s' type='application/x-shockwave-flash' data='%(url)s'>
-<param name='allowfullscreen' value='true' />
-<param name='allowscriptaccess' value='always' />
-<param name='movie' value='%(url)s' />
-</object>
-"""        
 
-    def render(self):
-        video_id = self.value
-        match = re.search(r'(?<=v\=)[\w]+', video_id)
-        if match:
-            video_id = match.group()
-        return "<embed flickr string here>"
+class AttachmentInline(TemplateInline):
+    """
+        {{ attachment idx caption="the caption" url="http://example.com" }}
+    """
+    code = "<img src='/static/uploads/%(src)s' />"        
+    code_with_link = "<a href='%(url)s'>" + code + "</a>"
+    
+    def __init__(self, attachments):
+        self.attachments = attachments
         
-class FlickrInline(TemplateInline):
-    code = """
-<object width='%(width)s' height='%(height)s' type='application/x-shockwave-flash' data='%(url)s'>
-<param name='allowfullscreen' value='true' />
-<param name='allowscriptaccess' value='always' />
-<param name='movie' value='%(url)s' />
-</object>
-"""        
-
+    def __call__(self, value, **kwargs):
+        try:
+            self.value = int(value) - 1 
+            self.kwargs = kwargs
+        except: 
+            self.value = False
+        return self
+        
     def render(self):
-        video_id = self.value
-        match = re.search(r'(?<=v\=)[\w]+', video_id)
-        if match:
-            video_id = match.group()
-        return "<embed flickr string here>"
+        if self.value is False:
+            return ""
+        
+        code = self.code_with_link if self.kwargs.has_key('url') else self.code
+        
+        if self.attachments and self.value <= len(self.attachments):
+            try:
+                self.kwargs.update({'src':self.attachments[self.value]})
+                return code % self.kwargs
+            except: pass
+        return ""
          
 # The default registry.
 processor = InlineProcessor()
 processor.register('youtube', YoutubeInline)
-processor.register('flickr', FlickrInline)
+#processor.register('attachment', AttachmentInline(["xx.jpg"])) # call from model
 
 content = """
 Isinya
-{{ flickr x903xk width=400 }}
 
-Video:
-{{ youtube x903xk width=400 }}
+{{ photo 1 title="saya laper"}}
+
 """
 
 #print processor.process(content)

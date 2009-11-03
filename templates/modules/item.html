@@ -1,6 +1,6 @@
 
 <div class="line item-summary">
-      <div class="unit size1of4">
+      <div class="unit size2of7">
             <div class="media attribution">
                   {{ modules.Avatar(item.author) }}
                   <div class="bd">
@@ -12,13 +12,13 @@
                   </div>
               </div>      
       </div>
-      <div class="lastUnit size3of4">
+      <div class="lastUnit size5of7">
           <div class="mod bubble bubbleLeft lol"> 
               <b class="top"><b class="tl"></b><b class="tr"></b></b> 
               <div class="inner">
                   <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(item.title) }}</a></h3></div>
                   <div class="bd">
-                    {{ h.truncate_html_words(item.content_html, 20) }}
+                    <p>{{ get(item.excerpt, s.truncate_words(item.content, 20)) }}</p>
                   </div>
               </div>
               <b class="bottom"><b class="bl"></b><b class="br"></b></b> 

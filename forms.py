@@ -149,20 +149,20 @@ activity_form = MyForm(
     Textbox("title", form.notnull, size=43, description="Title"),
     Datefield("date_start", _class="date", size=12, description="Start"),
     Datefield("date_end", _class="date", size=12, description="End"),
-    Textarea("excerpt", rows=2, cols=40, description="Excerpt"),
+    Textarea("excerpt", rows=2, cols=40, description="Excerpt/Lead"),
     Textarea("content", form.notnull, _class="rte", rows=19, cols=50, description="Content"),
     Textarea("deliverable", _class="rte", rows=9, cols=40, description="Deliverable"),
     Checkbox("need_donation", value="1", description="Need donation"),
     Checkbox("need_volunteer", value="1", description="Need volunteer"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
-    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=53, description="Tags")
+    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=50, description="Tags")
  )
 
 article_form = MyForm(
-    Textbox("title", form.notnull, size=53, description="Title"),
-    Textarea("excerpt", form.notnull, rows=3, cols=60, description="Excerpt", title="Write it short and sweet. "),
-    Textarea("content", form.notnull, rows=18, cols=60, _class="rte", description="Article Content", title="You can enter some formatting blah blah"),
-    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=53, description="Tags", title="Separate with comma"),
+    Textbox("title", form.notnull, size=50, description="Title"),
+    Textarea("excerpt", form.notnull, rows=3, cols=60, description="Excerpt/Lead", title="Write it short and sweet. "),
+    Textarea("content", form.notnull, rows=12, cols=60, _class="rte", description="Article Content", title="You can enter some formatting blah blah"),
+    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=50, description="Tags", title="Separate with comma"),
     File("photo", _class="multi accept-gif|jpg|png max-3", description="Add Photo/Images. You can select up to 3 files.")
  )
 
@@ -171,9 +171,9 @@ commentbox_form = MyForm(
 )
 
 page_form = MyForm(
-    Textbox("title", form.notnull, size=53, description="Title"),
-    Textbox("slug", form.notnull, size=53, description="Slug - use alphabet and dash (-)"),
-    Textarea("content", form.notnull, rows=18, cols=50, _class="rte", description="Content"),
+    Textbox("title", form.notnull, size=45, description="Title"),
+    Textbox("slug", form.notnull, size=45, description="Slug - use alphabet, numbers, and dash (-)"),
+    Textarea("content", form.notnull, rows=15, cols=50, _class="rte", description="Content"),
 )
 
 account_form = MyForm(
@@ -197,9 +197,9 @@ profile_form = MyForm(
 )
 
 profile_public_form = MyForm(
-    Textbox("first_name", form.notnull, size=53, description="First Name"),
-    Textbox("last_name", form.notnull, size=53, description="Last Name"),
-    Textbox("dateofbirth", size=53, description="Date of Birth"),
+    Textbox("first_name", form.notnull, size=50, description="First Name"),
+    Textbox("last_name", form.notnull, size=50, description="Last Name"),
+    Textbox("dateofbirth", size=50, description="Date of Birth"),
     Textarea("about", form.notnull, rows=3, cols=50, description="Short description about you"),
 )
 
