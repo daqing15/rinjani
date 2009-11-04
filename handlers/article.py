@@ -1,11 +1,18 @@
 import tornado.web
 import logging
+import os
+import shutil
+import datetime
+
 from web.utils import Storage
 
 from main import BaseHandler, authenticated
 from forms import article_form, CONTENT_TAGS_COLLECTION
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
+from utils.utils import sanitize_path
+from utils.time import striso_to_date
+
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
@@ -15,8 +22,12 @@ class ListHandler(BaseHandler):
         self.render('articles', pagination=pagination)
 
 class ViewHandler(BaseHandler):
-    def get(self, slug):
-        article = Article.one({"slug": slug})
+    def get(self, dt, slug):
+        logging.error(dt)
+        date = striso_to_date(dt)
+        one_day = datetime.timedelta(days=1)
+        
+        article = Article.one({"slug": slug, "created_at": {'$gte': date, '$lte': date + one_day}})
         if not article:
             raise tornado.web.HTTPError(404)
         self.render("article", article=article)
@@ -57,8 +68,12 @@ class EditHandler(BaseHandler):
                 article = Article.one({'slug': data['slug']}) if is_edit else Article()
                 article.save(data, user=self.current_user)
                 
-                if attachments:
-                    self.move_attachments(data['attachments'])
+                if attachments and not is_edit:
+                    # ganti sama $push nih
+                    article['attachments'] = self.move_attachments(data['attachments'])
+                    logging.warning("Moving attachments")
+                    article.update_html()
+                    article.save()
                     
                 self.set_flash("Article has been saved.")
                 self.redirect(article.get_url())
@@ -75,34 +90,34 @@ class EditHandler(BaseHandler):
             self.render("article-edit", f=f, article=article, suggested_tags=CONTENT_TAGS_COLLECTION)
     
     def move_attachments(self, attachments):
-        import shutil, os
-        
         def get_path(path):
             basepath = self.settings.upload_path
-            path = os.path.join(basepath, path)
-            dest_path = os.path.join(basepath, path.lstrip("tmp/"))
-            return (path, dest_path)
-            
-        for a in attachments:
+            src = os.path.join(basepath, sanitize_path(path, "tmp"))
+            dest = os.path.join(basepath, sanitize_path(path))
+            logging.warning("Moving from %s to %s" % (src, dest))
+            return (src, dest)
+        
+        for i, a in enumerate(attachments):
             if a['src'][0:4] == "tmp/":
                 shutil.move(*get_path(a['src']))
                 shutil.move(*get_path(a['thumb_src']))
-            
+                a['src'] = a['src'].lstrip("tmp/")
+                a['thumb_src'] = a['thumb_src'].lstrip("tmp/")
+                attachments[i] = a
+        return attachments
     
     def parse_attachments(self, _attachments, is_edit=False):
         separator = "$"
         field_separator = "#"
+        
         attachments = []
-        
-        from utils.utils import sanitize_path
-        
         for a in _attachments.split(separator):
             a = a.split(field_separator)
-            # no#filetype#src#thumb_src#filename
+            # filetype#src#thumb_src#filename
             prefix = 'tmp' if not is_edit else ''
-            src = sanitize_path(a[2], prefix)
-            thumb_src = sanitize_path(a[3], prefix)
-            attachment = dict(no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4])
+            src = sanitize_path(a[1], prefix)
+            thumb_src = sanitize_path(a[2], prefix)
+            attachment = dict(type=a[0], src=src, thumb_src=thumb_src, filename=a[3])
             attachments.append(attachment)
         
         return attachments

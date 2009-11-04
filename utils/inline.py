@@ -128,6 +128,7 @@ class AttachmentInline(TemplateInline):
     code_image = "<img src='/static/uploads/%(src)s' />"        
     code = "<a target='_blank' href='/static/uploads/%(src)s'><img src='/static/img/attachment.png' /></a>"
     image_content_types = ['image/jpeg', 'image/png', 'image/gif']
+    wrapper = "<div class='attachment'>%(code)s<p class='caption'>%(caption)s</p></div>"
     
     def __init__(self, attachments):
         self.attachments = attachments
@@ -143,24 +144,21 @@ class AttachmentInline(TemplateInline):
     def render(self):
         if not self.value:
             return ""
-        no = int(self.value)
         
         import logging
-        logging.warning("===================")
-        logging.error(self.attachments)
-        logging.error(no)
+        from utils import get_attachment_with_filename
         
         if self.attachments:
             try:
-                for a in self.attachments:
-                    if a['no'] == no:
-                        logging.warning("--------DAPET----------")
-                        self.kwargs.update({'src':a['src']})
-                        if a['type'] in self.image_content_types:
-                            return self.code_image % self.kwargs
-                        return self.code % self.kwargs
-                    else:
-                        logging.warning("--------GAK DAPET----------")
+                attachment = get_attachment_with_filename(self.value, self.attachments)
+                if attachment:
+                    self.kwargs.update({'src':attachment['src']})
+                    if attachment['type'] in self.image_content_types:
+                        code = self.code_image % self.kwargs
+                        if self.kwargs.has_key('caption'):
+                            return self.wrapper % {'code': code, 'caption': self.kwargs['caption'].strip("'")}
+                        return code
+                    return self.code % self.kwargs
             except: 
                 raise
         return ""

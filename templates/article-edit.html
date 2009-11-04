@@ -15,6 +15,10 @@
 
 {% block body %}
 
+<noscript>
+<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
+</noscript>
+
 {{ f.rendernote(f.note) }}
 <form action="{{BP}}/article/edit" method="post" class="withtips">
 
@@ -79,7 +83,7 @@
 {% end %}
 </div>
             <!--  (no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4]) -->
-<input type="hidden" name="attachments" value="{{ "$".join(["%(no)d#%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in article.attachments]) }}" />
+<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in article.attachments]) }}" />
 <input type="hidden" name="attachment_counter" value="{{len(article.attachments)}}" />
 
 {{ xsrf_form_html() }}
@@ -92,50 +96,13 @@
 </form>
 
 <script type="text/javascript">
-$(function() {
-    $_counter = $('input[name=attachment_counter]');
-    $_attachments = $(':input[name=attachments]');
-    
-	settings = {
-        action: '/upload',
-        name: 'doc',
-        responseType: 'json',
-        errorInvalidType: '{{ _("Please select only photo or PDF file")}}',
-        data: {
-            _xsrf: getCookie('_xsrf'),
-            type: 'article',
-            is_new_doc: {{ int(not bool(article.slug)) }},
-            slug: '{{ article.slug if article.slug else '' }}',
-            name: 'doc', 
-        }, 
-        onSubmit: function(file , ext){
-            if (!ext || !/^(jpg|png|jpeg|gif|pdf)$/.test(ext)){
-                alert(this._settings.errorInvalidType);
-                return false;
-            }
-            settings.data.attachments = $_attachments.val()
-            settings.data.attachment_counter = $_counter.val()
-            $('#loading').show();
-            this.disable();       
-        },
-        onComplete: function(file, res) {
-            if (res.status == 'OK') {
-                   $('.attachments').append($(res.response.html));
-                   $('input[name=attachments]').val(res.response.attachments)
-                   $('input[name=attachment_counter]').val(res.response.counter)
-            } else {
-                R.flash("Uploading failed. Please contact administrator");
-            }
-            $('#loading').hide();
-            this.enable();
-        }
-    },
-    new AjaxUpload('#upload-button', settings);
-});
+$counter = $('input[name=attachment_counter]');
+$attachments = $(':input[name=attachments]');
+content_type = 'article';
+is_new_doc = {{ int(not bool(article.slug)) }};
+slug = '{{ article.slug if article.slug else '' }}';
 </script>
-<noscript>
-<div id="nojs">You need to enable javascript support in your browser if you want to write Article/Activity.</div>
-</noscript>
+
 {% end %}
 
 {% block postinlinejs %}

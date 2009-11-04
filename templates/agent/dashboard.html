@@ -4,7 +4,20 @@
 
 {{ modules.Tabs('dashboard_agent', 'dashboard') }}
 
-{{ modules.ProfileStreams(current_user) }}
+<div class="line">
+    <div class="unit size2of3">
+        {{ modules.ProfileStreams(current_user) }}
+    </div>
+    
+    <div class="lastUnit size1of3">
+        <div class="mod simple">
+            <div class="inner">
+                <div class="hd"><h3>Draft items</h3></div>
+                <div class="bd"><p>Hehehe</p></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% end %}
 

@@ -2,7 +2,8 @@
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
     (r"/l/(\w+)", 'handlers.main.LocaleHandler'),
-    (r"/upload", 'handlers.upload.UploadHandler'),
+    (r"/attachment/add", 'handlers.attachment.AddHandler'),
+    (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
     
     (r"/donation/confirm/([A-Za-z0-9\-]+)", 'handlers.donation.ConfirmHandler'),
     
@@ -31,7 +32,7 @@ url_handlers = [
     (r"/article/edit/([A-Za-z0-9\-]+)", 'handlers.article.EditHandler'),
     (r"/article/edit", 'handlers.article.EditHandler'),
     (r"/article/remove/([A-Za-z0-9\-]+)", 'handlers.article.RemoveHandler'),
-    (r"/article/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
+    (r"/article/([0-9]{4}/[0-9]{1,2}/[0-9]{1,2})/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
     
     (r"/page/new", 'handlers.page.EditHandler'),
     (r"/page/edit/([A-Za-z0-9\-]+)", 'handlers.page.EditHandler'),

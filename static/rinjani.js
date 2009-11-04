@@ -4,6 +4,42 @@ function getCookie(name) {
 }
 
 var Rinjani = {
+  
+  /* Solace. helper for dynamicSubmit and request */
+  _standardRemoteCallback : function(func) {
+    return function(response) {
+      if (response.status != 'OK') {
+        /* if a login could fix that error, we simply redirect
+           to the login page.  That sucks, it would be better
+           if we would display a login overlay. */
+        if (response.login_could_fix)
+          document.location.href = Rinjani.URL_ROOT + 'login?next='
+            + encodeURIComponent(document.location.href);
+        else if (response.message)
+          Rinjani.flash(response.message, true);
+      } else {
+        if (response.message)
+          Rinjani.flash(response.message);
+        if (func)
+          func(response);
+      }
+    };
+  },
+  
+  /* Solace. sends a request to a URL with optional data and
+  evaluates the result.  You can only send requests
+  to the own server that way and the endpoint has to
+  return a valid json_response(). */
+  request: function(url, data, method, callback) {
+    data = $.extend({_xsrf:getCookie('_xsrf')}, data);
+    $.ajax({
+      url:      url,
+      type:     method || 'GET',
+      data:     data,
+      dataType: 'json',
+      success:  Rinjani._standardRemoteCallback(callback)
+    });
+  },
 	/* flash container enhanced? */
   _flash_container_enhanced : false,
 
@@ -51,21 +87,13 @@ var Rinjani = {
       this.form.submit();
     });
   },
+   
+	/* fades in errors */
+	highlightErrors : function(element) { 
+	    var errors = $('ul.errors', element).hide().fadeIn();
+	},
   
-  /* Parse an iso8601 date into a date object */
-  parseISO8601 : function(string) {
-    return new Date(string
-      .replace(/(?:Z|([+-])(\d{2}):(\d{2}))$/, ' GMT$1$2$3')
-      .replace(/^(\d{4})-(\d{2})-(\d{2})T?/, '$1/$2/$3 ')
-    );
-  },
-  
-  /* fades in errors */
-  highlightErrors : function(element) { 
-    var errors = $('ul.errors', element).hide().fadeIn();
-  },
-  
-  addTag: function(tag, el) {
+  	addTag: function(tag, el) {
 		tag_el = el || $('input[name=tags]').get(0);
         var value = tag_el.value;
         var usedTags = new Array;
@@ -156,79 +184,37 @@ var Rinjani = {
 	        t.value += s;
 	        t.focus();
 	    }
+	},
+	remove_attachment: function(el, filename) {
+		target = '/attachment/remove/';
 	}
 };
 
-$.fn.attachments = function(options) {
-	var opts = $.extend($.fn.attachments.defaults, options);
-    opts.parser = opts.parser? opts.parser : $.fn.attachments.fieldParser;
-    if (!opts.template) return; 
-	
-    return this.filter(':input').each(function() {
-        if ($(this).val() == '') return;
-		var s = $(this).val().split(opts.separator);
-	    attachments = [];
-	    if (s.length) {               
-	        $.each(s, function(i, val) {
-	            val = val.split(opts.field_separator);
-	            attachment = opts.parser(val);
-	            attachments.push(attachment);
-	        });
-	    }
-	    $.each(attachments, function(i, val) {
-	    	$(opts.target).append(opts.template, val);
-	    });
-	});
-};
-
-$.fn.attachments.fieldParser = function(val) {
-	// (no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4])
-	// doh, ini gmn mimetype supaya bs masuk setting ya
-	var src = "/static/img/attachment.png";
-	if (val[1] != 'application/pdf') {
-		src = "/static/uploads/" + val[3];
-	}
-    return {no: val[0], src: src, title: val[4]};
-};
-
-$.fn.attachments.insertTo = function(no) {
-	// uh no
-	opts = $.fn.attachments.defaults;
-	txt = "\n{{ attachment " + no + " caption='" + opts.default_caption + "'}}\n";
-	R.insertAtCaret(opts.textarea, txt);
-};
-
-// oh, well
-var insert_to_rte = $.fn.attachments.insertTo;
-
-$.fn.attachments.defaults = { 
-  template: null,
-  textarea: '#content',
-  default_caption: 'Change Me',
-  target: '.attachments',
-  separator: '$',
-  field_separator: '#',
-  parser: null
-};
 
 var R = Rinjani;
 
 $(function() {
-	R.fadeInFlashMessages();
+    // the ajax setup
+    $.ajaxSetup({
+        error: function() {
+        	Rinjani.flash('Could not contact server. Connection problems?');
+        }
+    });
+    $('#loading').ajaxStart(function() {
+    	$(this).show();
+    });
+    $('#loading').ajaxStop(function() {
+    	$(this).hide();
+    });
+    
+    R.fadeInFlashMessages();
     R.setupDropdownMenu();
     
 	$('#hsearch input[type=text]').each(function() {
         var hint = $(this).val();
         $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
     });
-
-    // the ajax setup
-    $.ajaxSetup({
-        error: function() {
-        Rinjani.flash('Could not contact server. Connection problems?');
-        }
-    });
-    
+	
     var dialog = $("a.dialog[rel]").overlay({ 
         expose: { 
             color: '#000', 

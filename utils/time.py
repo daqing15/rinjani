@@ -1,5 +1,11 @@
 from datetime import datetime
 
+def date_to_striso(dt, sep='/'):
+    return sep.join(dt.isoformat()[0:10].split('-'))
+
+def striso_to_date(s, sep="/"):
+    return datetime(*[int(z) for z in s.split(sep)])
+
 def timesince(time=False, now=False):
     """
     Get a datetime object or a int() Epoch timestamp and return a

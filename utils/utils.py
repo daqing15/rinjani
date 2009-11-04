@@ -8,7 +8,12 @@ def sanitize_path(path, real_prefix=None):
     if real_prefix:
         return os.path.join(real_prefix, path)
     return path
-    
+
+def get_attachment_with_filename(filename, attachments):
+    for a in attachments:
+        if a['filename'] == filename:
+            return a
+            
 def unique_filename(parts):
     uf = "-".join(parts)
     return "%s-%s" % (parts[0], hashlib.sha1(uf).hexdigest())
@@ -24,7 +29,7 @@ def fit_bounding_box(box_width, box_height, width, height):
     height_scale = float(box_height) / float (height)
     
     # max() -> fill aspect, min() -> fit aspect 
-    scale = max(width_scale, height_scale)
+    scale = min(width_scale, height_scale)
     return (int(width * scale), int(height * scale))
 
 def create_thumbnails(path, sizes):
@@ -47,12 +52,15 @@ def create_thumbnails(path, sizes):
         
         if size[0] > bw or size[1] > bh:
             if crop:
-                new_image = ImageOps.fit(img, (bw, bh))
+                new_image = ImageOps.fit(img, (bw, bh), Image.ANTIALIAS)
             else:
                 w, h = fit_bounding_box(bw, bh, size[0], size[1])
-                new_image = img.resize((w, h), Image.BICUBIC)
-            
-            new_path = path_without_ext + "%s." % suffix + ext
+                logging.warning("No cropping, using fit: %s x %s" % (w, h))
+                new_image = img.resize((w, h), Image.ANTIALIAS)
+            if suffix:
+                new_path = path_without_ext + "%s." % suffix + ext
+            else:
+                new_path = path_without_ext + ext
             logging.error("Saving new resized image: " + new_path)
             new_image.save(new_path)
 

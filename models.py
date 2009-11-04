@@ -4,6 +4,7 @@ import markdown2
 from mongokit import DBRef, MongoDocument, IS, ObjectId, SchemaTypeError
 from settings import app_settings
 from utils.string import force_unicode, listify, sanitize
+from utils.time import date_to_striso, striso_to_date
 
 class EditDisallowedError(Exception): pass
 
@@ -80,11 +81,13 @@ class BaseDocument(MongoDocument):
                 if t is bool and not k in data:
                     # self.__generate_skeleton None-ing bool field. change to bool
                     self[k] = False
+        self.update_html(data)
             
+    def update_html(self, data=None):
         for k, t in self.structure.iteritems():     
             if t is unicode and k.endswith('_html'):
                 src = k.replace('_html', '')
-                if src in data and self[src]:
+                if self[src] and (not data or (data and src in data)):
                     s = self.process_inline(src, self[src])
                     self[k] = markdown2.markdown(s)
     
@@ -194,8 +197,6 @@ class User(BaseDocument):
         fields.append('_id')
         for field in fields:
             prev.append(_prev[field])
-        logging.warning(prev)
-        logging.warning(current)
         return prev != current
     
     @classmethod
@@ -226,8 +227,7 @@ class Article(BaseDocument):
         'enable_comment': bool,
         'comment_count': int,
         'tags': list,
-        'attachments': [{'no': int, 'type':unicode, \
-                         'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
+        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
@@ -272,7 +272,7 @@ class Article(BaseDocument):
         return processor.process(src)
     
     def get_url(self):
-        return "/article/" + self['slug']
+        return "/article/" + date_to_striso(self.created_at) + "/" + self.slug
     
 class ArticleVote(BaseDocument):
     pass    
@@ -294,8 +294,7 @@ class Activity(BaseDocument):
         'location': {'lat': float, 'lang': float},
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
         'tags': list,
-        'attachments': [{'no': int, 'type':unicode, \
-                         'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
+        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'checked_by': list,
         'links': list,
         'enable_comment': bool,
@@ -312,7 +311,7 @@ class Activity(BaseDocument):
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def get_url(self):
-        return "/activity/" + self['slug']
+        return "/activity/" + date_to_striso(self.created_at) + "/" + self.slug
     
     def save(self, data=None, user=None):
         if not data:

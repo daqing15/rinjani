@@ -305,7 +305,10 @@ text-decoration:none;
 .thumb3 { background: #EFC7EE; }
 
 .thumb { float:left; position: relative; margin-right: 10px;}
-.thumb span { position: absolute; top: 0; right: 0; display:block; width: 17px; height: 20px;
+.thumb span { cursor: pointer; position: absolute; display:block; width: 17px; height: 20px; background: red; color: #fff;}
+.thumb .insert {top: 0; right: 0; }
+.thumb .rm { bottom: 0; right: 0; }
+
 background: #A33234; font-size: 16px; font-weight: bold;  text-align: center; color: #fff;
     }
 

@@ -104,6 +104,10 @@ class BaseHandler(tornado.web.RequestHandler):
         xhr = self.request.headers.get('X-Requested-With', '')
         return  xhr == 'XMLHttpRequest'
     
+    def json_response(self, message, status='OK', data=None):
+        self.finish(dict(status=status, message=message, data=data))
+        return
+    
     # choose template based on request type
     def render(self, template, **kwargs):
         ''' Select appropriate template based on request type and add additional template vars '''
