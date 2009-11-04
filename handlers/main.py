@@ -3,6 +3,7 @@ import urllib
 import tornado.web
 import functools
 from forms import MyForm
+import logging
 
 def authenticated(user_type=None, is_admin=False):
     def _authenticated(method):
@@ -61,7 +62,7 @@ class BaseHandler(tornado.web.RequestHandler):
     
     @property 
     def settings(self): 
-        return self.application.settings
+        return tornado.web._O(self.application.settings)
     
     def set_flash(self, message):
         self.set_secure_cookie("f", message)
@@ -95,7 +96,8 @@ class BaseHandler(tornado.web.RequestHandler):
             h = defaulthelper,
             get = lambda x,y: x or y,
             s = string,
-            settings = tornado.web._O(self.settings)
+            log = logging,
+            settings = self.settings
         ) 
     
     def is_xhr(self): 

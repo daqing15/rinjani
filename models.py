@@ -226,7 +226,8 @@ class Article(BaseDocument):
         'enable_comment': bool,
         'comment_count': int,
         'tags': list,
-        'attachments': [{'src':unicode, 'type':unicode}], 
+        'attachments': [{'no': int, 'type':unicode, \
+                         'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
@@ -265,12 +266,9 @@ class Article(BaseDocument):
         
         from utils.inline import processor, AttachmentInline
         
-        #if not self.photos:
-        #    return src
-        
-        x = ['apito-fafc3161759961d6e1b980d1049e8da6a0142ee8.jpg']
-        pip = AttachmentInline(x)
-        processor.register('attachment', pip)
+        if self.attachments:
+            pip = AttachmentInline(self.attachments)
+            processor.register('attachment', pip)
         return processor.process(src)
     
     def get_url(self):
@@ -296,7 +294,8 @@ class Activity(BaseDocument):
         'location': {'lat': float, 'lang': float},
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
         'tags': list,
-        'attachments': [{'src':unicode, 'thumb':unicode,'type':unicode}], 
+        'attachments': [{'no': int, 'type':unicode, \
+                         'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'checked_by': list,
         'links': list,
         'enable_comment': bool,

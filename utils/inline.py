@@ -49,10 +49,10 @@ def parse_inline(text):
             k, v = kws.split('=')
             kwargs[str(k)] = v
             """
-        print "kwtxt:",kwtxt
         patt = r"([a-z]+)=([\"\'][^\"\']+[\"\']|\w+)"
         for k,v in re.findall(patt, kwtxt):
             print "%s: %s" % (k,re.sub("[\'\"]",'', v))
+            kwargs[str(k)] = v
         #sys.exit()
         
     return (name, value, kwargs)
@@ -90,13 +90,8 @@ class InlineProcessor(object):
                 inline = cls(value, **inline_kwargs)
                 return str(inline.render())
             
-            # Silence any InlineUnrenderableErrors unless INLINE_DEBUG is True
             except InlineUnrenderableError:
-                debug = getattr(settings, "debug", False)
-                if debug:
-                    raise
-                else:
-                    return ""
+                return ""
         text = self.inline_finder.sub(render, text)
         return text
 
@@ -130,31 +125,44 @@ class AttachmentInline(TemplateInline):
     """
         {{ attachment idx caption="the caption" url="http://example.com" }}
     """
-    code = "<img src='/static/uploads/%(src)s' />"        
-    code_with_link = "<a href='%(url)s'>" + code + "</a>"
+    code_image = "<img src='/static/uploads/%(src)s' />"        
+    code = "<a target='_blank' href='/static/uploads/%(src)s'><img src='/static/img/attachment.png' /></a>"
+    image_content_types = ['image/jpeg', 'image/png', 'image/gif']
     
     def __init__(self, attachments):
         self.attachments = attachments
         
     def __call__(self, value, **kwargs):
         try:
-            self.value = int(value) - 1 
+            self.value = value
             self.kwargs = kwargs
         except: 
             self.value = False
         return self
         
     def render(self):
-        if self.value is False:
+        if not self.value:
             return ""
+        no = int(self.value)
         
-        code = self.code_with_link if self.kwargs.has_key('url') else self.code
+        import logging
+        logging.warning("===================")
+        logging.error(self.attachments)
+        logging.error(no)
         
-        if self.attachments and self.value <= len(self.attachments):
+        if self.attachments:
             try:
-                self.kwargs.update({'src':self.attachments[self.value]})
-                return code % self.kwargs
-            except: pass
+                for a in self.attachments:
+                    if a['no'] == no:
+                        logging.warning("--------DAPET----------")
+                        self.kwargs.update({'src':a['src']})
+                        if a['type'] in self.image_content_types:
+                            return self.code_image % self.kwargs
+                        return self.code % self.kwargs
+                    else:
+                        logging.warning("--------GAK DAPET----------")
+            except: 
+                raise
         return ""
          
 # The default registry.

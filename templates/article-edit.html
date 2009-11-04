@@ -16,7 +16,6 @@
 {% block body %}
 
 {{ f.rendernote(f.note) }}
-
 <form action="{{BP}}/article/edit" method="post" class="withtips">
 
 {% set title = 'edit article' if article.slug else 'new article' %}
@@ -46,14 +45,8 @@
                 
                 <div class="line">
                     <div class="unit size2of3 photos">
-                        <div class="line thumbs">
-                            <!-- 
-                            <div class="thumb tt" title="click to insert">
-                                <a href="#" onclick="R.insertAtCaret('#content', '\{\{photo 1 title=\'Photo Title Here\'}\}\n')">
-                                <img title="Click to insert" src="/static/uploads/tmp/t.s.apito-fafc3161759961d6e1b980d1049e8da6a0142ee8.png" />
-                                <span>1</span>
-                                </a>
-                            </div> -->
+                        <div class="line attachments">
+                            
                         </div>
                         <div class="line uploader">
                             <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
@@ -85,8 +78,8 @@
 <input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
 {% end %}
 </div>
-
-<input type="hidden" name="attachments" value="{{ "$".join(["%s#%s" % a for a in article.attachments]) }}" />
+            <!--  (no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4]) -->
+<input type="hidden" name="attachments" value="{{ "$".join(["%(no)d#%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in article.attachments]) }}" />
 <input type="hidden" name="attachment_counter" value="{{len(article.attachments)}}" />
 
 {{ xsrf_form_html() }}
@@ -102,7 +95,6 @@
 $(function() {
     $_counter = $('input[name=attachment_counter]');
     $_attachments = $(':input[name=attachments]');
-    $_attachments.attachments();
     
 	settings = {
         action: '/upload',
@@ -113,7 +105,7 @@ $(function() {
             _xsrf: getCookie('_xsrf'),
             type: 'article',
             is_new_doc: {{ int(not bool(article.slug)) }},
-            slug: '{{ slug if article.slug else '' }}',
+            slug: '{{ article.slug if article.slug else '' }}',
             name: 'doc', 
         }, 
         onSubmit: function(file , ext){
@@ -128,7 +120,7 @@ $(function() {
         },
         onComplete: function(file, res) {
             if (res.status == 'OK') {
-                   $('.thumbs').append($(res.response.html));
+                   $('.attachments').append($(res.response.html));
                    $('input[name=attachments]').val(res.response.attachments)
                    $('input[name=attachment_counter]').val(res.response.counter)
             } else {
@@ -141,9 +133,13 @@ $(function() {
     new AjaxUpload('#upload-button', settings);
 });
 </script>
-
 <noscript>
 <div id="nojs">You need to enable javascript support in your browser if you want to write Article/Activity.</div>
 </noscript>
 {% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+{% end %}
+
 

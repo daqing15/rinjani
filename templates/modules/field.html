@@ -1,10 +1,9 @@
 <div class="i">
 {% if is_checkbox %}
-	<label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ _(i.description) }}</span></label>	
+	<label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ _(i.description) }}</span> {{ i.rendernote(i.note) }}</label>	
 {% else %}
-	<label for="{{i.id}}">{{ _(i.description) }}</label>
+	<label for="{{i.id}}">{{ _(i.description) }} {{ i.rendernote(i.note) }}</label>
 	{{ i.render() }}
 {% end %}
-{{ i.rendernote(i.note) }}
 </div>
 

@@ -4,6 +4,10 @@
 
 {% block body %}
 
+{{ f.rendernote(f.note) }}
+
+<form action="{{BP}}/register" method="post">
+
 <div id="subheader">
     <h2>{{ _('Register') }}</h2>
     <div id="tabs">
@@ -11,6 +15,8 @@
         <a href="{{BP}}/register" class="youarehere">{{ _('register') }}</a>
     </div>
 </div>
+
+
 
 <div class="line">
 	<div class="unit size1of3">
@@ -28,13 +34,21 @@
 	   </div>
 	</div>
 	<div class="lastUnit size2of3">
-	   <div class="sep-left">
-			<form action="{{BP}}/register" method="post">
-			{{ f.render_css() }}
-			{{ xsrf_form_html() }}
-			<div><input class="button" type="submit" value="{{ _('Register') }}" /></div>
-			</form>
+	   <div class="sep-left leftpadded10">
+			
+            {{ modules.Formfield(f.username) }}
+            {{ modules.FormfieldInColumns(f.password, f.password2) }}
+            {{ modules.Formfield(f.type) }}
+            {{ modules.Formfield(f.agree) }}
+            
+            <div class="actionbar">
+                <input class="button" name="register" type="submit" value="{{_('Register')}}"/>
+            </div>
 		</div>
 	</div>
 </div> 
+
+{{ xsrf_form_html() }}
+</form>
+
 {% end %}

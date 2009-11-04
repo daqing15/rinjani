@@ -149,7 +149,7 @@ input, textarea { border: 1px solid #ccc; padding: 1px 2px; }
 input:focus, textarea:focus { background: #FFFFCC; border: 1px solid #DEDE63; }
 form label { display: block; padding-top: 10px; margin-bottom: 3px; font-size: 120%; color: #555; cursor: pointer;}
 .cb-label { font-size: 90%; }
-.invalid { display: block; padding: 10px; background: #FFBBBF; text-transform: lowercase; margin-bottom: 10px;}
+.invalid { padding: 10px; font-size:85%;background: #FFBBBF; text-transform: lowercase; margin-bottom: 10px;}
 .i .invalid { background: none; padding: 0; color: #DB4729;}
 .i { clear: both; }
 input[type=file] {
@@ -158,7 +158,7 @@ input[type=file] {
 
 
 /*===== FLASH MESSAGE ====*/
-#flash_message { padding: 10px; background: #FFFAD4; width: 100%; margin-bottom: 10px;}
+#flash_message { padding: 10px 10px 10px 10px; color: #776D23; background: #FFFAD4; width: 100%; margin-bottom: 10px;}
 #flash_message div.close { float:right;padding:5px 10px; margin-right: 10px;}
 #flash_message div.close a {
 display:block;

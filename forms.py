@@ -33,11 +33,11 @@ class MyForm(form.Form):
                 
             out.append('<div class="i">')
             if isinstance(i, Checkbox):
-                out.append('<label for="%s">%s <span class="cb-label">%s</span></label>' % (i.id, i.render(), _(i.description)))
+                out.append('<label for="%s">%s <span class="cb-label">%s</span> %s</label>' % (i.id, i.render(), _(i.description), i.rendernote(i.note)))
             else:
-                out.append('<label for="%s">%s</label>' % (i.id, _(i.description)))
+                out.append('<label for="%s">%s %s</label>' % (i.id, _(i.description), i.rendernote(i.note)))
                 out.append(i.render())
-            out.append(i.rendernote(i.note))
+            #out.append(i.rendernote(i.note))
             out.append('</div>')
             out.append('\n')
         return ''.join(out)
@@ -56,7 +56,7 @@ class MyForm(form.Form):
 
 class Input(form.Input):
     def rendernote(self, note):
-        if note: return '<p class="invalid">%s</p>' % _(note)
+        if note: return '<span class="invalid">%s</span>' % _(note)
         else: return ""
 
 class Textarea(Input, form.Textarea): pass

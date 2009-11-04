@@ -32,14 +32,13 @@ class UploadHandler(BaseHandler):
         doc_type = self.get_argument('doc_type', 'article')
         attachments = self.get_argument('attachments', '')
         no = int(self.get_argument("attachment_counter", 0))
-        is_new_doc = bool(self.get_argument('is_new_doc', 0)) 
-        
-        logging.warning(attachments)
-        logging.warning(no)
+        is_new_doc = bool(int(self.get_argument('is_new_doc'), 0)) 
         
         f = self.request.files[name][0]
         name = unique_filename([self.current_user.username, \
-                                    doc_type, f['filename']])
+                                    doc_type, f['filename'], str(len(f['body']))])
+        
+        logging.warning(self.get_arguments())
         
         try:
             """ 
@@ -55,7 +54,6 @@ class UploadHandler(BaseHandler):
             try:
                 out = subprocess.Popen("/usr/bin/file -i %s" % tmppath, shell=True, stdout=subprocess.PIPE).communicate()[0]
                 file_type = out.split()[1]
-                logging.error("User is sending %s kind of file" % file_type)
             except:
                 raise
                 return self.json_response('NOT ALLOWED', 'ERROR')
@@ -68,10 +66,11 @@ class UploadHandler(BaseHandler):
                 return self.json_response('NOT ALLOWED', 'ERROR')
             
             if is_new_doc:
+                logging.error("============ FILE BARU ============+")
                 name = os.path.join("tmp", name)
             
             filename = name + ext
-            upload_path = self.settings['upload_path']
+            upload_path = self.settings.upload_path
             path = os.path.join(upload_path, filename)
             shutil.move(tmppath, path)
             
@@ -79,15 +78,20 @@ class UploadHandler(BaseHandler):
                 logging.error('Creating thumbnails for' + path)
                 create_thumbnails(path, self.thumb_sizes)
                 logging.error('Done creating thumbnails')
-                thumb_src = self.settings['upload_url'] + '/' + name + '.s' + ext 
+                thumb_src = self.settings.upload_url + '/' + name + '.s' + ext 
             else:
-                thumb_src = self.settings['static_url'] + '/img/attachment.png'
+                thumb_src = self.settings.static_url + '/img/attachment.png'
             
             no += 1
+            title = url_escape(f['filename'])
             
-            attachments = [a for a in attachments.split(",") if a] + [filename]
-            html = self.html % dict(no=no, src=thumb_src, title=url_escape(f['filename']))
-            return self.json_response(dict(html=html, attachments=','.join(attachments), counter=no))
+            """ no#filetype#src#thumb_src#filename"""
+            attachment = "%d#%s#%s#%s#%s" % (no, file_type, filename, thumb_src, title)
+            attachments = [a for a in attachments.split('$') if a]
+            attachments = "$".join(attachments + [attachment])
+            
+            html = self.html % dict(no=no, src=thumb_src, title=title)
+            return self.json_response(dict(html=html, attachments=attachments, counter=no))
         except Exception, e:  
             return self.json_response(e,'ERROR')
         

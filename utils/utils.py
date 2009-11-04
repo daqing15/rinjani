@@ -1,7 +1,14 @@
 import hashlib
 import logging
+import os
 from facebook import Facebook
 
+def sanitize_path(path, real_prefix=None):
+    path = os.path.basename(path)
+    if real_prefix:
+        return os.path.join(real_prefix, path)
+    return path
+    
 def unique_filename(parts):
     uf = "-".join(parts)
     return "%s-%s" % (parts[0], hashlib.sha1(uf).hexdigest())
@@ -30,7 +37,6 @@ def create_thumbnails(path, sizes):
     # sizes = [(20,20),], 
     for box_size, crop, suffix in sizes:
         """
-        
         if crop:
             origin_x = (bw - w)/2
             origin_y = (bh - h)/2

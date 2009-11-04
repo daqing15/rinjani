@@ -163,11 +163,10 @@ $.fn.attachments = function(options) {
 	var opts = $.extend($.fn.attachments.defaults, options);
     opts.parser = opts.parser? opts.parser : $.fn.attachments.fieldParser;
     if (!opts.template) return; 
-
-	return this.filter(':input').each(function() {
+	
+    return this.filter(':input').each(function() {
         if ($(this).val() == '') return;
 		var s = $(this).val().split(opts.separator);
-        
 	    attachments = [];
 	    if (s.length) {               
 	        $.each(s, function(i, val) {
@@ -183,21 +182,34 @@ $.fn.attachments = function(options) {
 };
 
 $.fn.attachments.fieldParser = function(val) {
-    return {no: val[0], src: val[1], title: val[2]};
+	// (no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4])
+	// doh, ini gmn mimetype supaya bs masuk setting ya
+	var src = "/static/img/attachment.png";
+	if (val[1] != 'application/pdf') {
+		src = "/static/uploads/" + val[3];
+	}
+    return {no: val[0], src: src, title: val[4]};
 };
+
+$.fn.attachments.insertTo = function(no) {
+	// uh no
+	opts = $.fn.attachments.defaults;
+	txt = "\n{{ attachment " + no + " caption='" + opts.default_caption + "'}}\n";
+	R.insertAtCaret(opts.textarea, txt);
+};
+
+// oh, well
+var insert_to_rte = $.fn.attachments.insertTo;
 
 $.fn.attachments.defaults = { 
   template: null,
+  textarea: '#content',
+  default_caption: 'Change Me',
   target: '.attachments',
   separator: '$',
   field_separator: '#',
   parser: null
 };
-
-if ($.fn.template) {
-	var attachmentTemplate = $.template("<div class='thumb tt' title='${title}'><a href='#' onclick='R.insertAtCaret(\"#content\", \"{{attachment ${no} caption=\\\"Edit the caption\\\"}}\n\")'><img title='Click to insert ${title}' src='${src}' /><span>${no}</span></a></div>");
-	$.fn.attachments.defaults.template = attachmentTemplate;
-}
 
 var R = Rinjani;
 
