@@ -3,9 +3,9 @@ Adapted from solace.utils.pagination
 """
 
 import math
-from werkzeug import url_encode
 from tornado.web import HTTPError
-import logging
+import pymongo
+from werkzeug import url_encode
 
 class Pagination(object):
     """Pagination helper."""
@@ -49,7 +49,7 @@ class Pagination(object):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
             raise HTTPError(404)
-        rv = self.doc_class.all(self.query).skip(self.offset).limit(self.per_page)
+        rv = self.doc_class.all(self.query).sort('created_at', pymongo.DESCENDING).skip(self.offset).limit(self.per_page)
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()
         return rv

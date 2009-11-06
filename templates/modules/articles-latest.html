@@ -12,7 +12,7 @@
 	   <div class="unit size1of6 thumb3">
 	   </div>
 	   <div class="lastUnit size5of6">
-	       <p><a href="{{BP}}/article/{{ article.slug }}">{{ escape(article.title) }}</a><p>
+	       <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>
 	       <p>{{ article.excerpt }}</p>
 	   </div>
 	</div>

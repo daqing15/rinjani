@@ -8,11 +8,6 @@
 {{ modules.Static('markitup') }}
 {% end %}
 
-{% block inlinejs %}
-<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
-{% end %}
-
 {% block body %}
 
 <noscript>
@@ -61,7 +56,7 @@
                         <div class="mod highlight">
                             <div class="inner">
                                 <div class="bd">
-                                    <p>TIPS:</p>
+                                    <p>{{_('Help')}}</p>
                                 </div>
                             </div>
                         </div>
@@ -76,13 +71,13 @@
 <input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
 {% if article.slug %}
 <input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
-<input class="button" name="remove" type="button" onclick="if (confirm('Hapus?')) { alert('apused');}" value="{{_('Hapus')}}"/>
+{{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
 {% else %}
 <input class="button" name="save" type="submit" value="{{_('Save')}}"/>
 <input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
 {% end %}
 </div>
-            <!--  (no=int(a[0]), type=a[1], src=src, thumb_src=thumb_src, filename=a[4]) -->
+
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in article.attachments]) }}" />
 <input type="hidden" name="attachment_counter" value="{{len(article.attachments)}}" />
 
@@ -103,6 +98,11 @@ is_new_doc = {{ int(not bool(article.slug)) }};
 slug = '{{ article.slug if article.slug else '' }}';
 </script>
 
+{% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
 {% end %}
 
 {% block postinlinejs %}

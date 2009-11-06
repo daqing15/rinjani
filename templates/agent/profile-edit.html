@@ -7,7 +7,6 @@
 {% end %}
 
 {% block body %}
-
 <form method="post" class="withtips">
 
 {{ f.rendernote(f.note) }}
@@ -21,97 +20,98 @@
 </div>
 
 <div class="line tabWrapper">
-	<div class="unit size1of5">
-		<!-- the tabs --> 
-		<ul class="tabs"> 
-		    <li><a href="#fac">{{_('About You')}}</a></li> 
-		    <li><a href="#fay">{{_('Profile')}}</a></li> 
-		    <li><a href="#fdo">{{_('Contact')}}</a></li>
-		    <li><a href="#fdo">{{_('Bank Account')}}</a></li>
-		</ul> 
-	</div>
-	<div class="lastUnit size4of5">
-		<div class="panes"><div class="pane">
-		    	<h3>{{_('Account')}}</h3>
-		    	<div class="line">
-		    		<div class="unit size2of3">
-		    			<!-- <div class="i">
-		    				<label>Username: <span class="grey">{{ current_user.username}}</span></label>
-		    			</div> -->
-				    	{{ modules.Formfield(f.last_name) }}
-				    	{{ modules.Formfield(f.about) }}
-				    	{{ modules.Formfield(f.tags) }}
-				    </div>
-				    <div class="lastUnit size1of3">
-				    	<div style="padding:10px;">
-				    		<div style="background: #f6f6f6; padding: 10px;">
-				    		    <p>Username: {{ current_user.username}}</p>
-				    			<div style="margin: 10px 0; ">
-				    				{% if current_user.avatar %}
-				    				<!--<img src="{{ current_user['avatar'] }}" />-->
-				    				{% end %}
-				    			</div>
-				    			<p>Avatar from your Facebook profile.</p>
-				    		</div>
-				    	</div>
-				    	<p>Validate...</p>
-				    </div>
-				 </div>
-		    </div> 
-		    <div class="pane">
-		    	<h3>{{_('About You')}}</h3>
-		    	{{ modules.Formfield(f.profile_content) }}
-		    	<label>Media upload form here...</label>
-		    </div>
-		     <div class="pane">
-		    	<h3>{{_('Info')}}</h3>
-		    	<div class="line">
-		    		<div class="unit size3of5">
-		    			{{ modules.Formfield(f.phones) }}
-				    	{{ modules.Formfield(f.email) }}
-				    	{{ modules.Formfield(f.website) }}
-				    	{{ modules.Formfield(f.address) }}
-				    </div>
-				    <div class="lastUnit size2of5">
-				    	<label>{{_('Select your location in map')}}</label>
-				    	<div style="width:400px; height: 200px; background:#eee;">
-				    	</div>
-				    </div>
-				 </div>
-		    </div>
-		    <div class="pane">
-		    	<h3>{{_('Bank Account')}}</h3>
-		    	<label class="grey lined tips">{{_('Public Bank Accounts')}}</label>
-				<div class="line account-header" style="{% if not accounts %}display:none{% end %}">
-					<div class="unit size1of5 grey">Label</div>
-					<div class="unit size1of5 grey">Bank</div>
-					<div class="unit size1of5 grey">Number</div>
-					<div class="unit size1of5 grey">Name</div>
-					<div class="lastUnit size1of5"></div>
-				</div>
-				
-				<div class="accounts">
-					<div class="line accountsrc" style="display:none">
-						<div class="unit size1of5"><input type="text" name="acc_" size="13" /></div>
-						<div class="unit size1of5">
-							{{ h.select('acc_', BANKS, value='bca') }} 
-						</div>
-						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
-						<div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
-						<div class="lastUnit size1of5">
-						  <a href="#" class="rm small">{{ _('Remove') }}</a>
-						  <input type="hidden" name="acc_" value="0" />
-						  {% comment kalu ada id %}
-						</div>
-					</div>
-					{% if accounts %}
-					{% set i=0 %}
-					{% for account in accounts %}
-					{% set i=i+1 %}
-					<div class="line account">
+    <div class="unit size1of5">
+        <!-- the tabs -->
+        <ul class="tabs">
+            <li><a href="#fac">{{_('About You')}}</a></li>
+            <li><a href="#fay">{{_('Profile')}}</a></li>
+            <li><a href="#fdo">{{_('Contact')}}</a></li>
+            <li><a href="#fdo">{{_('Bank Account')}}</a></li>
+        </ul>
+    </div>
+    <div class="lastUnit size4of5">
+        <div class="panes"><div class="pane">
+                <h3>{{_('Account')}}</h3>
+                <div class="line">
+                    <div class="unit size2of3">
+                        <!-- <div class="i">
+                            <label>Username: <span class="grey">{{ current_user.username}}</span></label>
+                        </div> -->
+                        {{ modules.Formfield(f.last_name) }}
+                        {{ modules.Formfield(f.about) }}
+                        {{ modules.Formfield(f.tags) }}
+                    </div>
+                    <div class="lastUnit size1of3">
+                        <div style="padding:10px;">
+                            <div style="background: #f6f6f6; padding: 10px;">
+                                <p>Username: {{ current_user.username}}</p>
+                                <div style="margin: 10px 0; ">
+                                    {% if current_user.avatar %}
+                                    <!--<img src="{{ current_user['avatar'] }}" />-->
+                                    {% end %}
+                                </div>
+                                <p>Avatar from your Facebook profile.</p>
+                            </div>
+                        </div>
+                        <p>Validate...</p>
+                    </div>
+                 </div>
+            </div>
+            <div class="pane">
+                <h3>{{_('About You')}}</h3>
+                {{ modules.Formfield(f.profile_content) }}
+                <label>Media upload form here...</label>
+            </div>
+             <div class="pane">
+                <h3>{{_('Info')}}</h3>
+                <div class="line">
+                    <div class="unit size3of5">
+                        {{ modules.Formfield(f.phones) }}
+                        {{ modules.Formfield(f.email) }}
+                        {{ modules.Formfield(f.website) }}
+                        {{ modules.Formfield(f.address) }}
+                    </div>
+                    <div class="lastUnit size2of5">
+                        <label>{{_('Select your location in map')}}</label>
+                        <div style="width:400px; height: 200px; background:#eee;">
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <div class="pane">
+                <h3>{{_('Bank Account')}}</h3>
+                <label class="grey lined tips">{{_('Public Bank Accounts')}}</label>
+                <div class="line account-header" style="{% if not accounts %}display:none{% end %}">
+                    <div class="unit size1of5 grey">Label</div>
+                    <div class="unit size1of5 grey">Bank</div>
+                    <div class="unit size1of5 grey">Number</div>
+                    <div class="unit size1of5 grey">Name</div>
+                    <div class="lastUnit size1of5"></div>
+                </div>
+
+                {% import forms %}
+                <div class="accounts">
+                    <div class="line accountsrc" style="display:none">
+                        <div class="unit size1of5"><input type="text" name="acc_" size="13" /></div>
+                        <div class="unit size1of5">
+                            {{ h.select('acc_', forms.BANKS, value='bca') }}
+                        </div>
+                        <div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
+                        <div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
+                        <div class="lastUnit size1of5">
+                          <a href="#" class="rm small">{{ _('Remove') }}</a>
+                          <input type="hidden" name="acc_" value="0" />
+                          {% comment kalu ada id %}
+                        </div>
+                    </div>
+                    {% if accounts %}
+                    {% set i=0 %}
+                    {% for account in accounts %}
+                    {% set i=i+1 %}
+                    <div class="line account">
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="13" value="{{ account[0]}}" /></div>
                         <div class="unit size1of5">
-                            {{ h.select('acc_'+str(i), BANKS, value=account[1]) }}
+                            {{ h.select('acc_'+str(i), forms.BANKS, value=account[1]) }}
                         </div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[2]}}" /></div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[3]}}" /></div>
@@ -120,38 +120,38 @@
                           <input type="hidden" name="acc_{{i}}" value="{{h.getarr(account,4,1)}}" />
                         </div>
                     </div>
-					{% end %}{% end %}
-				</div>
-				<button class="cp button">{{ _('Add') }}</button>
-				<script type="text/javascript">
-					$('.account .rm').live('click', function() { 
-						$parent = $(this).parents('.account')
-						if ($parent.find('input[type=hidden]').val() != "0") {
-							if (!confirm("Are you sure?")) {
-								return false;
-							}
-						}
-						$parent.remove();
-						if ($('.account').length < 1) { $('.account-header').hide(); } 
-					});
-					$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
-					$('.cp').click(function() {
-						$new_account = $account.clone(true);
-						$new_account.find(':input').each(function() {
-							$i = $(this)
-							if ($i.attr('name') != undefined) {
-								idx = $i.attr('name') + ($('.account').length + 1);
-							    $i.attr('name', idx);
-							}
-						})
-						$('.accounts').append($new_account.show());
-						if ($('.account').length > 0) { $('.account-header').show(); } 
-						return false;
-					});
-				</script>
-		    </div> 
-		</div>
-	</div>
+                    {% end %}{% end %}
+                </div>
+                <button class="cp button">{{ _('Add') }}</button>
+                <script type="text/javascript">
+                    $('.account .rm').live('click', function() {
+                        $parent = $(this).parents('.account')
+                        if ($parent.find('input[type=hidden]').val() != "0") {
+                            if (!confirm("Are you sure?")) {
+                                return false;
+                            }
+                        }
+                        $parent.remove();
+                        if ($('.account').length < 1) { $('.account-header').hide(); }
+                    });
+                    $account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
+                    $('.cp').click(function() {
+                        $new_account = $account.clone(true);
+                        $new_account.find(':input').each(function() {
+                            $i = $(this)
+                            if ($i.attr('name') != undefined) {
+                                idx = $i.attr('name') + ($('.account').length + 1);
+                                $i.attr('name', idx);
+                            }
+                        })
+                        $('.accounts').append($new_account.show());
+                        if ($('.account').length > 0) { $('.account-header').show(); }
+                        return false;
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>

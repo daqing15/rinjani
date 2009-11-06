@@ -201,7 +201,7 @@ class ArticlesHandler(BaseHandler):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'author': DBRef(User.collection_name, user._id)}
+        spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Article, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='articles')
             
@@ -211,7 +211,7 @@ class ActivitiesHandler(BaseHandler):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'author': DBRef(User.collection_name, user._id)}
+        spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Activity, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='activities')
     

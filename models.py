@@ -163,16 +163,17 @@ class User(BaseDocument):
             return
         
         self.populate(data)
-        if user and 'bank_accounts' in data:
+        logging.error(data)
+        if user and data.has_key('bank_accounts'):
             self.update_bank_accounts(user, data['bank_accounts'])
         super(User, self).save(True, True)
     
-    def update_bank_accounts(self, user, data):
+    def update_bank_accounts(self, user, accounts):
         _accounts = list(user.related.bank_accounts())
         prev_accounts = [acc['_id'] for acc in _accounts]
         updated_accounts = []
         
-        for acc in data['bank_accounts']:
+        for acc in accounts:
             try:
                 if acc[4] == "0":
                     logging.warning("Adding account %s" % acc[0])
@@ -226,6 +227,7 @@ class Article(BaseDocument):
         'content_html': unicode,
         'enable_comment': bool,
         'comment_count': int,
+        'view_count': int,
         'tags': list,
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
         'created_at': datetime.datetime,
@@ -233,7 +235,7 @@ class Article(BaseDocument):
     }
     required_fields = ['author', 'title', 'content']
     sanitized_fields = ['excerpt', 'content']
-    default_values = {'enable_comment': True, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def save(self, data=None, user=None):
@@ -303,11 +305,12 @@ class Activity(BaseDocument):
         'donation_amount_needed': int,
         'donation_amount': float,
         'comment_count': int,
+        'view_count': int,
         'created_at': datetime.datetime
     }
     required_fields = ['author', 'status', 'title', 'content']
     sanitized_fields = ['excerpt', 'content', 'deliverable']
-    default_values = {'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def get_url(self):
@@ -336,6 +339,17 @@ class Activity(BaseDocument):
         self.status = u'deleted'
         self.save()
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
+    
+    def process_inline(self, field, src):
+        if field != 'content':
+            return src
+        
+        from utils.inline import processor, AttachmentInline
+        
+        if self.attachments:
+            pip = AttachmentInline(self.attachments)
+            processor.register('attachment', pip)
+        return processor.process(src)
 
 
 class Page(BaseDocument):

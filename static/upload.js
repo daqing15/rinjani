@@ -57,16 +57,15 @@ $.fn.attachments.defaults = {
 	parser: null 
 };
 
-
 $(function() {
 	settings = {
         action: '/attachment/add',
         name: 'doc',
         responseType: 'json',
-        errorInvalidType: '{{ _("Please select only photo or PDF file")}}',
+        errorInvalidType: "Please select only photo or PDF file",
         data: {
             _xsrf: getCookie('_xsrf'),
-            type: 'article',
+            type: content_type,
             is_new_doc: is_new_doc,
             slug: slug,
             name: 'doc'
@@ -86,7 +85,8 @@ $(function() {
                    $attachments.val(res.data.attachments);
                    $counter.val(res.data.counter);
             } else {
-                R.flash("Uploading failed. Please contact administrator");
+                //R.flash("Uploading failed. Please contact administrator");
+            	R.flash(res.message);
             }
             this.enable();
         }

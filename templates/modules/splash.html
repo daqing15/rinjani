@@ -1,0 +1,31 @@
+{% if items.count() %}
+
+<div class="wrSplash">
+    <div id="splash" class="ha"> 
+        {% set i = items.next() %}
+        <img src="/static/uploads/{{ h.medium_size(i.attachments[0])}}" />
+        <div style='display:block;width:200px'>
+            <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
+            <p>{{ i.excerpt }}</p>
+        </div> 
+        
+        
+        {% for i in items %}
+        <img src="/static/uploads/{{ h.medium_size(i.attachments[0])}}" />
+        <div>
+            <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
+            <p>{{ i.excerpt }}</p>
+        </div>
+        {% end %}
+    </div>
+</div>
+<br class="clear" />
+{% block inlinejs %}
+<script type="text/javascript">
+$(function() {
+  $("#splash").tabs("#splash div", {tabs: 'img', effect: 'horizontal'});
+})
+</script>
+{% end %}
+
+{% end %}

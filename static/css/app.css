@@ -277,24 +277,6 @@ clear: both;
 width: 100%;
 vertical-align: middle;
 }
-.badges { margin-top: 10px; }
-.badges li { display: inline; margin-right: 4px; padding: 5px 0;}
-.badge, a.badge-woot {
--moz-border-radius-bottomleft:4px;
--moz-border-radius-bottomright:4px;
--moz-border-radius-topleft:4px;
--moz-border-radius-topright:4px;
-background-color:#333333;
-color:#FFFFFF !important;
-line-height:1.9;
-margin:0 5px 3px 0;
-padding:4px 8px;
-text-decoration:none;
-}
-.badge:hover {
-background-color:#555555;
-text-decoration:none;
-}
 
 .editbar { padding: 10px; }
 .actionbar { }
@@ -326,4 +308,28 @@ padding: 20px; font-size: 20px; background: red; color: #fff;}
 .dsq-brlink, .dsq-dc-logo { display: none; }
 #disqus_thread h3 { padding-left: 0; }
 
+/*==== TAG ====*/
+.tags { margin-top: 10px; }
+.tags li { display: inline; margin-right: 4px; padding: 5px 0;}
+.tag, a.tag-woot {
+-moz-border-radius-bottomleft:4px;
+-moz-border-radius-bottomright:4px;
+-moz-border-radius-topleft:4px;
+-moz-border-radius-topright:4px;
+background-color:#333333;
+color:#FFFFFF !important;
+line-height:1.9;
+margin:0 5px 3px 0;
+padding:4px 8px;
+text-decoration:none;
+}
+.tag:hover {
+background-color:#555555;
+text-decoration:none;
+}
 
+/*==== BADGE ====*/
+.badge { font-size: 120%; margin-left: 3px; cursor: default;}
+.badgecount { margin-left: 3px; }
+.b-article { color: #CC9966;}
+.b-activity { color: #A2D62D;}

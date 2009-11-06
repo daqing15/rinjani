@@ -1,22 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% set title = 'edit activity' if slug else 'new activity' %}
+{% set title = 'edit activity' if activity.slug else 'new activity' %}
 {{ title.title() }}{% end %}
 
 {% block head %}
 {{ modules.Static('markitup') }}
-{% end %}
-
-{% block inlinejs %}
-<script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
-<link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
-<script type="text/javascript">
-$(function() {
-	$('.date').datePicker().trigger('change');
-});
-</script>
 {% end %}
 
 {% block body %}
@@ -25,7 +14,7 @@ $(function() {
 
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
 
-{% set title = 'edit activity' if slug else 'new activity' %}
+{% set title = 'edit activity' if activity.slug else 'new activity' %}
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title) }}
 
 
@@ -36,7 +25,6 @@ $(function() {
 		    <li><a href="#fi">{{_('Meta')}}</a></li> 
 		    <li><a href="#fc">{{_('Content')}}</a></li>
 		    <li><a href="#fc">{{_('Miscellaneous')}}</a></li>  
-            <li><a href="#fc">{{_('Photos')}}</a></li>  
 		</ul> 
 	</div>
 	<div class="lastUnit size4of5">
@@ -54,6 +42,26 @@ $(function() {
 			</div>
 			<div class="pane">
 				{{ modules.Formfield(f.content) }}
+                <div class="line">
+                    <div class="unit size2of3 photos">
+                        <div class="line attachments">
+                            
+                        </div>
+                        <div class="line uploader">
+                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                            <div id="loading" style="display:none">uploading...</div>
+                        </div>
+                    </div>
+                    <div class="lastUnit size1of3">
+                        <div class="mod highlight">
+                            <div class="inner">
+                                <div class="bd">
+                                    <p>{{_('Help')}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 			<div class="pane">
                 {{ modules.Formfield(f.deliverable) }}
@@ -61,16 +69,13 @@ $(function() {
 				<br />
                 <span class="grey small">See also <a href="http://localhost:9999/profile/edit#fdo">Bank Account</a></span>
 			</div>
-            <div class="pane">
-                <p>INi photo</p>
-            </div>
 		</div>
 	</div>
 </div>
 			
 <div class="actionbar">
 <input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
-{% if slug %}
+{% if activity.slug %}
 <input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
 {% else %}
 <input class="button" name="save" type="submit" value="{{_('Save')}}"/>
@@ -78,13 +83,42 @@ $(function() {
 {% end %}
 </div>
 
+<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in activity.attachments]) }}" />
+<input type="hidden" name="attachment_counter" value="{{len(activity.attachments)}}" />
+
 {{ xsrf_form_html() }}
 
-{% if slug %}
+{% if activity.slug %}
 <input type="hidden" name="is_edit" value="1" />
-<input type="hidden" name="slug" value="{{slug}}" />
+<input type="hidden" name="slug" value="{{activity.slug}}" />
 {% end %}
     
 </form>
 
+<script type="text/javascript">
+$counter = $('input[name=attachment_counter]');
+$attachments = $(':input[name=attachments]');
+content_type = 'activity';
+is_new_doc = {{ int(not bool(activity.slug)) }};
+slug = '{{ activity.slug if activity.slug else '' }}';
+</script>
+
 {% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
+<link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
+<script type="text/javascript">
+$(function() {
+    $('.date').datePicker().trigger('change');
+});
+</script>
+{% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+{% end %}
+

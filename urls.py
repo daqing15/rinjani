@@ -25,7 +25,7 @@ url_handlers = [
     (r"/activity/edit/([A-Za-z0-9\-]+)", 'handlers.activity.EditHandler'),
     (r"/activity/edit", 'handlers.activity.EditHandler'),
     (r"/activity/remove/([A-Za-z0-9\-]+)", 'handlers.activity.RemoveHandler'),
-    (r"/activity/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
+    (r"/activity/([0-9]{4}/[0-9]{1,2}/[0-9]{1,2})/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
     
     (r"/articles", 'handlers.article.ListHandler'),
     (r"/article/new", 'handlers.article.EditHandler'),

@@ -1,25 +1,10 @@
- -{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{{ _("Home") }}{% end %}
 
 {% block body %}
 
-<div id="activity-hilite" class="haccordion"> 
-    <img src="/static/uploads/streaminge.png" /> 
-    <div style="width:200px; display:block">excerpt of the activity #1</div> 
- 
-    <img src="/static/uploads/flash.png" /> 
-    <div>excerpt of the activity #2</div> 
- 
-    <img src="/static/uploads/streaming.png" /> 
-    <div>excerpt of the activity #3</div> 
-</div>
-
-<script type="text/javascript">
-$(function() {
-  $("#activity-hilite").tabs("#activity-hilite div", {tabs: 'img', effect: 'horizontal'});
-})
-</script>
+{{ modules.Splash() }}
 
 {{ modules.ArticleLatest(limit=5) }}
 
@@ -35,4 +20,5 @@ $(function() {
     {{ modules.Streams() }}
     {{ modules.AgentFeatured() }}
 {% end %}
+
 

@@ -1,7 +1,11 @@
 import hashlib
 import logging
 import os
+import shutil
 from facebook import Facebook
+
+ATTACHMENT_SEPARATOR = '$'
+ATTACHMENT_FIELD_SEPARATOR = '#'
 
 def sanitize_path(path, real_prefix=None):
     path = os.path.basename(path)
@@ -9,6 +13,38 @@ def sanitize_path(path, real_prefix=None):
         return os.path.join(real_prefix, path)
     return path
 
+def move_attachments(basepath, attachments):
+    def get_path(path):
+        src = os.path.join(basepath, sanitize_path(path, "tmp"))
+        dest = os.path.join(basepath, sanitize_path(path))
+        logging.warning("Moving from %s to %s" % (src, dest))
+        return (src, dest)
+    
+    for i, a in enumerate(attachments):
+        if a['src'][0:4] == "tmp/":
+            for size in ['.', '.s.', '.m.']:
+                try:
+                    shutil.move(*get_path(a['thumb_src'].replace('.s.', size)))
+                except: pass
+            a['src'] = a['src'].lstrip("tmp/")
+            a['thumb_src'] = a['thumb_src'].lstrip("tmp/")
+            attachments[i] = a
+    return attachments
+    
+def parse_attachments(attachments, is_edit=False):
+    _attachments = []
+    for a in attachments.split(ATTACHMENT_SEPARATOR):
+        a = a.split(ATTACHMENT_FIELD_SEPARATOR)
+        # filetype#src#thumb_src#filename
+        prefix = 'tmp' if not is_edit else ''
+        src = sanitize_path(a[1], prefix)
+        thumb_src = sanitize_path(a[2], prefix)
+        attachment = dict(type=a[0], src=src, thumb_src=thumb_src, filename=a[3])
+        _attachments.append(attachment)
+
+    return _attachments
+    
+    
 def get_attachment_with_filename(filename, attachments):
     for a in attachments:
         if a['filename'] == filename:
@@ -41,12 +77,6 @@ def create_thumbnails(path, sizes):
     size = img.size
     # sizes = [(20,20),], 
     for box_size, crop, suffix in sizes:
-        """
-        if crop:
-            origin_x = (bw - w)/2
-            origin_y = (bh - h)/2
-            new_image = new_image.crop((origin_x, origin_y, bw, bh))
-        """
         bw, bh = box_size
         logging.error("Resizing to %sx%s" % (bw, bh))
         
@@ -62,7 +92,7 @@ def create_thumbnails(path, sizes):
             else:
                 new_path = path_without_ext + ext
             logging.error("Saving new resized image: " + new_path)
-            new_image.save(new_path)
+            new_image.save(new_path, None, quality=85)
 
 def save_user_upload(path, file_content):
     try:

@@ -1,7 +1,4 @@
 import tornado.web
-import logging
-import os
-import shutil
 import datetime
 
 from web.utils import Storage
@@ -10,7 +7,7 @@ from main import BaseHandler, authenticated
 from forms import article_form, CONTENT_TAGS_COLLECTION
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
-from utils.utils import sanitize_path
+from utils.utils import move_attachments, parse_attachments
 from utils.time import striso_to_date
 
 
@@ -23,13 +20,13 @@ class ListHandler(BaseHandler):
 
 class ViewHandler(BaseHandler):
     def get(self, dt, slug):
-        logging.error(dt)
         date = striso_to_date(dt)
         one_day = datetime.timedelta(days=1)
         
         article = Article.one({"slug": slug, "created_at": {'$gte': date, '$lte': date + one_day}})
         if not article:
             raise tornado.web.HTTPError(404)
+        Article.collection.update({'slug': slug}, {'$inc': { 'view_count': 1}})
         self.render("article", article=article)
 
 class EditHandler(BaseHandler):
@@ -62,7 +59,7 @@ class EditHandler(BaseHandler):
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
-                data['attachments'] = self.parse_attachments(data['attachments'], is_edit)   
+                data['attachments'] = parse_attachments(data['attachments'], is_edit)   
             
             if f.validates(Storage(data)):
                 article = Article.one({'slug': data['slug']}) if is_edit else Article()
@@ -70,8 +67,7 @@ class EditHandler(BaseHandler):
                 
                 if attachments and not is_edit:
                     # ganti sama $push nih
-                    article['attachments'] = self.move_attachments(data['attachments'])
-                    logging.warning("Moving attachments")
+                    article['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     article.update_html()
                     article.save()
                     
@@ -88,39 +84,6 @@ class EditHandler(BaseHandler):
                 article['attachments'] = data['attachments']
             f.note = f.note if f.note else e
             self.render("article-edit", f=f, article=article, suggested_tags=CONTENT_TAGS_COLLECTION)
-    
-    def move_attachments(self, attachments):
-        def get_path(path):
-            basepath = self.settings.upload_path
-            src = os.path.join(basepath, sanitize_path(path, "tmp"))
-            dest = os.path.join(basepath, sanitize_path(path))
-            logging.warning("Moving from %s to %s" % (src, dest))
-            return (src, dest)
-        
-        for i, a in enumerate(attachments):
-            if a['src'][0:4] == "tmp/":
-                shutil.move(*get_path(a['src']))
-                shutil.move(*get_path(a['thumb_src']))
-                a['src'] = a['src'].lstrip("tmp/")
-                a['thumb_src'] = a['thumb_src'].lstrip("tmp/")
-                attachments[i] = a
-        return attachments
-    
-    def parse_attachments(self, _attachments, is_edit=False):
-        separator = "$"
-        field_separator = "#"
-        
-        attachments = []
-        for a in _attachments.split(separator):
-            a = a.split(field_separator)
-            # filetype#src#thumb_src#filename
-            prefix = 'tmp' if not is_edit else ''
-            src = sanitize_path(a[1], prefix)
-            thumb_src = sanitize_path(a[2], prefix)
-            attachment = dict(type=a[0], src=src, thumb_src=thumb_src, filename=a[3])
-            attachments.append(attachment)
-        
-        return attachments
     
     
 class RemoveHandler(BaseHandler):

@@ -1,5 +1,4 @@
 import os
-import logging
 import tornado.web
 
 class BaseUIModule(tornado.web.UIModule):
@@ -39,9 +38,8 @@ class ArticleLatest(BaseUIModule):
         else: return ''
         
 class ArticleStat(BaseUIModule):
-    def render(self, id):
-        stat = {}
-        return self.render_string("modules/article-stat.html", stat=stat)
+    def render(self, article):
+        return self.render_string("modules/article-stat.html", article=article)
 
 class ArticlesRelated(BaseUIModule):
     def render(self, tags):
@@ -94,17 +92,6 @@ class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
         return self.render_string('modules/field-incolumns.html', inputs=inputs)
                                       
-class HtmlComponent(BaseUIModule):
-    ''' Render html widget '''
-    def select(self, **kwargs):
-        pass
-
-    def search(self, **kwargs):
-        pass
-
-    def render(self, elem, **kwargs):
-        return ""
-
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
         return self.render_string(template, item=item)
@@ -131,6 +118,10 @@ class Poll(BaseUIModule):
 class Profile(BaseUIModule):
     def render(self):
         return self.render_string("modules/profile.html")
+
+class Rating(BaseUIModule):
+    def render(self, o):
+        return self.render_string("modules/rating.html")
     
 class ReportBox(BaseUIModule):
     def render(self, uri):
@@ -148,6 +139,14 @@ class Slideshow(BaseUIModule):
     def render(self):
         return self.render_string("modules/slideshow.html")
 
+class Splash(BaseUIModule):
+    def render(self):
+        from models import Activity
+        import pymongo
+        items = Activity.all({'status':'published', 'attachments': {'$ne':None}})\
+            .sort("created_at", pymongo.DESCENDING).limit(3)
+        return self.render_string("modules/splash.html", items=items)
+    
 class Streams(BaseUIModule):
     def render(self, user=None):
         return self.render_string("modules/streams.html")

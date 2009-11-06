@@ -13,7 +13,7 @@ from utils.utils import unique_filename, create_thumbnails, sanitize_path
 from utils.string import slugify
 from models import Article, Activity
 
-PIC_SIZES = [((50,50), True, 's'), ((550, 700), False, '')]
+PIC_SIZES = [((50,50), True, 's'), ((110,90), True, 'm'), ((550, 700), False, '')]
 IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 ALLOWED_CONTENT_TYPES = IMAGE_CONTENT_TYPES +  \
         ['application/msword', 'application/msexcel', 'application/pdf']
@@ -66,7 +66,6 @@ class AddHandler(BaseHandler):
                 return self.json_response('FILE TYPE NOT ALLOWED', 'ERROR')
             
             if is_new_doc:
-                logging.error("============ FILE BARU ============+")
                 name = os.path.join("tmp", name)
             
             src = name + ext
@@ -92,22 +91,21 @@ class AddHandler(BaseHandler):
                     doc = cls.one({'slug': self.get_argument('slug')} )
                     doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
                     doc.save()
-                except:
-                    return self.json_response("Failed updating doc", "ERROR")
+                except Exception, e:
+                    return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
                 
             attachment = "%s#%s#%s#%s" % (file_type, src, thumb_src, filename)
             attachments = [a for a in attachments.split('$') if a]
             attachments = "$".join(attachments + [attachment])
             
             html = self.html % dict(no=no, type=file_type, thumb_src=thumb_src, filename=filename)
-            self.json_response(None, "OK", dict(html=html, attachments=attachments, counter=no))
-            return
-        except Exception, e:  
-            self.json_response(e.__str__(),'ERROR')
-            return
+            return self.json_response(None, "OK", dict(html=html, attachments=attachments, counter=no))
+        except IOError:
+            return self.json_response("Cant write to file system", 'ERROR')
+        except Exception, e:
+            return self.json_response(e.__str__(),'ERROR')
         
-        self.json_response("Upload failed. Please contact our administrator.",'ERROR')
-        
+        return self.json_response("Upload failed. Please contact our administrator.",'ERROR')
 
 class RemoveHandler(BaseHandler):
     def remove(self, filename):

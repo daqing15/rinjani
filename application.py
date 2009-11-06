@@ -4,9 +4,11 @@ Blah blah
 """
 
 import tornado.web
-from tornado.web import ErrorHandler, RequestHandler, RedirectHandler
+from tornado.web import RequestHandler, RedirectHandler
 
 from utils.mod import get_mod_handler, import_module
+from pymongo.errors import ConnectionFailure
+from handlers.main import ErrorHandler
 
 class BaseApplication(tornado.web.Application):
     def __call__(self, request):
@@ -27,10 +29,13 @@ class BaseApplication(tornado.web.Application):
                 if match:
                     # here comes the patch
                     if not callable(handler_class):
-                        mod_name, handler_classname = get_mod_handler(handler_class)
-                        handler_class = import_module(mod_name, handler_classname)
+                        try:
+                            mod_name, handler_classname = get_mod_handler(handler_class)
+                            handler_class = import_module(mod_name, handler_classname)
+                            handler = handler_class(self, request, **kwargs)
+                        except ConnectionFailure:
+                            handler = ErrorHandler(self, request, 500, message="DB Error.")
                     # end of patch
-                    handler = handler_class(self, request, **kwargs)
                     args = match.groups()
                     break
             if not handler:

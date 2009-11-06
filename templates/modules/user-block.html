@@ -1,12 +1,21 @@
 <div class="mod simple userblock">
     <div class="inner">
-        <div class="hd"><h3>{{ _('Author Profile') }}</h3></div>
         <div class="bd leftpadded10">
-            <div class="line item-summary">
-		       <div class="unit thumb3">
+            <div class="line">
+		       <div class="unit">
+                {{ modules.Avatar(user) }}
 		       </div>
 		       <div class="lastUnit">
-                <p><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a></p>
+                    <p><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a>
+                        
+                    {% if user.article_count %}
+                        <span title="{{_('articles')}}" class="badge b-article">&#9679;</span><span class="badgecount">{{user.article_count }}</span>
+                    {% end %}
+                    {% if user.activity_count %}
+                        <span title="{{_('activities')}}" class="badge b-activity">&#9679;</span><span class="badgecount">{{user.activity_count }}</span>
+                    {% end %}
+                    </p>
+                    {% if user.website %}<p><a href="{{user.website}}}}">{{user.website}}</a></p>{% end %}
                </div>
             </div>
         </div>

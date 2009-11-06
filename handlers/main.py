@@ -4,6 +4,7 @@ import tornado.web
 import functools
 from forms import MyForm
 import logging
+from models import User
 
 def authenticated(user_type=None, is_admin=False):
     def _authenticated(method):
@@ -48,7 +49,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         username = self.get_secure_cookie("username")
         if not username: return None
-        from models import User
         return User.one({'username': username})
     
     @property
@@ -106,7 +106,6 @@ class BaseHandler(tornado.web.RequestHandler):
     
     def json_response(self, message, status='OK', data=None):
         self.finish(dict(status=status, message=message, data=data))
-        return
     
     # choose template based on request type
     def render(self, template, **kwargs):
@@ -119,11 +118,22 @@ class BaseHandler(tornado.web.RequestHandler):
         super(BaseHandler, self).render(template, **kwargs)
 
 class MissingHandler(BaseHandler):
-    def get(self, path):
+    def get(self, *kargs, **kwargs):
         self.set_status(404)
-        self.render("404", path=path, message=None)
+        self.render("404")
 
-
+class ErrorHandler(BaseHandler):
+    def __init__(self, *kargs, **kwargs):
+        if kwargs.has_key('message'):
+            self.message = kwargs.pop('message')
+        else:
+            self.message = ""
+        super(ErrorHandler, self).__init__(*kargs, **kwargs)
+        
+    def get(self, *kargs, **kwargs):
+        self.set_status(500)
+        self.render("500", message=self.message)
+        
 class LocaleHandler(tornado.web.RequestHandler):
     def get(self,loc):
         self.set_cookie("loc", loc)

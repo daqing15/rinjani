@@ -34,7 +34,10 @@ def timeuntil(dt):
 
 def utc_to_local(dt):
     return dt.replace(tzinfo=None)
-    
+
+def time(dt, format=""):
+    return dt.strftime("")
+
 def alternate(items):
     return items[0]
 
@@ -46,6 +49,9 @@ def getarr(arr, idx, default=None):
         return arr[idx]
     except: pass
     return default
+
+def medium_size(attachment):
+    return attachment['thumb_src'].replace('.s.', '.m.')
 
 ### html tag helpers
 def link_to(to, label=None, **attrs):

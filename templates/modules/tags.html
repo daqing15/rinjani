@@ -1,6 +1,6 @@
 
-<ul class="badges">
+<ul class="tags">
    {% for tag in tags %} 
-       <li><a class="badge" href="{{BP}}/tag/{{url_escape(tag)}}">{{ escape(tag) }}</a></li>
+       <li><a class="tag" href="{{BP}}/tag/{{url_escape(tag)}}">{{ escape(tag) }}</a></li>
    {% end %}
 </ul>

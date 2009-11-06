@@ -5,7 +5,7 @@
 {% block body %}
 
 <div class="post">	    
-	<h2>{{ escape(activity.title) }} - {{ h.timesince(h.utc_to_local(activity.created_at)) }}</h2>
+	<h2>{{ escape(activity.title) }}</h2>
 	
 	<div class="editbar">
 		{{ h.link_if_editor(current_user, activity.author, BP + '/activity/edit/' + activity.slug, _('Edit'), _class='button') }} 
@@ -14,8 +14,9 @@
 	
 	<div class="cb">
 	    {{ activity.content_html }}
+        
+        {% if activity.deliverable %}
 	    <h4>Deliverable</h4>
-	    {% if activity.deliverable %}
 	    	{{ activity.deliverable_html }}
 	    {% end %}
 	</div>
@@ -30,6 +31,7 @@
 {% block sidebar %}
     {{ modules.UserBlock(activity.author) }}
     
+    {% if activity.need_donation %}
     <div class="mod simple">
         <b class="top"><b class="tl"></b><b class="tr"></b></b>
         <div class="inner">
@@ -44,14 +46,14 @@
             </div>
         </div>
     </div>
+    {% end %}
 
     <div class="mod simple">
 		<b class="top"><b class="tl"></b><b class="tr"></b></b>
 		<div class="inner">
 		    <div class="bd">
-		      <p>Posted on 29 Oktober 2009</p>
-		      <p>364x {{_('viewed')}}</p>
-		      <p>19 {{_('comments')}}</p>
+		      <p>Wrote {{ h.timesince(activity.created_at) }}</p>
+		      <p>{{ activity.view_count }} {{_('viewed')}}</p>
 		    </div>
 		</div>
     </div>
