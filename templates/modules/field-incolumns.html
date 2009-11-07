@@ -4,8 +4,12 @@
 	{% set n = len(inputs) %}
 	{% for h, i in enumerate(inputs) %}
         {% set unitclass = 'unit' if h < (n-1) else 'lastUnit' %}
+        
         {% if i %}
-        	<div class="{{unitclass}} size1of{{n}}">
+            {% set desc = _(i.description)  %}
+            {% if is_required(i) %}{% set desc = "<strong"> + desc + "*</strong>" %}{% end %}
+        	
+            <div class="{{unitclass}} size1of{{n}}">
                 {% if type(i) is forms.Checkbox %}
                     <label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ _(i.description) }}</span> {{ i.rendernote(i.note) }}</label> 
                 {% else %}

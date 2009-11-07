@@ -82,15 +82,22 @@ class Flash(BaseUIModule):
         else:
             return ''
 
+def is_required(input):
+    for v in input.validators:
+        if getattr(v, 'test', None):
+            if v.test is bool:
+                return True
+    return False
+
 class Formfield(BaseUIModule):
     def render(self, i):
         import forms
         is_checkbox = isinstance(i, forms.Checkbox)
-        return self.render_string('modules/field.html', i=i, is_checkbox=is_checkbox)
+        return self.render_string('modules/field.html', i=i, is_checkbox=is_checkbox, is_required=is_required)
 
 class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
-        return self.render_string('modules/field-incolumns.html', inputs=inputs)
+        return self.render_string('modules/field-incolumns.html', inputs=inputs, is_required=is_required)
                                       
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
@@ -178,8 +185,6 @@ class Tabs(BaseUIModule):
     
 class Tags(BaseUIModule):
     def render(self, tags):
-        if not tags or not isinstance(tags, list):
-            return ''
         return self.render_string("modules/tags.html", tags=tags)
 
 class TagSuggestion(BaseUIModule):

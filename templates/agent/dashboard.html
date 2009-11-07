@@ -12,8 +12,18 @@
     <div class="lastUnit size1of3">
         <div class="mod simple">
             <div class="inner">
-                <div class="hd"><h3>Draft items</h3></div>
-                <div class="bd"><p>Hehehe</p></div>
+                <div class="hd"><h3>{{ _('Draft Items')}}</h3></div>
+                <div class="bd">
+{% if drafts.count() %}
+<ul>
+{% for d in drafts %}
+    <li><a href="{{d.get_url()}}">{{d.title}}</a></li>
+{% end %}
+</ul>
+{% else %}
+<p class="grey">{{ _('None') }}</p>
+{% end %}        
+                </div>
             </div>
         </div>
     </div>

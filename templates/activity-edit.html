@@ -10,6 +10,10 @@
 
 {% block body %}
 
+<noscript>
+<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
+</noscript>
+
 {{ f.rendernote(f.note) }}
 
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
@@ -30,14 +34,24 @@
 	<div class="lastUnit size4of5">
 		<div class="panes">
 			<div class="pane">
-				{{ modules.Formfield(f.title) }}
-				{{ modules.Formfield(f.excerpt) }}
-				<div style="width: 360px">
-					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
-				</div>
-				{{ modules.Formfield(f.tags) }}
-                <div class="tags suggestedtags">
-                    {{ modules.TagSuggestion(suggested_tags)}}
+                <div class="line">
+                    <div class="unit size1of2">
+        				{{ modules.Formfield(f.title) }}
+        				{{ modules.Formfield(f.excerpt) }}
+        				<div style="width: 360px">
+        					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
+        				</div>
+        				{{ modules.Formfield(f.tags) }}
+                        <div class="tags suggestedtags">
+                            {{ modules.TagSuggestion(suggested_tags)}}
+                        </div>
+                    </div>
+                    <div class="lastUnit size1of2">
+                        <label><input type="checkbox" name="choose_loc" /> Select Location</label>
+                        <div class="loc" style="width:300px; height:300px; background:#eee">
+                            
+                        </div>
+                    </div>
                 </div>
 			</div>
 			<div class="pane">
@@ -55,8 +69,9 @@
                     <div class="lastUnit size1of3">
                         <div class="mod highlight">
                             <div class="inner">
+                                <div class="hd"><h3>{{_('Help')}}</h3></div>
                                 <div class="bd">
-                                    <p>{{_('Help')}}</p>
+                                    <p>{{ _('You can upload files of type photos/image (JPG/GIF/PNG) and PDF.')}}</p>
                                 </div>
                             </div>
                         </div>
@@ -65,9 +80,10 @@
 			</div>
 			<div class="pane">
                 {{ modules.Formfield(f.deliverable) }}
+                {{ modules.Formfield(f.need_donation) }} <span class="grey small">See your <a href="/profile/edit#fb">Bank Account</a> setting in your profile.</span>
 				{{ modules.FormfieldInColumns(f.need_donation, f.enable_comment, [], []) }}
 				<br />
-                <span class="grey small">See also <a href="http://localhost:9999/profile/edit#fdo">Bank Account</a></span>
+                
 			</div>
 		</div>
 	</div>
@@ -77,9 +93,13 @@
 <input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
 {% if activity.slug %}
 <input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
+
+{% set status = 'publish' if activity.status == 'draft' else 'unpublish' %}
+<input class="button" name="action" type="submit" value="{{_(status)}}"/>
+
 {% else %}
-<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
-<input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
+<input class="button" name="action" type="submit" value="{{_('save')}}"/>
+<input class="button" name="action" type="submit" value="{{_('save and publish')}}"/>
 {% end %}
 </div>
 
@@ -100,6 +120,7 @@ $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
 content_type = 'activity';
 is_new_doc = {{ int(not bool(activity.slug)) }};
+textarea = '#content';
 slug = '{{ activity.slug if activity.slug else '' }}';
 </script>
 

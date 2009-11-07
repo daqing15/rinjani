@@ -6,9 +6,21 @@
 
 {{ modules.Tabs('profile_public', 'profile', fullname=user.username, username=user.username) }}
 
-{% if user.website %}{{ user.website }}{% end %}
-{% if user.phones %}{{ user.phones }}{% end %}    
-<p>Joined us {{ h.timesince(user.created_at) }}</p>
+<div class="line">
+    <div class="unit size1of2">
+        {{ user.profile_content_html }}
+    </div>
+    <div class="lastUnit size1of2">
+        <div class="mod simple">
+            <div class="inner">
+                <div class="bd">
+                    <p>Joined us {{ h.timesince(user.created_at) }}</p>
+                    {% if user.website %}<p><a href="{{user.website}}" target="_blank">{{ user.website }}</a></p>{% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% end %}
 

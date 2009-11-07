@@ -2,7 +2,15 @@
 
 import os.path
 import sys
-sys.path.insert(0, os.path.dirname(__file__) + "/lib")
+sys.path = [
+    '.',
+    os.path.dirname(__file__) + "/lib",
+    '/usr/lib/python2.6',
+    '/usr/lib/python2.6/lib-dynload', 
+    '/usr/lib/python2.6/dist-packages', 
+    '/usr/lib/python2.6/dist-packages/PIL',
+    '/var/lib/python-support/python2.6', 
+]
 
 import re
 import tornado.httpserver

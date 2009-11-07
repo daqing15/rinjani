@@ -7,10 +7,14 @@
 {% end %}
 
 {% block body %}
-<form method="post" class="withtips">
+
+<noscript>
+<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
+</noscript>
 
 {{ f.rendernote(f.note) }}
 
+<form method="post" class="withtips">
 <div id="subheader">
     <h2>{{ _('Profile') }}</h2>
     <div id="tabs">
@@ -23,10 +27,10 @@
     <div class="unit size1of5">
         <!-- the tabs -->
         <ul class="tabs">
-            <li><a href="#fac">{{_('About You')}}</a></li>
-            <li><a href="#fay">{{_('Profile')}}</a></li>
-            <li><a href="#fdo">{{_('Contact')}}</a></li>
-            <li><a href="#fdo">{{_('Bank Account')}}</a></li>
+            <li><a href="#fa">{{_('About You')}}</a></li>
+            <li><a href="#fp">{{_('Profile')}}</a></li>
+            <li><a href="#fc">{{_('Contact')}}</a></li>
+            <li><a href="#fb">{{_('Bank Account')}}</a></li>
         </ul>
     </div>
     <div class="lastUnit size4of5">
@@ -35,7 +39,7 @@
                 <div class="line">
                     <div class="unit size2of3">
                         <!-- <div class="i">
-                            <label>Username: <span class="grey">{{ current_user.username}}</span></label>
+                            <label>Username: <span class="grey">{{ user.username}}</span></label>
                         </div> -->
                         {{ modules.Formfield(f.last_name) }}
                         {{ modules.Formfield(f.about) }}
@@ -44,10 +48,10 @@
                     <div class="lastUnit size1of3">
                         <div style="padding:10px;">
                             <div style="background: #f6f6f6; padding: 10px;">
-                                <p>Username: {{ current_user.username}}</p>
+                                <p>Username: {{ user.username}}</p>
                                 <div style="margin: 10px 0; ">
-                                    {% if current_user.avatar %}
-                                    <!--<img src="{{ current_user['avatar'] }}" />-->
+                                    {% if user.avatar %}
+                                    <!--<img src="{{ user.avatar }}" />-->
                                     {% end %}
                                 </div>
                                 <p>Avatar from your Facebook profile.</p>
@@ -60,7 +64,26 @@
             <div class="pane">
                 <h3>{{_('About You')}}</h3>
                 {{ modules.Formfield(f.profile_content) }}
-                <label>Media upload form here...</label>
+                <div class="line">
+                    <div class="unit size2of3 photos">
+                        <div class="line attachments">
+                            
+                        </div>
+                        <div class="line uploader">
+                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                            <div id="loading" style="display:none">uploading...</div>
+                        </div>
+                    </div>
+                    <div class="lastUnit size1of3">
+                        <div class="mod highlight">
+                            <div class="inner">
+                                <div class="bd">
+                                    <p>{{_('Help')}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
              <div class="pane">
                 <h3>{{_('Info')}}</h3>
@@ -156,12 +179,33 @@
 
 <div class="actionbar"><input class="button" name="submit" type="submit" value="Save"/></div>
 
+<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in user.attachments]) }}" />
+<input type="hidden" name="attachment_counter" value="{{len(user.attachments)}}" />
+
 {{ xsrf_form_html() }}
 
 </form>
 
+<script type="text/javascript">
+$counter = $('input[name=attachment_counter]');
+$attachments = $(':input[name=attachments]');
+content_type = 'user';
+is_new_doc = 0;
+textarea = '#profile_content';
+slug = '{{ user.username }}';
+</script>
 
 {% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
+{% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+{% end %}
+
 
 
 

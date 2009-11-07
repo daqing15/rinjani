@@ -70,11 +70,15 @@
 <div class="actionbar">
 <input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
 {% if article.slug %}
-<input class="button" name="publish" type="submit" value="{{_('Save')}}"/>
+<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
+
+{% set status = 'publish' if article.status == 'draft' else 'unpublish' %}
+<input class="button" name="action" type="submit" value="{{_(status)}}"/>
+
 {{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
 {% else %}
-<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
-<input class="button" name="publish" type="submit" value="{{_('Save and Publish')}}"/>
+<input class="button" name="action" type="submit" value="{{_('save')}}"/>
+<input class="button" name="action" type="submit" value="{{_('save and publish')}}"/>
 {% end %}
 </div>
 
@@ -95,6 +99,7 @@ $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
 content_type = 'article';
 is_new_doc = {{ int(not bool(article.slug)) }};
+textarea = '#content';
 slug = '{{ article.slug if article.slug else '' }}';
 </script>
 

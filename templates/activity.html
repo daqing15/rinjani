@@ -7,10 +7,6 @@
 <div class="post">	    
 	<h2>{{ escape(activity.title) }}</h2>
 	
-	<div class="editbar">
-		{{ h.link_if_editor(current_user, activity.author, BP + '/activity/edit/' + activity.slug, _('Edit'), _class='button') }} 
-	    {{ h.link_button_if_editor(current_user, activity.author, BP + '/activity/remove/' + activity.slug,  _('Remove'), handler.xsrf_token) }}
-	</div>
 	
 	<div class="cb">
 	    {{ activity.content_html }}
@@ -21,7 +17,6 @@
 	    {% end %}
 	</div>
 	
-	{{ modules.Tags(activity.tags) }}
 </div>
 
 {{ modules.Disqus(activity._id) }}     
@@ -30,7 +25,6 @@
 
 {% block sidebar %}
     {{ modules.UserBlock(activity.author) }}
-    
     {% if activity.need_donation %}
     <div class="mod simple">
         <b class="top"><b class="tl"></b><b class="tr"></b></b>
@@ -47,22 +41,15 @@
         </div>
     </div>
     {% end %}
-
-    <div class="mod simple">
-		<b class="top"><b class="tl"></b><b class="tr"></b></b>
-		<div class="inner">
-		    <div class="bd">
-		      <p>Wrote {{ h.timesince(activity.created_at) }}</p>
-		      <p>{{ activity.view_count }} {{_('viewed')}}</p>
-		    </div>
-		</div>
+    
+    <div class="editbar">
+        {{ h.link_if_editor(current_user, activity.author, BP + '/activity/edit/' + activity.slug, _('Edit'), _class='button') }} 
+        {{ h.link_button_if_editor(current_user, activity.author, BP + '/activity/remove/' + activity.slug,  _('Remove'), handler.xsrf_token) }}
     </div>
-		      
-    {{ modules.ReportBox(current_path) }}
+    
+    {{ modules.ArticleStat(activity) }}
+    
+    
 
-<script>
-$(function() { 
-
-})
-</script>    
+   
 {% end %}

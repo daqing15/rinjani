@@ -22,11 +22,10 @@
 	    </div>
 	</div>
 	<div class="size2of3 lastUnit">
-	   <div class="sep-left">
-		   <h4>{{ _('Use Login Form') }}</h4>
+	   <div class="sep-left leftpadded10">
 	        <form method="post">
 	        {{ f.render_css() }}
-	        <div>
+	        <div class="actionbar">
 	            <input class="button" type="submit" value="{{ _('Login') }}"/>
 	            <input type="hidden" name="next" value="{{next}}" />
 	        </div>

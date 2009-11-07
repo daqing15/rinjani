@@ -1,6 +1,6 @@
 {% if articles.count() %}
 
-<div class="mod simple">
+<div class="mod rounded simple">
 
 <b class="top"><b class="tl"></b><b class="tr"></b></b>
 
@@ -9,9 +9,10 @@
 	<div class="bd leftpadded10">
 	{% for article in articles %}
 	<div class="line">
-	   <div class="unit size1of6 thumb3">
+	   <div class="unit size1of7">
+        <img src="/static/uploads/avatars/avatar3.jpg" />
 	   </div>
-	   <div class="lastUnit size5of6">
+	   <div class="lastUnit size6of7">
 	       <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>
 	       <p>{{ article.excerpt }}</p>
 	   </div>

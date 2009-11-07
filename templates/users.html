@@ -21,9 +21,8 @@
          <b class="top"><b class="tl"></b><b class="tr"></b></b> 
          <div class="inner">
              <div class="bd">
-               <h3>{{user.type}}</h3>
-               <p>{{user.article_count}} articles</p>
-               <p>{{user.activity_count}} activities</p>
+               {% if user.about %}<h5>{{ user.about }}</h5>{% end %}
+               <p>{{user.article_count}} articles {{user.activity_count}} activities</p>
              </div>
          </div>
          <b class="bottom"><b class="bl"></b><b class="br"></b></b> 

@@ -44,3 +44,4 @@ activities = ('Activities', [
     ('/activities?tab=featured', 'featured'),
     ('/activities?tab=popular', 'popular'),
 ])
+

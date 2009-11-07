@@ -1,8 +1,12 @@
 <div class="i">
+
+{% set desc = _(i.description)  %}
+{% if is_required(i) %}{% set desc = "<strong>" + desc + "*</strong>" %}{% end %}
+
 {% if is_checkbox %}
-	<label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ _(i.description) }}</span> {{ i.rendernote(i.note) }}</label>	
+	<label for="{{i.id}}">{{ i.render() }} <span class="cb-label">{{ desc }}</span> {{ i.rendernote(i.note) }}</label>	
 {% else %}
-	<label for="{{i.id}}">{{ _(i.description) }} {{ i.rendernote(i.note) }}</label>
+	<label for="{{i.id}}">{{ desc }} {{ i.rendernote(i.note) }}</label>
 	{{ i.render() }}
 {% end %}
 </div>

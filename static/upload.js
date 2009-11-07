@@ -1,3 +1,6 @@
+/*
+ * apit: attachments data stored as $.data or el metadata will be much simpler?
+ */
 
 $.fn.attachments = function(options) {
 	var opts = $.extend($.fn.attachments.defaults, options);
@@ -39,12 +42,6 @@ $.fn.attachments.fieldParser = function(val) {
 		src = "/static/uploads/" + val[2];
 	}
     return {type: val[0], id: val[3], src: src, title: val[3]};
-};
-
-$.fn.attachments.insertTo = function(no) {
-	opts = $.fn.attachments.defaults;
-	txt = "\n{{ attachment " + no + " caption='" + opts.default_caption + "'}}\n";
-	R.insertAtCaret(opts.textarea, txt);
 };
 
 $.fn.attachments.defaults = { 
@@ -101,9 +98,10 @@ $(function() {
 			"<span class='rm' rel='${id}' title='Click to remove'>X</span>" +
 		"</div>";
 	
-	$attachments.attachments({template: tt});
+	$attachments.attachments({template: tt, textarea: textarea});
 	
 	$('.thumb .rm').live('click', function() {
+		if (!confirm('This will delete the file. Are you sure?')) return;
 		filename = $(this).attr('rel');
 		$thumb = $(this).parents('.thumb');
 		opts = $.fn.attachments.defaults;
@@ -133,6 +131,8 @@ $(function() {
 	});
 	$('.thumb .insert').live('click', function() {
 		filename = $(this).attr('rel');
-		$.fn.attachments.insertTo(filename);
+		opts = $.fn.attachments.defaults;
+		txt = "\n{{ attachment " + filename + " caption='" + opts.default_caption + "'}}\n";
+		R.insertAtCaret(opts.textarea, txt);
 	});
 });

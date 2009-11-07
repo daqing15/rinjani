@@ -132,6 +132,8 @@ class User(BaseDocument):
         'profile_content': unicode, 
         'profile_content_html': unicode,
         
+        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
+        
         # site-related
         'followed_users': list,
         'followedby_users': list,
@@ -212,6 +214,17 @@ class User(BaseDocument):
         spec = {'owner': DBRef(self.collection_name, self._id)}
         return BankAccount.collection.find(spec)
     
+    def process_inline(self, field, src):
+        if field not in ['profile_content']:
+            return src
+        
+        from utils.inline import processor, AttachmentInline
+        
+        if self.attachments:
+            pip = AttachmentInline(self.attachments)
+            processor.register('attachment', pip)
+        return processor.process(src)
+    
     def get_url(self):
         return "/profile/" + self['username']
 
@@ -263,7 +276,7 @@ class Article(BaseDocument):
         User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
         
     def process_inline(self, field, src):
-        if field != 'content':
+        if field not in ['content']:
             return src
         
         from utils.inline import processor, AttachmentInline
@@ -341,7 +354,7 @@ class Activity(BaseDocument):
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
     
     def process_inline(self, field, src):
-        if field != 'content':
+        if field not in ['content']:
             return src
         
         from utils.inline import processor, AttachmentInline

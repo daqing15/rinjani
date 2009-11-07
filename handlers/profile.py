@@ -1,6 +1,6 @@
 from web.utils import Storage
 import web.form
-from .main import BaseHandler, authenticated
+from main import BaseHandler, authenticated
 from models import User, BankAccount
 from pymongo.dbref import DBRef
 from utils.pagination import Pagination
@@ -10,6 +10,7 @@ import tornado.web
 from tornado.escape import json_decode
 import logging
 import hashlib
+from utils.utils import move_attachments, parse_attachments
 
 class ViewHandler(BaseHandler):
     def get(self, username):
@@ -137,7 +138,7 @@ class EditHandler(BaseHandler):
         accounts = BankAccount.listify(accounts) if accounts else []
         user.formify()
         f.fill(user)
-        self.render(user.type + "/profile-edit", f=f, accounts=accounts, BANKS=BANKS)
+        self.render(user.type + "/profile-edit", f=f, user=user, accounts=accounts, BANKS=BANKS)
     
     @authenticated()
     def post(self):
@@ -148,11 +149,21 @@ class EditHandler(BaseHandler):
         accounts = User.filter_valid_accounts(accounts)
         logging.warning(accounts)
         try:
+            attachments = self.get_argument('attachments', None)
+            if attachments:
+                data['attachments'] = parse_attachments(data['attachments'], True)  
+                
             if f.validates(Storage(data)):
                 data['bank_accounts'] = accounts
                 if data.get('password', None):
                     data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
                 user.save(data, user)
+                
+                if attachments:
+                    user['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
+                    user.update_html()
+                    user.save()
+                    
                 self.set_flash("Profile saved.")
                 self.redirect("/dashboard")
                 return
@@ -166,7 +177,9 @@ class EditHandler(BaseHandler):
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
-        self.render(self.current_user.type + "/dashboard")
+        from models import Article
+        drafts = Article.all({'status': 'draft'}).limit(5)
+        self.render(self.current_user.type + "/dashboard", drafts=drafts)
 
 class UserListHandler(BaseHandler):
     def get(self):

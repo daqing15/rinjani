@@ -1,9 +1,9 @@
 <div class="mod stat">
     <div class="inner">
         <div class="bd">
-            {{ modules.Rating(article) }}
-            <div style="clear:both"><span class="ultrabig grey">{{article.view_count}}</span> hits</div>
+            <div class="line"><span class="ultrabig grey">{{article.view_count}}</span> hits</div>
+            
+            {{ modules.Tags(article.tags) }}
         </div>
     </div>
-    
 </div>

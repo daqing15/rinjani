@@ -11,7 +11,7 @@ from mimetypes import guess_extension
 from main import BaseHandler, authenticated
 from utils.utils import unique_filename, create_thumbnails, sanitize_path
 from utils.string import slugify
-from models import Article, Activity
+import models
 
 PIC_SIZES = [((50,50), True, 's'), ((110,90), True, 'm'), ((550, 700), False, '')]
 IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
@@ -32,7 +32,7 @@ class AddHandler(BaseHandler):
     @authenticated()
     def post(self):
         name = self.get_argument('name')
-        doc_type = self.get_argument('doc_type', 'article')
+        doc_type = self.get_argument('content_type', 'article')
         attachments = self.get_argument('attachments', '')
         no = int(self.get_argument("attachment_counter", 0))
         is_new_doc = bool(int(self.get_argument('is_new_doc'), 0)) 
@@ -86,13 +86,17 @@ class AddHandler(BaseHandler):
             
             # save to doc
             if not is_new_doc:
-                cls = Article if self.get_argument('type') == 'article' else Activity
-                try:
-                    doc = cls.one({'slug': self.get_argument('slug')} )
-                    doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
-                    doc.save()
-                except Exception, e:
-                    return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
+                type = self.get_argument('type').title()
+                cls = getattr(models, type, None)
+                if cls:
+                    try:
+                        id = 'slug' if cls.structure.has_key('slug') else 'username'
+                        doc = cls.one({id: self.get_argument('slug')} )
+                        logging.error(doc)
+                        doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
+                        doc.save()
+                    except Exception, e:
+                        return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
                 
             attachment = "%s#%s#%s#%s" % (file_type, src, thumb_src, filename)
             attachments = [a for a in attachments.split('$') if a]
@@ -124,9 +128,10 @@ class RemoveHandler(BaseHandler):
             
             thumb = False
             if slug:
-                # there's only two kind of doc
-                cls = Article if self.get_argument('type') == 'article' else Activity
-                doc = cls.one({'slug': slug} )
+                type = self.get_argument('type').title()
+                cls = getattr(models, type, None)
+                id = 'slug' if cls.structure.has_key('slug') else 'username'
+                doc = cls.one({id: slug} )
                 
                 for i, a in enumerate(doc.attachments):
                     if a['filename'] ==  filename:

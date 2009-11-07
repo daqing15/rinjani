@@ -21,22 +21,34 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .top{background-position:center top;}
 .bottom{background-position:center bottom;_zoom:1;}/* this zoom required for IE5.5 only*/
 
-.rounded {
+.mod h3 { font-size: 125%; text-transform: lowercase; }
+.roundedX {
 	padding-left: 7px; 
-    -moz-border-radius: 7px;
+    -moz-border-radius: 7px 16px 0 7px;
     -webkit-border-radius: 7px;
     border-radius: 7px;
 }
-.mod h3 { font-size: 130%; }
+.rounded .inner { 
+-moz-border-radius: 9px 16px 0 13px;
+ -webkit-border-radius: 9px 16px 0 13px;
+ border-radius: 9px 16px 0 13px;
+}
+
 
 /*==== BLOCK SKINS ====*/
 /* remove *background-image:" to default to square corners for IE */
 /* ----- simple extends the mod ----- */
-.simple .inner { background: #f3f3f3; }
-.simple2 .inner { background: #F1FFF9; border-bottom: 2px solid #B4CCC2;  }
-.simple2 h3 { color: #7AA794; }
+
+.simple .inner { background: #E5EACE; }
 .simple h3 { color: #777; }
-.highlight { background: #FDFFC1;}
+
+.highlight .inner { background: #FFE741;}
+.highlight h3 { color: #A39427; }
+
+.lumut .inner { background: #D0EA8B;}
+.lumut h3 { color: #769328;}
+.lumut .inner { background: #C4E079;}
+
 /* ----- basic extends the mod ----- */
 .basic .inner {/*-moz-border-radius: 7px;-webkit-border-radius: 7px;border-radius: 7px;*/}
 .basic b{background-image:url(skin/mod/round.png);}
@@ -89,7 +101,8 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .atb2 { margin-left: 120px; }
 
 .bubble h3 { font-size: 100%; padding: 3px 10px;}
-.bubble h3, .bubble p { line-height: 1em; }
+.bubble h3, .bubble p { line-height: 1.2em; }
+.bubble p { font-size: 90%; }
 .bubble .inner {
 	padding-left: 10px; 
 	-moz-border-radius: 10px;
