@@ -18,7 +18,7 @@
               <div class="inner">
                   <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(item.title) }}</a></h3></div>
                   <div class="bd">
-                    <p>{{ get(item.excerpt, s.truncate_words(item.content, 20)) }}</p>
+                    <p>{{ get(s.truncate_words(item.excerpt, 20), s.truncate_words(item.content, 15)) }}</p>
                   </div>
               </div>
               <b class="bottom"><b class="bl"></b><b class="br"></b></b> 

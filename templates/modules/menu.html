@@ -1,0 +1,12 @@
+<div class="menu">
+    <div class="logo"><a href="{{BP}}/"><img src="{{ static_url('img/logo.png') }}" title="Peduli" /></a></div>
+    <ul>
+        <li class="rounded {{check(['articles', 'article'])}}"><a href="/articles">{{ _('Articles') }}</a></li>
+        <li class="rounded {{check(['activities', 'activity'])}}"><a href="/activities">{{ _('Activities') }}</a></li>
+        <li class="rounded {{check('tags')}}"><a href="/tags">{{ _('Tags') }}</a></li>
+        <li class="rounded {{check(['users', 'profile'])}}"><a href="/users">{{ _('Users') }}</a></li>
+        <!--  <li><a href="#">|</a></li>
+        {{ modules.Locale() }} -->
+    </ul>
+</div>
+<br style="clear:both" />

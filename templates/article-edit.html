@@ -18,6 +18,7 @@
 <form action="{{BP}}/article/edit" method="post" class="withtips">
 
 {% set title = 'edit article' if article.slug else 'new article' %}
+{% set title = title + ' (draft)' if article.status == 'draft' else title %}
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'article', title) }}
 
 <div class="line tabWrapper">
@@ -56,7 +57,8 @@
                         <div class="mod highlight">
                             <div class="inner">
                                 <div class="bd">
-                                    <p>{{_('Help')}}</p>
+                                    <h3>{{_('Help')}}</h3>
+                                    <p>{{ _('If you have more than one image attachments, you can insert &#123;&#123; slideshow &#125;&#125;')}}<code>
                                 </div>
                             </div>
                         </div>
@@ -67,19 +69,21 @@
 	</div>
 </div>
 
-<div class="actionbar">
-<input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
-{% if article.slug %}
-<input class="button" name="save" type="submit" value="{{_('Save')}}"/>
+<div class="buttons">
+<button class="button" onclick="history.back(); return false;" name="action" value="back">{{_('cancel')}}</button>
 
-{% set status = 'publish' if article.status == 'draft' else 'unpublish' %}
-<input class="button" name="action" type="submit" value="{{_(status)}}"/>
-
-{{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
-{% else %}
-<input class="button" name="action" type="submit" value="{{_('save')}}"/>
-<input class="button" name="action" type="submit" value="{{_('save and publish')}}"/>
+{% if not article.slug or article.status == 'draft' %}
+    <button class="positive" name="status" value="draft">{{_('Save')}}</button>
+    <button class="positive" name="status" value="published">{{_('Publish')}}</button>
+{% elif article.status == 'published' %}
+    <button class="positive" name="status" value="published">{{_('Save')}}</button>
+    <button class="positive" name="status" value="draft">{{_('Unpublish')}}</button>
 {% end %}
+
+{% if article.slug %}    
+    {{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
+{% end %}
+
 </div>
 
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in article.attachments]) }}" />

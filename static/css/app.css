@@ -2,6 +2,13 @@
 html{color:#333;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
 /* fonts */
 body{font:14px/1.431 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
+html {
+background-color:#FAFDFE;
+background-image:url("img/body.jpg");
+background-position:center top;
+background-repeat:no-repeat;
+}
+
 
 /* **************** GRIDS ***************** */
 .line:after{content: ".";display: block;height: 0;clear: both;visibility: hidden;}
@@ -32,8 +39,9 @@ body{font:14px/1.431 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-s
 .hidden { display: none !important; }
 
 /* **************** TEMPLATE ***************** */
+.head { margin-bottom: 10px; }
 body{_text-align:center;}/* IE5.5 */
-.body{overflow:hidden; _overflow:visible; _zoom:1;}
+.body{padding: 10px; background:#fff; overflow:hidden; _overflow:visible; _zoom:1;}
 .page{margin: 0 auto; width: 950px;_text-align:left;} /* wraps other template elems to set width */ /* text-align IE5.5 */
 /* ====== Columns ====== */
 .main{overflow: hidden;_overflow:visible;_zoom:1;}
@@ -42,8 +50,7 @@ body{_text-align:center;}/* IE5.5 */
 /* extend columns to allow for common column widths */
 
 
-.wrapper { width: 920px;}
-.mainWrapper { padding-left: 10px; margin: 10px 0 10px 10px; border-left: 5px solid #f3f3f3;}
+.mainWrapper { margin: 10px 0 10px 10px;}
 
 /*==== CONTENT OBJECTS ====*/
 /* ====== Default spacing ====== */
@@ -65,7 +72,7 @@ code{color:#0B8C8F;}
 /* ====== Headings ====== */
 /* .h1-.h6 classes should be used to maintain the semantically appropriate heading levels - NOT for use on non-headings */
 h1, .h1{font-size:196%; font-style: normal; color:#D20C59;}
-h2, .h2{font-size:167%; font-style: normal; color:#DF2B72;}
+h2, .h2{font-size:226%; font-style: normal; color:#F64C3B;}
 h3, .h3{font-size:146.5%; font-style: normal; color:#DF2B72;}
 h4, .h4{font-size:123.1%; font-style: normal; color: #587445;}
 h5, .h5{font-size:105%; font-style: normal; color:#AE0345;}
@@ -125,12 +132,14 @@ margin-right: 15px; margin-top: -17px; margin-left: -20px;
 .cb ul li { list-style: disc;}
 .cb li { margin-bottom: .5em; }
 
-.foot { border-top: 3px solid #efefef; margin: 10px 0 10px; padding-top: 10px; clear: both;}
-.foot a, .foot a:active, .foot a:visited, .foot a:hover { color: #666; font-size: 90%;}
+.foot { margin: 10px 0 10px; padding-top: 10px; clear: both;}
+.foot a, .foot a:active, .foot a:visited, .foot a:hover { color: #555; font-size: 90%;}
+.foot p { text-align: right; }
+.foot p span { border-left: 7px solid #719443; }
 
 .note { background-color: #eee; }
 .box { margin: 10px 0; padding: 10px; }
-.button { text-transform: capitalize; cursor: pointer; display: inline-block; padding: 3px 10px; margin: 3px 10px 3px 0; border: 1px solid #ccc; background: #efefef;}
+button, .button { text-transform: capitalize; cursor: pointer; display: inline-block; padding: 3px 10px; margin: 3px 10px 3px 0; border: 1px solid #ccc; background: #efefef;}
 .clear { clear: both; }
 .ultrabig { font-size: 350%; line-height: 100%; font-weight: bold; }
 .grey { color: #999; }
@@ -138,12 +147,21 @@ margin-right: 15px; margin-top: -17px; margin-left: -20px;
 .lined { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px;}
 .tip { font-size:90%; color: #999; padding: 0;}
 
-.link-separator {
-color:#CCCCCC;
-font-size:110%;
-margin:0 2px;
+.roundedbottom {
+-moz-border-radius: 0 0 6px 6px;
+ -webkit-border-radius: 6px;
+ border-radius: 6px;
 }
-
+.rounded {
+-moz-border-radius: 6px;
+ -webkit-border-radius: 6px;
+ border-radius: 6px;
+}
+.roundedbig {
+-moz-border-radius: 12px;
+ -webkit-border-radius: 12px;
+ border-radius: 12px;
+}
 /*===== FORM =====*/
 form { padding: 0;}
 input, textarea { border: 1px solid #ccc; padding: 1px 2px; }
@@ -191,16 +209,13 @@ font-weight: bold;
 
 /*===== TOP BAR =====*/
 .head #topbar {
-background-color:#EEEEEE;
+background-color:#CAE795;
 float:right;
 height:30px;
 line-height:22px;
 max-width:750px;
 padding:5px 10px 0 15px;
 width:auto;
--moz-border-radius: 0 0 6px 6px;
- -webkit-border-radius: 6px;
- border-radius: 6px;
 }
 
 .head #topbar #hlinks {
@@ -227,7 +242,7 @@ font-size:100%;
 /*===== TAB HEADER =====*/
 #subheader {
 margin-top: 20px;
-border-bottom:1px solid #ccc;
+border-bottom:1px solid #C6D2AD;
 clear:both;
 height:34px;
 }
@@ -244,8 +259,8 @@ float:right;
 font-weight:bold;
 }
 
-#tabs a.youarehere {
-border-color:#ccc #ccc #fff #ccc;
+#tabs a.youarehere, #tabs a:hover {
+border-color:#C6D2AD #C6D2AD #fff #C6D2AD;
 border-style:solid;
 border-width:1px;
 color:black;
@@ -255,6 +270,8 @@ line-height:28px;
 margin-top:3px;
 padding:0 11px;
 }
+
+#tabs a:hover { padding: 0 5px;}
 
 #tabs a {
 border:1px solid #FFFFFF;

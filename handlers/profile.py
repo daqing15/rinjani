@@ -1,7 +1,22 @@
+#
+# Copyright 2009 rinjani team
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from web.utils import Storage
 import web.form
 from main import BaseHandler, authenticated
-from models import User, BankAccount
+from models import User, Article, Activity, BankAccount
 from pymongo.dbref import DBRef
 from utils.pagination import Pagination
 from utils.utils import extract_input_array
@@ -177,9 +192,9 @@ class EditHandler(BaseHandler):
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
-        from models import Article
-        drafts = Article.all({'status': 'draft'}).limit(5)
-        self.render(self.current_user.type + "/dashboard", drafts=drafts)
+        pg_article = Pagination(self, Article, {'status':'draft'}, 5)
+        pg_activity = Pagination(self, Activity, {'status':'draft'}, 5)
+        self.render(self.current_user.type + "/dashboard", pg_article=pg_article, pg_activity=pg_activity)
 
 class UserListHandler(BaseHandler):
     def get(self):
@@ -210,7 +225,6 @@ class ProfileCommentsHandler(BaseHandler):
 
 class ArticlesHandler(BaseHandler):
     def get(self, username):
-        from models import Article
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
@@ -220,7 +234,6 @@ class ArticlesHandler(BaseHandler):
             
 class ActivitiesHandler(BaseHandler):
     def get(self, username):
-        from models import Activity
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)

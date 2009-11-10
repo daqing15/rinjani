@@ -22,7 +22,10 @@
          <div class="inner">
              <div class="bd">
                {% if user.about %}<h5>{{ user.about }}</h5>{% end %}
-               <p>{{user.article_count}} articles {{user.activity_count}} activities</p>
+               <p>
+               {% if user.article_count %}{{user.article_count}} articles {% end %}
+               {% if user.activity_count %}{{user.activity_count}} activities{% end %}
+               </p>
              </div>
          </div>
          <b class="bottom"><b class="bl"></b><b class="br"></b></b> 

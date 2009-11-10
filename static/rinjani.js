@@ -4,7 +4,6 @@ function getCookie(name) {
 }
 
 var Rinjani = {
-  
   /* Solace. helper for dynamicSubmit and request */
   _standardRemoteCallback : function(func) {
     return function(response) {
@@ -92,7 +91,8 @@ var Rinjani = {
 	highlightErrors : function(element) { 
 	    var errors = $('ul.errors', element).hide().fadeIn();
 	},
-  
+	
+	/* mod from multiply.com */
   	addTag: function(tag, el) {
 		tag_el = el || $('input[name=tags]').get(0);
         var value = tag_el.value;
@@ -123,20 +123,12 @@ var Rinjani = {
 	        }else {
 	            $(this).parent().addClass("active");
 	            submenu.fadeIn();
-	            $(this).attr('src','/static/css/img/arrow_select.png');
 	        }
 	        $(".sub_menu:visible").not(submenu).hide();
 	        $(".dd_menu img.arrow").not(this).attr('src','/static/css/img/arrow.png');
 	    })
 	    .mouseover(function(){
 	        $(this).attr('src','/static/css/img/arrow_hover.png');
-	    })
-	    .mouseout(function(){
-	        if($(this).parent().parent().find("div.sub_menu").css('display')!="block"){
-	            $(this).attr('src','/static/css/img/arrow.png');
-	        }else{
-	            $(this).attr('src','/static/css/img/arrow_select.png');
-	        }
 	    });
 	    
 	    $(".dd_menu .head_menu").mouseover(function(){ $(this).addClass('over'); })
@@ -158,8 +150,8 @@ var Rinjani = {
 	    });
 	},
 	
+	// mod from http://www.mail-archive.com/jquery-en@googlegroups.com/msg08708.html
 	insertAtCaret: function (target, s) {
-		// mod from http://www.mail-archive.com/jquery-en@googlegroups.com/msg08708.html
 		t = $(target).get(0);
 	    //IE support
 	    if (document.selection) {
@@ -184,9 +176,6 @@ var Rinjani = {
 	        t.value += s;
 	        t.focus();
 	    }
-	},
-	remove_attachment: function(el, filename) {
-		target = '/attachment/remove/';
 	}
 };
 
@@ -213,46 +202,55 @@ $(function() {
 	$('#hsearch input[type=text]').each(function() {
         var hint = $(this).val();
         $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
-    });
-	
-    var dialog = $("a.dialog[rel]").overlay({ 
-        expose: { 
-            color: '#000', 
-            loadSpeed: 100, 
-            opacity: 0.3
-        }, 
-        effect: 'apple', 
-        closeOnClick: false,
-        onBeforeLoad: function() { 
-            // grab wrapper element inside content 
-            var wrap = this.getContent().find(".contentWrapper"); 
-            // load the page specified in the trigger 
-            wrap.load(this.getTrigger().attr("href")); 
-        } 
-    }); 
-    
+  });
+
+  var dialog = $(".dialog[rel]").overlay({ 
+      expose: '#000',
+      top: '25%',
+      closeOnClick: false,
+      onBeforeLoad: function() { 
+          // grab wrapper element inside content 
+          var wrap = this.getContent().find(".wDialog"); 
+          // load the page specified in the trigger 
+          wrap.load(this.getTrigger().attr("href")); 
+      } 
+  }); 
+  
+  var slideshow = $(".slideshow a").overlay({ 
+    target: '#slideshow', 
+    expose: '#000',
+    top: '25%',
+    closeOnClick: false,
+  })
+  
+  if (slideshow.size()) { slideshow.gallery({ 
+    speed: 800, 
+    opacity:.6,
+    template: '<span>${index} of ${total}</span>'
+  }) }
+  
     // select all desired input fields and attach tooltips to them 
-	$("form.withtips :input[title], .tt").tooltip({ 
-	    position: "center right", 
-	    offset: [0,-10], 
-	    effect: "fade", 
-	    tip: '.tooltip' 
-	});
-	
-	// setup rich text editor
-	if ($.markItUp) {
-	    mySettings = $.extend(mySettings || {}, {
-	        previewParserPath: window.BP + '/preview',
-	        previewPosition: 'after',
-	        previewAutoRefresh: false
-	        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
-	    });
-	    $('.rte').markItUp(mySettings);
-	    $('.rte').each(function() {
-	    	$(this).css('height', $(this).attr('rows') + 'em');
-	    });
-	}
-	
+  $("form.withtips :input[title], .tt").tooltip({ 
+      position: "center right", 
+      offset: [0,-10], 
+      effect: "fade", 
+      tip: '.tooltip' 
+  });
+
+  // setup rich text editor
+  if ($.markItUp) {
+    mySettings = $.extend(mySettings || {}, {
+        previewParserPath: window.BP + '/preview',
+        previewPosition: 'after',
+        previewAutoRefresh: false
+        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
+    });
+    $('.rte').markItUp(mySettings);
+    $('.rte').each(function() {
+      $(this).css('height', $(this).attr('rows') + 'em');
+    });
+  }
+
     $("ul.tabs").tabs("div.panes > div"); 
     
 });

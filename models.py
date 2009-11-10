@@ -1,10 +1,12 @@
 import datetime
 import logging
+import re
 import markdown2
 from mongokit import DBRef, MongoDocument, IS, ObjectId, SchemaTypeError
 from settings import app_settings
 from utils.string import force_unicode, listify, sanitize
-from utils.time import date_to_striso, striso_to_date
+from utils.time import date_to_striso
+from utils.inline import processor, AttachmentInline, SlideshowInline
 
 class EditDisallowedError(Exception): pass
 
@@ -75,6 +77,8 @@ class BaseDocument(MongoDocument):
                         self[k] = False
                     else:
                         self[k] = False if not k in data  else bool(int(data[k]))
+                elif t is int:
+                    self[k] = int(re.sub('[.,]*', '', data[k]))
                 else:
                     self[k] = data[k]
             else: 
@@ -94,6 +98,14 @@ class BaseDocument(MongoDocument):
     # override this
     def process_inline(self, field, src):
         return src
+    
+    def process_inline_attachments(self, src):
+        if self.attachments:
+            pip = AttachmentInline(self.attachments)
+            processor.register('attachment', pip)
+            pis = SlideshowInline(self.attachments)
+            processor.register('slideshow', pis)
+        return processor.process(src)
                     
 class User(BaseDocument):
     collection_name = 'users'
@@ -217,13 +229,7 @@ class User(BaseDocument):
     def process_inline(self, field, src):
         if field not in ['profile_content']:
             return src
-        
-        from utils.inline import processor, AttachmentInline
-        
-        if self.attachments:
-            pip = AttachmentInline(self.attachments)
-            processor.register('attachment', pip)
-        return processor.process(src)
+        return self.process_inline_attachments(src)
     
     def get_url(self):
         return "/profile/" + self['username']
@@ -278,13 +284,7 @@ class Article(BaseDocument):
     def process_inline(self, field, src):
         if field not in ['content']:
             return src
-        
-        from utils.inline import processor, AttachmentInline
-        
-        if self.attachments:
-            pip = AttachmentInline(self.attachments)
-            processor.register('attachment', pip)
-        return processor.process(src)
+        return self.process_inline_attachments(src)
     
     def get_url(self):
         return "/article/" + date_to_striso(self.created_at) + "/" + self.slug
@@ -356,13 +356,7 @@ class Activity(BaseDocument):
     def process_inline(self, field, src):
         if field not in ['content']:
             return src
-        
-        from utils.inline import processor, AttachmentInline
-        
-        if self.attachments:
-            pip = AttachmentInline(self.attachments)
-            processor.register('attachment', pip)
-        return processor.process(src)
+        return self.process_inline_attachments(src)
 
 
 class Page(BaseDocument):

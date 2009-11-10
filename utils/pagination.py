@@ -37,6 +37,10 @@ class Pagination(object):
                 return u'?' + url_encode(url_args)
         self.link_func = link_func
     
+    @property
+    def total_pages(self):
+        return self.pages
+    
     def __str__(self):
         return str(self.__unicode__())
     

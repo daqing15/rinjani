@@ -24,6 +24,8 @@ class BaseApplication(tornado.web.Application):
             handler = RedirectHandler(
                 request, "http://" + self.default_host + "/")
         else:
+            if request.path != "/":
+                request.path = request.path.rstrip('/')
             for pattern, handler_class, kwargs in handlers:
                 match = pattern.match(request.path)
                 if match:

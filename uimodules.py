@@ -1,5 +1,7 @@
 import os
 import tornado.web
+from models import Article, Activity
+import pymongo
 
 class BaseUIModule(tornado.web.UIModule):
     def render_string(self, path, **kwargs):
@@ -11,8 +13,7 @@ class BaseUIModule(tornado.web.UIModule):
 
 class ActivityLatest(BaseUIModule):
     def render(self, **kwargs):
-        from models import Activity
-        activities = Activity.all().sort([('created_at', -1)]).limit(5)
+        activities = Activity.all({'status':'published'}).sort([('created_at', -1)]).limit(5)
         if activities:
             return self.render_string("modules/activities-latest.html", activities=activities)
         else: return ''
@@ -31,8 +32,7 @@ class AgentFeatured(BaseUIModule):
                 
 class ArticleLatest(BaseUIModule):
     def render(self, **kwargs):
-        from models import Article
-        articles = Article.all().sort([('created_at', -1)]).limit(3)
+        articles = Article.all({'status':'published'}).sort([('created_at', -1)]).limit(3)
         if articles:
             return self.render_string("modules/articles-latest.html", articles=articles)
         else: return ''
@@ -98,7 +98,13 @@ class Formfield(BaseUIModule):
 class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
         return self.render_string('modules/field-incolumns.html', inputs=inputs, is_required=is_required)
-                                      
+
+class IsDraft(BaseUIModule):
+    def render(self, item):
+        if item.status == 'draft':
+            return self.render_string('modules/draft.html')
+        return ""
+                                          
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
         return self.render_string(template, item=item)
@@ -117,7 +123,23 @@ class Map(BaseUIModule):
     def render(self, location):
         locale = ('id', 'ID')
         return self.render_string("modules/map.html", locale=locale)
-           
+       
+class Menu(BaseUIModule):
+    def __init__(self, handler):
+        cp = handler.request.uri
+        self.mp = cp.split("/")[1]
+        super(Menu, self).__init__(handler)
+        
+    def check(self, path):
+        if path is str:
+            path = [str]
+        if self.mp in path:
+            return "current"
+        return ""
+    
+    def render(self):
+        return self.render_string("modules/menu.html", check=self.check)
+               
 class Poll(BaseUIModule):
     def render(self):
         return self.render_string("modules/poll.html")
@@ -148,9 +170,7 @@ class Slideshow(BaseUIModule):
 
 class Splash(BaseUIModule):
     def render(self):
-        from models import Activity
-        import pymongo
-        items = Activity.all({'status':'published', 'attachments': {'$ne':None}})\
+        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}})\
             .sort("created_at", pymongo.DESCENDING).limit(3)
         return self.render_string("modules/splash.html", items=items)
     

@@ -7,7 +7,6 @@
 <div class="post">	    
 	<h2>{{ escape(activity.title) }}</h2>
 	
-	
 	<div class="cb">
 	    {{ activity.content_html }}
         
@@ -19,7 +18,9 @@
 	
 </div>
 
-{{ modules.Disqus(activity._id) }}     
+{% if activity.enable_comment %}
+    {{ modules.Disqus(activity._id) }}     
+{% end %}
 
 {% end %}
 
@@ -33,10 +34,7 @@
             <div class="bd">
               <p>Amount Required: Rp 2.300.000,-</p>
               <p>Rekening Bank: <a href="#">BCA</a>, <a href="#">Mandiri</a>, <a href="#">Muamallat</a></p>
-              <p><a class="dialog" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}">
-                    <button type="button">{{ _('Confirm My Donation') }}</button>
-               </a></p>
-               <div class="modal facebox" id="boxdonation"><div class="contentWrapper"></div></div>
+              <p><a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}">{{ _('Confirm My Donation') }}</a></p>
             </div>
         </div>
     </div>
@@ -48,8 +46,13 @@
     </div>
     
     {{ modules.ArticleStat(activity) }}
-    
-    
 
-   
+<div class="modal facebox" id="boxdonation"><div class="wDialog"></div></div>  
+<div class="overlay" id="slideshow"> 
+    <a class="prev">prev</a> 
+    <a class="next">next</a> 
+    <div class="info"></div> 
+    <img class="progress" src="/static/css/img/ajax-loader2.gif" /> 
+</div>
+
 {% end %}

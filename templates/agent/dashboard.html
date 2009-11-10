@@ -14,12 +14,18 @@
             <div class="inner">
                 <div class="hd"><h3>{{ _('Draft Items')}}</h3></div>
                 <div class="bd">
-{% if drafts.count() %}
+
+{% if pg_article.total_pages > 0 or pg_activity.total_pages > 0 %}
 <ul>
-{% for d in drafts %}
-    <li><a href="{{d.get_url()}}">{{d.title}}</a></li>
+{% for item in pg_article.get_objects() %}
+    <li><a href="/article/edit/{{item.slug}}">{{item.title}}</a></li>
+{% end %}
+
+{% for item in pg_activity.get_objects() %}
+    <li><a href="/activity/edit/{{item.slug}}">{{item.title}}</a></li>
 {% end %}
 </ul>
+
 {% else %}
 <p class="grey">{{ _('None') }}</p>
 {% end %}        

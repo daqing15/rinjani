@@ -1,6 +1,17 @@
-"""
-bad bad code. i gave up.
-"""
+#
+# Copyright 2009 rinjani team
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 
 import os
 import subprocess
@@ -75,9 +86,10 @@ class AddHandler(BaseHandler):
             
             if file_type in IMAGE_CONTENT_TYPES:
                 create_thumbnails(path, PIC_SIZES)
-                thumb_src = name + '.s' + ext 
+                thumb_src = name + '.s' + ext
+                logging.error("thumb is " + thumb_src) 
             else:
-                thumb_src = self.settings.static_url + '/img/attachment.png'
+                thumb_src = 'attachment.png'
             
             no += 1
             filename = slugify(f['filename'])
@@ -138,18 +150,17 @@ class RemoveHandler(BaseHandler):
                         del(doc.attachments[i])
                         doc.save()
                         if a['type'] in IMAGE_CONTENT_TYPES:
-                            self.remove(a['thumb_src'])
-                        self.remove(a['src'])
+                            for size in ['.', '.s.', '.m.']:
+                                self.remove(a['thumb_src'].replace('.s.', size))
+                        else:
+                            self.remove(a['src'])
                         return self.json_response("Attachment succesfully removed", "OK")
                 return self.json_response("Attachment not found", "ERROR")
             else:
                 thumb = self.get_argument('thumb')
-                if self.get_argument('attachment_type') in IMAGE_CONTENT_TYPES:
-                    if thumb:
-                        self.remove("tmp/" + sanitize_path(thumb))
-                parts = thumb.split('.')
-                path = '.'.join(parts[0:-2]) + '.' + parts[-1]
-                self.remove("tmp/" + sanitize_path(path))
+                if thumb and self.get_argument('attachment_type') in IMAGE_CONTENT_TYPES:
+                    for size in ['.', '.s.', '.m.']:
+                        self.remove("tmp/" + sanitize_path(thumb).replace('.s.', size))
                 return self.json_response(None, "OK")
         except Exception, e: 
             return self.json_response(e.__str__(), "ERROR")

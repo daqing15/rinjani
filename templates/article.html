@@ -15,12 +15,22 @@
     
 </div>
 
+<div class="overlay" id="slideshow"> 
+    <a class="prev">prev</a> 
+    <a class="next">next</a> 
+    <div class="info"></div> 
+    <img class="progress" src="/static/css/img/ajax-loader2.gif" /> 
+</div>
+
+
 {{ modules.Disqus(article._id) }}  
     
 {% end %}
 
 
 {% block sidebar %}
+    {{ modules.IsDraft(article) }}
+    
     {{ modules.UserBlock(article.author) }}
     <div class="editbar">   
         {{ h.link_if_editor(current_user, article.author, BP + '/article/edit/' + article.slug, _('Edit'), _class='button') }} 

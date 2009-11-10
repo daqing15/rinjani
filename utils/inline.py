@@ -1,3 +1,18 @@
+#
+# Copyright 2009 rinjani team
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 import re
 import settings
 import sys
@@ -44,14 +59,9 @@ def parse_inline(text):
     if m.group('variant'):
         kwargs['variant'] = m.group('variant')
     if kwtxt:
-        """
-        for kws in kwtxt.split():
-            k, v = kws.split('=')
-            kwargs[str(k)] = v
-            """
         patt = r"([a-z]+)=([\"\'][^\"\']+[\"\']|\w+)"
         for k,v in re.findall(patt, kwtxt):
-            print "%s: %s" % (k,re.sub("[\'\"]",'', v))
+            #print "%s: %s" % (k,re.sub("[\'\"]",'', v))
             kwargs[str(k)] = v
         #sys.exit()
         
@@ -120,14 +130,35 @@ class YoutubeInline(TemplateInline):
         print self.kwargs
         return "<embed youtube string here>"
 
+IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 
+class SlideshowInline(TemplateInline):
+    code = "<div class='unit'><a href='/static/uploads/%(src)s' title='%(filename)s'><img src='/static/uploads/%(thumb_src)s' /></a></div>"
+    wrapper = "<div class='line slideshow'>%s</div>"
+    def __init__(self, attachments):
+        images = []
+        for a in attachments:
+            if a and a['type'] in IMAGE_CONTENT_TYPES:
+                images.append(a.copy())
+        self.images = images
+        
+    def __call__(self, value, **kwargs): return(self)
+    
+    def render(self):
+        if not self.images:
+            return ""
+        code = ""
+        for p in self.images:
+            p['thumb_src'] = p['thumb_src'].replace('.s.', '.m.')
+            code += self.code % p
+        return self.wrapper % code 
+    
 class AttachmentInline(TemplateInline):
     """
         {{ attachment idx caption="the caption" url="http://example.com" }}
     """
     code_image = "<img src='/static/uploads/%(src)s' />"        
     code = "<a target='_blank' href='/static/uploads/%(src)s'><img src='/static/img/attachment.png' /></a>"
-    image_content_types = ['image/jpeg', 'image/png', 'image/gif']
     wrapper = "<div class='attachment'>%(code)s<p class='caption'>%(caption)s</p></div>"
     
     def __init__(self, attachments):
@@ -145,7 +176,6 @@ class AttachmentInline(TemplateInline):
         if not self.value:
             return ""
         
-        import logging
         from utils import get_attachment_with_filename
         
         if self.attachments:
@@ -153,12 +183,13 @@ class AttachmentInline(TemplateInline):
                 attachment = get_attachment_with_filename(self.value, self.attachments)
                 if attachment:
                     self.kwargs.update({'src':attachment['src']})
-                    if attachment['type'] in self.image_content_types:
+                    if attachment['type'] in IMAGE_CONTENT_TYPES:
                         code = self.code_image % self.kwargs
-                        if self.kwargs.has_key('caption'):
+                    else:
+                        code = self.code % self.kwargs
+                    if self.kwargs.has_key('caption'):
                             return self.wrapper % {'code': code, 'caption': self.kwargs['caption'].strip("'")}
-                        return code
-                    return self.code % self.kwargs
+                    return code
             except: 
                 raise
         return ""
