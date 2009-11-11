@@ -4,14 +4,26 @@
 
 {% block body %}
 
-<h1>{{ escape(page['title']) }} {{ h.link_if_auth(current_user, BP + '/page/edit/' + page['slug'], _('Edit'), 'admin', _class='small-link') }}</h1>
- 
-<div class="content-body">
-   {{ page['content_html'] }}
+<div class="post">  
+    <h2>{{ escape(page.title) }}</h2>
+    <div class="cb">
+       {{ page.content_html }}
+    </div>
 </div>
+
+<div class="overlay" id="slideshow"> 
+    <a class="prev">prev</a> 
+    <a class="next">next</a> 
+    <div class="info"></div> 
+    <img class="progress" src="/static/css/img/ajax-loader2.gif" /> 
+</div>
+
  
 {% end %}
 
 {% block sidebar %}
-
+    <div class="editbar">   
+        {{ h.link_if_editor(current_user, page.author, BP + '/page/edit/' + page.slug, _('Edit'), _class='button') }} 
+        {{ h.link_button_if_editor(current_user, page.author, BP + '/page/remove/' + page.slug, _('Remove'), handler.xsrf_token) }} 
+    </div>
 {% end %}

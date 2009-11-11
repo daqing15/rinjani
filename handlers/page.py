@@ -13,10 +13,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from .main import BaseHandler, authenticated
-from forms import page_form, InvalidFormDataError
+from main import BaseHandler, authenticated
+from forms import page_form
 from web.utils import Storage
-from models import Page, User
+from models import Page, EditDisallowedError
+from utils.utils import move_attachments, parse_attachments
 import tornado.web
 
 class ViewHandler(BaseHandler):
@@ -33,10 +34,19 @@ class EditHandler(BaseHandler):
         if slug:
             try:
                 page = Page.one({'slug': slug})
+                page.check_edit_permission(self.get_current_user())
+                page.formify()
+                f.fill(page)
+            except EditDisallowedError:
+                self.set_flash("You are not allowed to edit that page")
+                self.redirect(page.get_url())
+                return
             except:
                 raise tornado.web.HTTPError(404)
-            f.fill(page)
-        self.render("page-edit", f=f, slug=slug)
+        else:
+            page = Page()
+        
+        self.render("page-edit", f=f, page=page)
     
     @authenticated(None, True)
     def post(self):
@@ -45,23 +55,26 @@ class EditHandler(BaseHandler):
         is_edit = data.has_key('ori_slug')
         
         try:
+            attachments = self.get_argument('attachments', None)
+            if attachments:
+                data['attachments'] = parse_attachments(data['attachments'], is_edit) 
+                
             if f.validates(Storage(data)):
-                if is_edit:
-                    page = Page.one({'slug': data['ori_slug']})
-                    page['author'] = User.one({'username':page['author']['username']})
-                else:
-                    page = Page()
-                    page['author'] = self.get_current_user()
+                page = Page.one({'slug': data['ori_slug']}) if is_edit else Page()
+                page.save(data, user=self.current_user)
+                
+                if attachments and not is_edit:
+                    page['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
+                    page.update_html()
+                    page.save()
                     
-                page.populate(data)
-                page.validate()
-                import markdown2
-                page['content_html'] = markdown2.markdown(data['content'])
-                page.save()
                 self.set_flash(u"Page has been saved.")
                 self.redirect(page.get_url())
                 return
+            page = Page()
             raise Exception("Invalid form data")
         except Exception, e:
-            slug = article['ori_slug'] if is_edit else None
-            self.render("page-edit", f=f, slug=slug)
+            if attachments:
+                page['attachments'] = data['attachments']
+            f.note = f.note if f.note else e
+            self.render("page-edit", f=f, page=page)

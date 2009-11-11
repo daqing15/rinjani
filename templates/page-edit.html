@@ -2,13 +2,9 @@
 
 {% block title %}{{ _('New Page') }}{% end %}
 
-{% block head %}
-{{ modules.Static('markitup') }}
-{% end %}
-
 {% block body %}
 
-{% set title = 'edit page' if slug else 'new page' %}
+{% set title = 'edit page' if page.slug else 'new page' %}
 <form method="post" action="{{BP}}/page/edit">
 
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'page', title) }}
@@ -18,15 +14,60 @@
     {{ modules.FormfieldInColumns(f.title, f.slug) }}
     {{ modules.Formfield(f.content) }}
     
-<div class="actionbar">
+    <div id="contentPreview" class="cb"></div>
+                
+    <div class="line">
+        <div class="unit size2of3 photos">
+            <div class="line attachments"></div>
+            <div class="line uploader">
+                <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                <div id="loading" style="display:none">{{_('uploading...')}}</div>
+            </div>
+        </div>
+        <div class="lastUnit size1of3">
+            <div class="mod highlight">
+                <div class="inner">
+                    <div class="bd">
+                        <h3>{{_('Help')}}</h3>
+                        <p>{{ _('If you have more than one image attachments, you can insert &#123;&#123; slideshow &#125;&#125;')}}<code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div class="buttons">
+<button class="button" onclick="history.back(); return false;" name="action" value="back">{{_('cancel')}}</button>
 <input class="button" name="submit" type="submit" value="{{_('Save')}}"/>
 </div>
 
+<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in page.attachments]) }}" />
+<input type="hidden" name="attachment_counter" value="{{len(page.attachments)}}" />
+
+
 {{ xsrf_form_html() }}
-{% if slug %}
-<input type="hidden" name="ori_slug" value="{{slug}}" />
+{% if page.slug %}
+<input type="hidden" name="ori_slug" value="{{page.slug}}" />
 {% end %}
 </form>
 
+<script type="text/javascript">
+$counter = $('input[name=attachment_counter]');
+$attachments = $(':input[name=attachments]');
+content_type = 'page';
+is_new_doc = {{ int(not bool(page.slug)) }};
+textarea = '#content';
+slug = '{{ page.slug if page.slug else '' }}';
+</script>
+
 {% end %}
 
+{% block inlinejs %}
+<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
+<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+{% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+{% end %}

@@ -98,17 +98,19 @@ class AddHandler(BaseHandler):
             
             # save to doc
             if not is_new_doc:
-                type = self.get_argument('type').title()
-                cls = getattr(models, type, None)
-                if cls:
-                    try:
-                        id = 'slug' if cls.structure.has_key('slug') else 'username'
-                        doc = cls.one({id: self.get_argument('slug')} )
-                        logging.error(doc)
-                        doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
-                        doc.save()
-                    except Exception, e:
-                        return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
+                type = self.get_argument('type', None).title()
+                if type:
+                    cls = getattr(models, type, None)
+                    if cls:
+                        try:
+                            id = 'slug' if cls.structure.has_key('slug') else 'username'
+                            doc = cls.one({id: self.get_argument('slug')} )
+                            doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
+                            doc.save()
+                        except Exception, e:
+                            return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
+                else:
+                    return self.json_response("Unknown document type", "ERROR")
                 
             attachment = "%s#%s#%s#%s" % (file_type, src, thumb_src, filename)
             attachments = [a for a in attachments.split('$') if a]

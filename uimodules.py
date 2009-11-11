@@ -170,7 +170,7 @@ class Slideshow(BaseUIModule):
 
 class Splash(BaseUIModule):
     def render(self):
-        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}})\
+        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}, 'attachments.type':{'$ne':'application/pdf'}})\
             .sort("created_at", pymongo.DESCENDING).limit(3)
         return self.render_string("modules/splash.html", items=items)
     

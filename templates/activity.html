@@ -26,14 +26,24 @@
 
 {% block sidebar %}
     {{ modules.UserBlock(activity.author) }}
+    
     {% if activity.need_donation %}
     <div class="mod simple">
         <b class="top"><b class="tl"></b><b class="tr"></b></b>
         <div class="inner">
             <div class="hd"><h3>{{ _('Donation') }}</h3></div>
             <div class="bd">
-              <p>Amount Required: Rp 2.300.000,-</p>
-              <p>Rekening Bank: <a href="#">BCA</a>, <a href="#">Mandiri</a>, <a href="#">Muamallat</a></p>
+              {% set accounts = activity.author.get_bank_accounts() %}
+              {% if accounts.count() %}
+              <div class="accounts">
+                <ul>
+                  {% for acc in  accounts %}
+                  <li>{{ acc['bank'].upper() }}: {{ acc['number']}} a.n. {{ acc['holder'] }}</li> 
+                  {% end %}
+                </ul>
+              </div>
+              {% if activity.donation_amount_needed %}<p>{{ activity.donation_amount_needed }}</p>{% end %}
+              {% end %}
               <p><a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}">{{ _('Confirm My Donation') }}</a></p>
             </div>
         </div>

@@ -30,7 +30,7 @@ mySettings = {
 		{name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
 		{name:'Insert Slideshow', key: 'S', className:'slideshow', openWith:'{{ slideshow }}\n'},
 		{separator:'---------------'},
-		{name:'Toggle Preview', openWith:function(m) { togglePreview(m); }, className:"tPreview"},
+		{name:'Show/Hide Preview', openWith:function(m) { togglePreview(m); }, className:"tPreview"},
 		{name:'Preview', call:'preview', className:"preview"}
 	]
 };
