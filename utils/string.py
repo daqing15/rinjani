@@ -23,7 +23,7 @@ def sanitize(value):
     Filter value from unwanted html tags/attrs
     """
     r = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript:')))
-    validTags = 'p i strong b u a h1 h2 h3 pre br img'.split()
+    validTags = 'p i strong b u a h2 h3 h4 pre br img ul ol li'.split()
     validAttrs = 'href src alt title'.split()
     soup = BeautifulSoup(value)
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):

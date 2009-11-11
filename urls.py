@@ -2,6 +2,8 @@
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
     (r"/l/(\w+)", 'handlers.main.LocaleHandler'),
+    (r"/preview", 'handlers.home.MarkdownPreviewHandler'),
+    
     (r"/attachment/add", 'handlers.attachment.AddHandler'),
     (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
     

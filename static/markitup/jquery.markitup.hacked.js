@@ -453,29 +453,10 @@
 				}
 			}
 
-			function renderPreview() {				
-				if (options.previewParserPath !== '') {
-					$.ajax( {
-						type: 'POST',
-						async: false,
-						url: options.previewParserPath,
-						data: options.previewParserVar+'='+encodeURIComponent($$.val()),
-						success: function(data) {
-							phtml = localize(data, 1); 
-						}
-					} );
-				} else {
-					if (!template) {
-						$.ajax( {
-							async: false,
-							url: options.previewTemplatePath,
-							success: function(data) {
-								template = localize(data, 1); 
-							}
-						} );
-					}
-					phtml = template.replace(/<!-- content -->/g, $$.val());
-				}
+			function renderPreview() {			
+				txt = $$.val()
+				
+				
 				return phtml;
 			}
 			

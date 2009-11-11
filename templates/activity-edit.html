@@ -4,10 +4,6 @@
 {% set title = 'edit activity' if activity.slug else 'new activity' %}
 {{ title.title() }}{% end %}
 
-{% block head %}
-{{ modules.Static('markitup') }}
-{% end %}
-
 {% block body %}
 
 <noscript>
@@ -41,16 +37,18 @@
         				<div style="width: 360px">
         					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
         				</div>
-        				{{ modules.Formfield(f.tags) }}
-                        <div class="tags suggestedtags">
-                            {{ modules.TagSuggestion(suggested_tags)}}
-                        </div>
                     </div>
                     <div class="lastUnit size1of2">
                         <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                        <div class="loc" style="width:300px; height:300px; background:#eee">
+                        <div class="loc" style="width:300px; height:180px; background:#eee">
                             
                         </div>
+                    </div>
+                </div>
+                <div class="line">
+                    {{ modules.Formfield(f.tags) }}
+                    <div class="tags suggestedtags">
+                        {{ modules.TagSuggestion(suggested_tags)}}
                     </div>
                 </div>
 			</div>
@@ -79,18 +77,19 @@
                 </div>
 			</div>
 			<div class="pane">
-                {{ modules.Formfield(f.deliverable) }}
-                 
                 <div class="line" style="width: 80%">
                     <div class="unit size1of2">
-                        {{ modules.Formfield(f.need_donation) }} <span class="grey small">If checked, your <a href="/profile/edit#fb">Bank Account</a> will be displayed.</span>       
+                        {{ modules.Formfield(f.need_donation) }} <span class="grey small">If checked, your <a target="_blank" href="/profile/edit#fb">Bank Account</a> will be displayed.</span>
+                        <div id="wDA">
+                            {{ modules.Formfield(f.donation_amount_needed) }}
+                        </div>       
                     </div>
-                    <div id="wDA" class="lastUnit size1of2">
-                        {{ modules.Formfield(f.donation_amount_needed) }}
+                    <div class="lastUnit size1of2">
+                        {{ modules.Formfield(f.enable_comment) }}
                     </div>
                 </div>
-                
-				{{ modules.Formfield(f.enable_comment) }}
+                <hr />                
+                {{ modules.Formfield(f.deliverable) }}
 				<br />
                 
 			</div>
@@ -151,6 +150,8 @@ slug = '{{ activity.slug if activity.slug else '' }}';
 {% end %}
 
 {% block inlinejs %}
+<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
+<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>

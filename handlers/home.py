@@ -15,8 +15,16 @@
 
 from main import BaseHandler
 from models import Article
+import markdown2
+from utils.string import sanitize
 
 class HomeHandler(BaseHandler):
     def get(self):
         articles = Article.all({'slug': 'article-pertama'}) 
         self.render("home", articles=articles)
+
+class MarkdownPreviewHandler(BaseHandler):
+    def post(self):
+        data = self.get_argument('data', None)
+        if data:
+            self.finish(sanitize(markdown2.markdown(data)))

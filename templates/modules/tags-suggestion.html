@@ -1,14 +1,12 @@
-<div style="padding: 10px 0;">
-    <p class="small grey"><span>{{ _('Suggestion (click to add)')}}:</span>
-    {% set n = len(tags) %}
-    {% for i, tag in enumerate(tags) %}
-        {% set ending = ', ' if (i < n-1) else '.' %} 
-        <a href="#" onclick="R.addTag('{{tag}}')">{{tag}}</a>{{ending}}
-    {% end %}
-    </p>
-    
-    <p class="small grey"><span>{{_('Your previous tags')}}:</span> 
-        <a href="#" onclick="R.addTag('satu')">satu</a>,
-        <a href="#" onclick="R.addTag('dua')">dua</a>
-    </p>
-</div>
+<p class="small grey"><span>{{ _('Suggestion (click to add)')}}:</span>
+{% set n = len(tags) %}
+{% for i, tag in enumerate(tags) %}
+    {% set ending = ', ' if (i < n-1) else '.' %} 
+    <a href="#" onclick="R.addTag('{{tag}}')">{{tag}}</a>{{ending}}
+{% end %}
+</p>
+
+<p class="small grey"><span>{{_('Your previous tags')}}:</span> 
+    <a href="#" onclick="R.addTag('satu')">satu</a>,
+    <a href="#" onclick="R.addTag('dua')">dua</a>
+</p>

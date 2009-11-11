@@ -240,12 +240,14 @@ $(function() {
   // setup rich text editor
   if ($.markItUp) {
     mySettings = $.extend(mySettings || {}, {
-        previewParserPath: window.BP + '/preview',
+        previewParserPath: window.BP + '/preview?_xsrf=' + getCookie("_xsrf"),
         previewPosition: 'after',
-        previewAutoRefresh: false
+        //previewTemplatePath: window.BP + '/preview?_xsrf=' + getCookie("_xsrf"),
+        previewAutoRefresh: true
         //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
     });
     $('.rte').markItUp(mySettings);
+    $('li.preview a').trigger('mouseup');
     $('.rte').each(function() {
       $(this).css('height', $(this).attr('rows') + 'em');
     });

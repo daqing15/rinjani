@@ -152,7 +152,7 @@ activity_form = MyForm(
     Textarea("excerpt", rows=3, cols=37, description="Excerpt/Lead"),
     Textarea("content", form.notnull, _class="rte", rows=12, cols=55, description="Content"),
     Textarea("deliverable", _class="rte", rows=9, cols=35, description="Deliverable"),
-    Textbox("donation_amount_needed", size=37, description="Amount of donation needed (Rupiah)"),
+    Textbox("donation_amount_needed", size=30, description="Amount of donation needed (Rp)"),
     Checkbox("need_donation", value="1", description="Need donation"),
     Checkbox("need_volunteer", value="1", description="Need volunteer"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
