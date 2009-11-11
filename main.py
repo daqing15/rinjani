@@ -32,6 +32,7 @@ tornado.options.parse_command_line()
 class Application(BaseApplication):
     def __init__(self):
         app_settings['ui_modules'] = uimodules
+        app_settings['is_mobile_site'] = options.mobile
         super(Application, self).__init__(url_handlers, **app_settings)
 
 app = Application()

@@ -59,6 +59,12 @@ def authenticated(user_type=None, is_admin=False):
 class BaseHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, transforms=None):
         super(BaseHandler, self).__init__(application, request, transforms)
+        is_mobile = self.get_cookie('is_mobile', None)
+        if is_mobile is None:
+            from utils.utils import is_mobile_agent
+            is_mobile = '1' if is_mobile_agent(request) else '0'
+            self.set_cookie('is_mobile', is_mobile)
+        self.is_mobile = bool(is_mobile)
         MyForm.locale = self.get_user_locale()
     
     def get_current_user(self):
