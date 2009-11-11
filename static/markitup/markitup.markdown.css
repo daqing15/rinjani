@@ -24,18 +24,19 @@
     width:590px;
     height:320px;
     clear:both; display:block;
-    line-height:18px;
     overflow:auto;
 }
 .markItUpPreviewFrame   {
     overflow:auto;
-    background-color:#EEF9FF;
-    width:99.9%;
+    background-color:#F5FBFF;
+    width:600px;
     border: 0;
     margin:5px 0;
     border: 2px dashed #ccc; 
     max-height: 200px;
+    min-height: 10px;
 }
+
 .markItUpFooter {
     width:100%;
 }
@@ -119,17 +120,16 @@
 // By Jay Salvat - http://markitup.jaysalvat.com/
 // ------------------------------------------------------------------*/
 .markItUpHeader ul a { background: url(skins/rte-19x19.png) no-repeat;}
-.markItUp .markItUpButton1 a { background-position: 0 0; } 
-.markItUp .markItUpButton2 a { background-position: -35px 0; } 
-.markItUp .markItUpButton3 a { background-position: -70px 0; } 
-.markItUp .markItUpButton4 a { background-position: -105px 0; } 
-.markItUp .markItUpButton5 a { background-position: -140px 0; } 
-.markItUp .markItUpButton6 a { background-position: -175px 0; } 
-.markItUp .markItUpButton7 a { background-position: -210px 0; } 
-.markItUp .markItUpButton8 a { background-position: -245px 0; } 
-.markItUp .markItUpButton9 a { background-position: -280px 0; } 
-.markItUp .markItUpButton10 a { background-position: -315px 0; } 
-.markItUp .markItUpButton11 a { background-position: -350px 0; } 
+.markItUp .markItUpButton1 a { background-position: -35px 0; } 
+.markItUp .markItUpButton2 a { background-position: -70px 0; } 
+.markItUp .markItUpButton3 a { background-position: -105px 0; } 
+.markItUp .markItUpButton4 a { background-position: -140px 0; } 
+.markItUp .markItUpButton5 a { background-position: -175px 0; } 
+.markItUp .markItUpButton6 a { background-position: -210px 0; } 
+.markItUp .markItUpButton7 a { background-position: -245px 0; } 
+.markItUp .markItUpButton8 a { background-position: -280px 0; } 
+.markItUp .markItUpButton9 a { background-position: -315px 0; } 
+.markItUp .markItUpButton10 a { background-position: -350px 0; } 
 .markItUp .slideshow a { background-position: -385px 0; }
-.markItUp .preview a { background-position: -415px 0; }
-
+.markItUp .tPreview a { background-position: -480px 0; }
+.markItUp .preview a { background-position: -545px 0; }

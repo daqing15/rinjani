@@ -121,10 +121,12 @@ margin-right: 15px; margin-top: -17px; margin-left: -20px;
 .linetop { border-top: 1px solid #ccc; }
 
 .cb { font-size: 13px; line-height: 150%; padding-right: 30px; margin-bottom: 1em;}
+.cb h3, .cb h4 { margin: .2em 0 .5em; }
 .cb p { padding: 10px; }
 .cb ul, .cb ol { margin: 0; padding: 0 0 0 25px;}
 .cb ul li { list-style: disc;}
-.cb li { margin-bottom: .5em; }
+.cb ol li { list-style:decimal; }
+.cb li { margin: 0 0 .5em 10px; }
 
 .foot { margin: 10px 0 10px; padding-top: 10px; clear: both;}
 .foot a, .foot a:active, .foot a:visited, .foot a:hover { color: #555; font-size: 90%;}

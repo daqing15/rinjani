@@ -240,11 +240,7 @@ $(function() {
   // setup rich text editor
   if ($.markItUp) {
     mySettings = $.extend(mySettings || {}, {
-        previewParserPath: window.BP + '/preview?_xsrf=' + getCookie("_xsrf"),
-        previewPosition: 'after',
-        //previewTemplatePath: window.BP + '/preview?_xsrf=' + getCookie("_xsrf"),
         previewAutoRefresh: true
-        //previewInWindow: 'width=600, height=300, resizable=yes, scrollbars=yes'
     });
     $('.rte').markItUp(mySettings);
     $('li.preview a').trigger('mouseup');

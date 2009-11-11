@@ -146,12 +146,12 @@ login_form = MyForm(
 )
 
 activity_form = MyForm(
-    Textbox("title", form.notnull, size=37, description="Title"),
+    Textbox("title", form.notnull, size=43, description="Title"),
     Datefield("date_start", _class="date", size=12, description="Start"),
     Datefield("date_end", _class="date", size=12, description="End"),
-    Textarea("excerpt", rows=3, cols=37, description="Excerpt/Lead"),
-    Textarea("content", form.notnull, _class="rte", rows=12, cols=55, description="Content"),
-    Textarea("deliverable", _class="rte", rows=9, cols=35, description="Deliverable"),
+    Textarea("excerpt", rows=3, cols=43, description="Excerpt/Lead"),
+    Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description="Content"),
+    Textarea("deliverable", _class="rte", rel="#deliverablePreview", rows=9, cols=35, description="Deliverable"),
     Textbox("donation_amount_needed", size=30, description="Amount of donation needed (Rp)"),
     Checkbox("need_donation", value="1", description="Need donation"),
     Checkbox("need_volunteer", value="1", description="Need volunteer"),
@@ -162,9 +162,8 @@ activity_form = MyForm(
 article_form = MyForm(
     Textbox("title", form.notnull, size=50, description="Title"),
     Textarea("excerpt", form.notnull, rows=3, cols=60, description="Excerpt/Lead", title="Write it short and sweet. "),
-    Textarea("content", form.notnull, rows=12, cols=60, _class="rte", description="Article Content"),
-    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=50, description="Tags", title="Separate with comma"),
-    File("photo", _class="multi accept-gif|jpg|png max-3", description="Add Photo/Images. You can select up to 3 files.")
+    Textarea("content", form.notnull, rows=12, cols=60, _class="rte", rel="#contentPreview", description="Article Content"),
+    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=50, description="Tags", title="Separate with comma")
  )
 
 commentbox_form = MyForm(

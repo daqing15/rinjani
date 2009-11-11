@@ -29,7 +29,6 @@ ul.tabs a.current {
  	margin-right: -1px; 
 	}	
 .panes { border-left: 1px solid #C6D2AD; }
-.pane h3 { display: none; }
 .pane { padding: 0 10px; min-height: 200px; margin:0;}
 
 a.dialog { outline: none; }

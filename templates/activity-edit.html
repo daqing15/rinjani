@@ -19,7 +19,7 @@
 
 
 <div class="line tabWrapper">
-	<div class="unit size1of5">
+	<div class="unit size1of6">
 		<!-- the tabs --> 
 		<ul class="tabs"> 
 		    <li><a href="#fi">{{_('Meta')}}</a></li> 
@@ -27,20 +27,20 @@
 		    <li><a href="#fc">{{_('Miscellaneous')}}</a></li>  
 		</ul> 
 	</div>
-	<div class="lastUnit size4of5">
+	<div class="lastUnit size5of6">
 		<div class="panes">
 			<div class="pane">
                 <div class="line">
-                    <div class="unit size1of2">
+                    <div class="unit size2of3">
         				{{ modules.Formfield(f.title) }}
         				{{ modules.Formfield(f.excerpt) }}
         				<div style="width: 360px">
         					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
         				</div>
                     </div>
-                    <div class="lastUnit size1of2">
+                    <div class="lastUnit size1of3">
                         <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                        <div class="loc" style="width:300px; height:180px; background:#eee">
+                        <div class="loc" style="width:250px; height:180px; background:#eee">
                             
                         </div>
                     </div>
@@ -53,7 +53,8 @@
                 </div>
 			</div>
 			<div class="pane">
-				{{ modules.Formfield(f.content) }}
+                {{ modules.Formfield(f.content) }}
+                <div id="contentPreview"></div>
                 <div class="line">
                     <div class="unit size2of3 photos">
                         <div class="line attachments">
@@ -90,6 +91,7 @@
                 </div>
                 <hr />                
                 {{ modules.Formfield(f.deliverable) }}
+                <div id="deliverablePreview"></div>
 				<br />
                 
 			</div>
@@ -155,7 +157,6 @@ slug = '{{ activity.slug if activity.slug else '' }}';
 <script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
 <link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
 <script type="text/javascript">
 $(function() {
