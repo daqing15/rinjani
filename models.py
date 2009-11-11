@@ -234,8 +234,51 @@ class User(BaseDocument):
     def get_url(self):
         return "/profile/" + self['username']
 
-class Article(BaseDocument):
+class Content(BaseDocument): 
+    base_url = '/'
+    
+    def process_inline(self, field, src):
+        if field not in ['content']:
+            return src
+        
+        if self.attachments:
+            pip = AttachmentInline(self.attachments)
+            processor.register('attachment', pip)
+            pis = SlideshowInline(self.attachments)
+            processor.register('slideshow', pis)
+        return processor.process(src)
+    
+    def save(self, data=None, user=None):
+        if not data:
+            super(Content,self).save(True, True)
+            return
+        self.populate(data)
+        
+        new = False
+        if '_id' in self:
+            self.check_edit_permission(user)
+        else:
+            self['author'] = user
+            new = True
+            self.fill_slug_field(self['title'])
+        
+        super(Content, self).save(True, True)
+        self.post_save(new)
+    
+    def remove(self):
+        self.status = u'deleted'
+        self.save()
+        self.post_remove()
+    
+    def post_save(self, is_new): pass
+    def post_remove(self): pass
+    
+    def get_url(self):
+        return self.base_url + date_to_striso(self.created_at) + "/" + self.slug
+
+class Article(Content):
     collection_name = 'articles'
+    base_url = '/article/'
     structure = {
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'), 
@@ -257,43 +300,16 @@ class Article(BaseDocument):
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
-    def save(self, data=None, user=None):
-        if not data:
-            super(Article,self).save(True, True)
-            return
-        
-        self.populate(data)
-        
-        new = False
-        if '_id' in self:
-            self.check_edit_permission(user)
-        else:
-            self['author'] = user
-            new = True
-            self.fill_slug_field(self['title'])
-        
-        super(Article, self).save(True, True)
-        if new:
-            User.collection.update({'username': user.username}, {'$inc': { 'article_count': 1}})
+    def post_save(self, is_new):
+        if is_new:
+            User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': 1}})
     
-    def remove(self):
-        self.status = u'deleted'
-        self.save()
+    def post_remove(self):
         User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
         
-    def process_inline(self, field, src):
-        if field not in ['content']:
-            return src
-        return self.process_inline_attachments(src)
-    
-    def get_url(self):
-        return "/article/" + date_to_striso(self.created_at) + "/" + self.slug
-    
-class ArticleVote(BaseDocument):
-    pass    
-
-class Activity(BaseDocument):
+class Activity(Content):
     collection_name = 'activities'
+    base_url = '/activity/'
     structure = {
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'), 
@@ -326,40 +342,14 @@ class Activity(BaseDocument):
     default_values = {'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
-    def get_url(self):
-        return "/activity/" + date_to_striso(self.created_at) + "/" + self.slug
+    def post_save(self, is_new):
+        if is_new:
+            User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': 1}})
     
-    def save(self, data=None, user=None):
-        if not data:
-            super(Activity,self).save(True, True)
-            return
-        
-        self.populate(data)
-        
-        new = False
-        if '_id' in self:
-            self.check_edit_permission(user)
-        else:
-            self['author'] = user
-            new = True
-            self.fill_slug_field(self['title'])
-        
-        super(Activity, self).save(True, True)
-        if new:
-            User.collection.update({'username': user.username}, {'$inc': { 'activity_count': 1}})
-    
-    def remove(self):
-        self.status = u'deleted'
-        self.save()
+    def post_remove(self):
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
     
-    def process_inline(self, field, src):
-        if field not in ['content']:
-            return src
-        return self.process_inline_attachments(src)
-
-
-class Page(BaseDocument):
+class Page(Content):
     collection_name = 'pages'
     structure = {
         'author': User,
@@ -367,6 +357,7 @@ class Page(BaseDocument):
         'slug': unicode,
         'content': unicode,
         'content_html': unicode,
+        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
@@ -378,6 +369,8 @@ class Page(BaseDocument):
         return "/page/" + self['slug']
 
 
+class ArticleVote(BaseDocument):
+    pass 
 
 class Comment(BaseDocument):
     collection_name = 'comments'
