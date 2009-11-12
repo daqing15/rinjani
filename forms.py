@@ -2,7 +2,7 @@ from web import form
 from datetime import datetime
 from utils.string import listify
 import re
-import logging
+from settings import USERTYPE
 
 class InvalidFormDataError(Exception): pass
 
@@ -11,11 +11,6 @@ def _(str):
         str = MyForm.locale.translate(str)
     #return tornado.escape.xhtml_escape(str)
     return str
-
-BANKS = [('bca', 'BCA'), ('mandiri','Bank Mandiri'), ('muamalat', 'Bank Muamalat')]
-USERTYPE = [('public', 'Individu/Public'), ('agent','Staff of NGO/Social Organization'), ('sponsor', 'Representative of Corporate/Donor entity')]
-CONTENT_TAGS_COLLECTION = ['education', 'media', 'CSR', 'news', ]
-USER_TAGS_COLLECTION = ['education', 'media', 'CSR']
 
 class MyForm(form.Form):
     def __init__(self, *inputs, **kw):
@@ -120,15 +115,16 @@ class PassValidator(form.Validator):
         
         self.msg = "Password didn't match"
         return False
-    
+
+vusername = form.regexp(r"[a-z0-9]{6,11}", "6 to 11 characters of alphabets and numbers, without space")    
 vpass = form.regexp(r".{6,20}", 'Must be between 6 and 20 characters')
 vemail = form.regexp(r".*@.*", "Must be a valid email address")
 
 
 register_form = MyForm(
-    Textbox("username", form.notnull, description="User Name"),
+    Textbox("username", form.notnull, vusername, description="User Name", title="6 to 11 characters of alphabets and numbers, without space"),
     Password("password", form.notnull, vpass, description="Password"),
-    Password("password2", form.notnull, vpass, description="Repeat password"),
+    Password("password2", form.notnull, description="Repeat password", title="Retype password"),
     Dropdown(name='type', args=USERTYPE, description='I am a'),
     Checkbox("agree", form.notnull, checked=False, value="1", pre_separator=True, description="I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"),
     validators = [form.Validator("Passwords didn't match", lambda i: i.password == i.password2)]
@@ -147,16 +143,17 @@ login_form = MyForm(
 
 activity_form = MyForm(
     Textbox("title", form.notnull, size=43, description="Title"),
-    Datefield("date_start", _class="date", size=12, description="Start"),
-    Datefield("date_end", _class="date", size=12, description="End"),
+    Datefield("date_start", _class="date", size=15, description="Start"),
+    Datefield("date_end", _class="date", size=15, description="End"),
     Textarea("excerpt", rows=3, cols=43, description="Excerpt/Lead"),
     Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description="Content"),
     Textarea("deliverable", _class="rte", rel="#deliverablePreview", rows=9, cols=35, description="Deliverable"),
     Textbox("donation_amount_needed", size=30, description="Amount of donation needed (Rp)"),
-    Checkbox("need_donation", value="1", description="Need donation"),
-    Checkbox("need_volunteer", value="1", description="Need volunteer"),
+    Checkbox("need_donation", value="1", description="Needs donations"),
+    Checkbox("need_volunteer", value="1", description="Needs volunteers"),
+    Textbox("volunteer_tags", size="30", description="Volunteer skills needed"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
-    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=37, description="Tags")
+    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=43, description="Tags")
  )
 
 article_form = MyForm(
@@ -186,14 +183,14 @@ account_form = MyForm(
 profile_form = MyForm(
     Textbox("last_name", form.notnull, size=40, description="Full Name", title="Your organization/ corporate full name, eg. ACT Dompet Dhuafa"),
     Textarea("about", form.notnull, rows=3, cols=40, description="About You",title="Describe your entity in short paragraph"),
-    Textarea("profile_content", form.notnull, _class="rte", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
+    Textarea("profile_content", form.notnull, _class="rte", rel="#contentPreview", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
     Textbox("contact_person", size=40, description="Contact Person Name"),
     Textbox("phones", size=40, description="Phones", title="You can enter more than one number. Separate them with comma"),
     Textbox("fax", size=40, description="Fax"),
     Textarea("address", rows=3, cols=40, description="Address"),
     Textbox("email", size=40, description="E-Mail"),
     Textbox("website", size=40, description="Website"),
-    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Tags", title="Blah")
+    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Your Fields")
 )
 
 profile_public_form = MyForm(

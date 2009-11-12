@@ -13,7 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import os.path
 import urllib
 import tornado.web
 import functools
@@ -134,6 +134,10 @@ class BaseHandler(tornado.web.RequestHandler):
         ext = 'html'
         if self.is_xhr():
             ext = 'ajax'
+            
+        if self.settings.is_mobile_site:
+            template = os.path.join("mobile", template)      
+                  
         template = template + "." + ext
         kwargs.update(self.template_vars)
         super(BaseHandler, self).render(template, **kwargs)

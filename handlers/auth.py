@@ -17,7 +17,7 @@ import tornado.auth
 import tornado.escape
 import web.form
 from forms import login_form
-from .main import BaseHandler
+from main import BaseHandler
 from models import User
 from web.utils import Storage
 import logging
@@ -50,6 +50,9 @@ class LoginFormHandler(BaseHandler):
         next = self.get_argument('next', '/dashboard')
         if f.validates(Storage(self.get_arguments())):
             self.set_secure_cookie("username", username)
+            from datetime import datetime
+            user.last_login = datetime.now()
+            user.save()
             self.redirect(next)
         else:
             self.render("login-form", f=f, next=next)

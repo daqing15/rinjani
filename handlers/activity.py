@@ -16,7 +16,8 @@
 import datetime
 
 from main import BaseHandler, authenticated
-from forms import activity_form, CONTENT_TAGS_COLLECTION
+from forms import activity_form
+from settings import CONTENT_TAGS, USER_TAGS
 from models import Activity, EditDisallowedError
 from web.utils import Storage
 from utils.pagination import Pagination
@@ -62,7 +63,7 @@ class EditHandler(BaseHandler):
                 raise tornado.web.HTTPError(404)
         else:
             activity = Activity()
-        self.render("activity-edit", f=f, activity=activity, suggested_tags=CONTENT_TAGS_COLLECTION)
+        self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
     
     @authenticated(['agent', 'sponsor'])
     def post(self):
@@ -94,10 +95,11 @@ class EditHandler(BaseHandler):
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(activity.get_url())
         except Exception, e:
+            raise
             if attachments:
                 activity['attachments'] = data['attachments']
             f.note = f.note if f.note else e
-            self.render("activity-edit", f=f, activity=activity, suggested_tags=CONTENT_TAGS_COLLECTION)
+            self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
         
 
 class RemoveHandler(BaseHandler):

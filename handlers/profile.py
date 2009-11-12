@@ -13,19 +13,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from web.utils import Storage
-import web.form
-from main import BaseHandler, authenticated
-from models import User, Article, Activity, BankAccount
-from pymongo.dbref import DBRef
-from utils.pagination import Pagination
-from utils.utils import extract_input_array
-from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
-import tornado.web
-from tornado.escape import json_decode
 import logging
 import hashlib
-from utils.utils import move_attachments, parse_attachments
+
+import tornado.web
+from tornado.escape import json_decode
+from web.utils import Storage
+import web.form
+from pymongo.dbref import DBRef
+
+from main import BaseHandler, authenticated
+from models import User, Article, Activity, BankAccount
+from utils.pagination import Pagination
+from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
+from utils.utils import extract_input_array, move_attachments, parse_attachments
+from settings import BANKS, FIELD_TAGS
+
+
+USER_TYPE = {'social org':'agent', 'sponsor': 'sponsor', 'public':'public'}
 
 class ViewHandler(BaseHandler):
     def get(self, username):
@@ -146,14 +151,13 @@ class AccountHandler(BaseHandler):
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):
-        from forms import BANKS
         f = profile_form()
         user = self.current_user
         accounts = user.get_bank_accounts()
-        accounts = BankAccount.listify(accounts) if accounts else []
+        accounts = BankAccount.listify(accounts) if accounts.count() else []
         user.formify()
         f.fill(user)
-        self.render(user.type + "/profile-edit", f=f, user=user, accounts=accounts, BANKS=BANKS)
+        self.render(user.type + "/profile-edit", f=f, user=user, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
     
     @authenticated()
     def post(self):
@@ -162,7 +166,6 @@ class EditHandler(BaseHandler):
         user = self.current_user
         accounts = extract_input_array(self.request.arguments, 'acc_')
         accounts = User.filter_valid_accounts(accounts)
-        logging.warning(accounts)
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
@@ -186,7 +189,7 @@ class EditHandler(BaseHandler):
         except Exception, e:
             if not isinstance(e, InvalidFormDataError): raise
             f.note = f.note if f.note else e
-            self.render(user.type + '/profile-edit', f=f, accounts=accounts)
+            self.render(user.type + '/profile-edit', f=f, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
         
         
 class Dashboard(BaseHandler):
@@ -198,8 +201,13 @@ class Dashboard(BaseHandler):
 
 class UserListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, User, {})
-        self.render('users', pagination=pagination)
+        tab = self.get_argument('tab', 'social org')
+        try:
+            type = USER_TYPE[tab]
+        except:
+            type = USER_TYPE['social org']
+        pagination = Pagination(self, User, {'type':type})
+        self.render('users', pagination=pagination, tab=tab)
 
 class CommentsHandler(BaseHandler):
     @authenticated()

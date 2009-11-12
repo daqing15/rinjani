@@ -94,7 +94,11 @@ var Rinjani = {
 	
 	/* mod from multiply.com */
   	addTag: function(tag, el) {
-		tag_el = el || $('input[name=tags]').get(0);
+		if (el) {
+			tag_el = $(el).get(0);
+		} else {
+			tag_el = $('input[name=tags]').get(0);
+		}
         var value = tag_el.value;
         var usedTags = new Array;
         if (value.length) {
@@ -103,8 +107,8 @@ var Rinjani = {
         tag = tag.replace(new RegExp('(__SINGLE_QUOTE__)', 'g'), "'");
         for (var i in usedTags) {
             if (usedTags[i] == tag) {
-		if (!el) alert('' + tag + ' is already in the list.  To remove a tag, edit the field above.');
-		return;
+            	alert('' + tag + ' is already in the list.  To remove a tag, edit the field above.');
+            	return;
            }
         }
         usedTags.push(tag);
@@ -210,9 +214,11 @@ $(function() {
       closeOnClick: false,
       onBeforeLoad: function() { 
           // grab wrapper element inside content 
-          var wrap = this.getContent().find(".wDialog"); 
-          // load the page specified in the trigger 
-          wrap.load(this.getTrigger().attr("href")); 
+          var wrap = this.getContent().find(".wDialog");
+          url = this.getTrigger().attr("href");
+          if (url != '#') {
+        	  wrap.load(url);
+          }
       } 
   }); 
   
@@ -244,11 +250,12 @@ $(function() {
     });
     $('.rte').markItUp(mySettings);
     $('li.preview a').trigger('mouseup');
+    $('li.tPreview a').trigger('mouseup');
     $('.rte').each(function() {
       $(this).css('height', $(this).attr('rows') + 'em');
     });
+    scroll(0,0);
   }
-
-    $("ul.tabs").tabs("div.panes > div"); 
-    
+  
+  $("ul.tabs").tabs("div.panes > div"); 
 });

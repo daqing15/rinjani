@@ -60,10 +60,25 @@
                 {{ modules.Formfield(f.profile_content) }}
                 <div id="contentPreview" class="cb"></div>
                 
-                <div class="line attachments"></div>
-                <div class="line uploader">
-                    <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
-                    <div id="loading" style="display:none">uploading...</div>
+                <div class="line">
+                    <div class="unit size2of3 photos">
+                        <div class="line attachments">
+                            
+                        </div>
+                        <div class="line uploader">
+                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                            <div id="loading" style="display:none">uploading...</div>
+                        </div>
+                    </div>
+                    <div class="lastUnit size1of3">
+                        <div class="mod highlight">
+                            <div class="inner">
+                                <div class="bd">
+                                    <p>{{_('Help')}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
              <div class="pane">
@@ -76,7 +91,7 @@
                     </div>
                     <div class="lastUnit size2of5">
                         <label>{{_('Select your location in map')}}</label>
-                        <div class="loc" style="width:250px; height:180px; background:url(/static/uploads/maps/psm.gif) no-repeat;">
+                        <div style="width:400px; height: 200px; background:#eee;">
                         </div>
                     </div>
                  </div>
@@ -187,7 +202,5 @@ slug = '{{ user.username }}';
 {% block postinlinejs %}
 <script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
 {% end %}
-
-
 
 

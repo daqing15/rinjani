@@ -78,3 +78,13 @@ class EditHandler(BaseHandler):
                 page['attachments'] = data['attachments']
             f.note = f.note if f.note else e
             self.render("page-edit", f=f, page=page)
+            
+class RemoveHandler(BaseHandler):
+    def post(self, slug):
+        page = Page.one({"slug": slug})
+        if not page:
+            raise tornado.web.HTTPError(404)
+        
+        page.remove()
+        self.set_flash("That page has been removed")
+        self.redirect("/")                 

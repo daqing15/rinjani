@@ -34,72 +34,81 @@
                     <div class="unit size2of3">
         				{{ modules.Formfield(f.title) }}
         				{{ modules.Formfield(f.excerpt) }}
-        				<div style="width: 360px">
-        					{{ modules.FormfieldInColumns(f.date_start, f.date_end) }}
-        				</div>
+                        
+                         {{ modules.Formfield(f.tags) }}
+                        <div class="tags suggestedtags">
+                            {{ modules.TagSuggestion(content_tags)}}
+                        </div>
+                    
                     </div>
                     <div class="lastUnit size1of3">
                         <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                        <div class="loc" style="width:250px; height:180px; background:#eee">
+                        <div class="loc" style="width:250px; height:180px; background:url(/static/uploads/maps/psm.gif) no-repeat;">
                             
                         </div>
                     </div>
                 </div>
                 <div class="line">
-                    {{ modules.Formfield(f.tags) }}
-                    <div class="tags suggestedtags">
-                        {{ modules.TagSuggestion(suggested_tags)}}
-                    </div>
+                   
                 </div>
 			</div>
 			<div class="pane">
                 {{ modules.Formfield(f.content) }}
-                <div id="contentPreview"></div>
+                <div id="contentPreview" class="cb"></div>
                 <div class="line">
-                    <div class="unit size2of3 photos">
-                        <div class="line attachments">
-                            
-                        </div>
-                        <div class="line uploader">
-                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
-                            <div id="loading" style="display:none">{{_('uploading...')}}</div>
-                        </div>
+                    <div class="line attachments">
+                        
                     </div>
-                    <div class="lastUnit size1of3">
-                        <div class="mod highlight">
-                            <div class="inner">
-                                <div class="hd"><h3>{{_('Help')}}</h3></div>
-                                <div class="bd">
-                                    <p>{{ _('You can upload files of type photos/image (JPG/GIF/PNG) and PDF.')}}</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="line uploader">
+                        <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                        <div id="loading" style="display:none">{{_('uploading...')}}</div>
                     </div>
                 </div>
-			</div>
-			<div class="pane">
-                <div class="line" style="width: 80%">
-                    <div class="unit size1of2">
-                        {{ modules.Formfield(f.need_donation) }} <span class="grey small">If checked, your <a target="_blank" href="/profile/edit#fb">Bank Account</a> will be displayed.</span>
-                        <div id="wDA">
-                            {{ modules.Formfield(f.donation_amount_needed) }}
-                        </div>       
-                    </div>
-                    <div class="lastUnit size1of2">
-                        {{ modules.Formfield(f.enable_comment) }}
-                    </div>
-                </div>
-                <hr />                
+                
                 {{ modules.Formfield(f.deliverable) }}
                 <div id="deliverablePreview"></div>
-				<br />
+                
+			</div>
+			<div class="pane">
+                <div class="line">
+                    <div class="unit size1of3">
+                        <div class="line">
+                        {{ modules.Formfield(f.date_start) }}
+                        {{ modules.Formfield(f.date_end) }}
+                        </div>
+                         <hr class="hrthin" />
+                        {{ modules.Formfield(f.enable_comment) }}
+                    </div>
+                    <div class="lastUnit size2of3">
+                        <div class="deps">
+                            <div class="depsrc">
+                                {{ modules.Formfield(f.need_donation) }} <span class="grey small">If checked, your <a target="_blank" href="/profile/edit#fb">Bank Account</a> will be displayed.</span>
+                            </div>
+                            <div class="deptarget">
+                            {{ modules.Formfield(f.donation_amount_needed) }}
+                            </div>
+                        </div>   
+                        <div class="deps">
+                            <div class="depsrc">
+                                {{ modules.Formfield(f.need_volunteer) }} 
+                            </div>
+                            <div class="deptarget">
+                                {{ modules.Formfield(f.volunteer_tags) }}
+                                <div class="tags suggestedtags">
+                                    {{ modules.TagSuggestion(user_tags, '#volunteer_tags')}}
+                                </div>
+                            </div>
+                        </div>             
+                    </div>
+                </div>
+                
                 
 			</div>
 		</div>
 	</div>
 </div>
 			
-<div class="actionbar">
+<div class="buttons">
 <input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
 
 {% if not activity.slug or activity.status == 'draft' %}
@@ -128,16 +137,19 @@
     
 </form>
 
+<style>
+.deptarget { display:none; margin-left: 22px;}
+.suggestedtags p { padding:3px 0; }
+</style>
 <script type="text/javascript">
-$donation = $('#need_donation_1');
-$donation_amount = $('#wDA');
-$donation_amount.hide();
-if ($donation.attr('checked')) {
-    $donation_amount.show();
-}
-
-$donation.change(function() {
-	$donation_amount.toggle();      
+$('.deps').each(function() {
+    $src = $(this).find('.depsrc input[type=checkbox]');
+    $src.click(function(i) { 
+        $(this).parents('.deps').find('.deptarget').toggle();
+    });
+    if ($src.attr('checked')) {
+    	$(this).find('.deptarget').show();
+    }
 });
 
 // uploads

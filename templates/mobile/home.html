@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _("Home") }}{% end %}
+
+{% block body %}
+
+{{ modules.Splash() }}
+
+{{ modules.ArticleLatest(limit=5) }}
+
+{% end %}
+
+
+{% block sidebar %}
+    {{ modules.Static('welcome') }}
+{% end %}
+
+

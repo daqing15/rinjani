@@ -1,0 +1,13 @@
+{% extends '_dashboard.html' %}
+
+{% block tabContent %}
+
+{{ modules.Tabs('dashboard_agent', 'donations') }}
+
+{{ modules.ProfileStreams(current_user) }}
+
+<form action="donation/confirm" method="post">
+    
+</form>
+{% end %}
+

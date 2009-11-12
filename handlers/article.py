@@ -19,7 +19,8 @@ import datetime
 from web.utils import Storage
 
 from main import BaseHandler, authenticated
-from forms import article_form, CONTENT_TAGS_COLLECTION
+from forms import article_form
+from settings import CONTENT_TAGS
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
@@ -63,7 +64,7 @@ class EditHandler(BaseHandler):
         else:
             article = Article()
         
-        self.render("article-edit", f=f, article=article, suggested_tags=CONTENT_TAGS_COLLECTION)
+        self.render("article-edit", f=f, article=article, content_tags=CONTENT_TAGS)
     
     @authenticated()
     def post(self):
@@ -99,7 +100,7 @@ class EditHandler(BaseHandler):
             if attachments:
                 article['attachments'] = data['attachments']
             f.note = f.note if f.note else e
-            self.render("article-edit", f=f, article=article, suggested_tags=CONTENT_TAGS_COLLECTION)
+            self.render("article-edit", f=f, article=article, content_tags=CONTENT_TAGS)
     
     
 class RemoveHandler(BaseHandler):

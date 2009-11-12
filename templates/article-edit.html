@@ -33,32 +33,19 @@
 				
                 {{ modules.Formfield(f.tags) }}
                 <div class="tags suggestedtags">
-                    {{ modules.TagSuggestion(suggested_tags)}}
+                    {{ modules.TagSuggestion(content_tags)}}
                 </div>
 			</div>
 			<div class="pane">
 				{{ modules.Formfield(f.content) }}
                 <div id="contentPreview" class="cb"></div>
                 
-                <div class="line">
-                    <div class="unit size2of3 photos">
-                        <div class="line attachments"></div>
-                        <div class="line uploader">
-                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
-                            <div id="loading" style="display:none">{{_('uploading...')}}</div>
-                        </div>
-                    </div>
-                    <div class="lastUnit size1of3">
-                        <div class="mod highlight">
-                            <div class="inner">
-                                <div class="bd">
-                                    <h3>{{_('Help')}}</h3>
-                                    <p>{{ _('If you have more than one image attachments, you can insert &#123;&#123; slideshow &#125;&#125;')}}<code>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="line attachments"></div>
+                <div class="line uploader">
+                    <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                    <div id="loading" style="display:none">{{_('uploading...')}}</div>
                 </div>
+                    
 			</div>
 		</div>
 	</div>

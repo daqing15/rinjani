@@ -24,10 +24,7 @@ from utils.utils import unique_filename, create_thumbnails, sanitize_path
 from utils.string import slugify
 import models
 
-PIC_SIZES = [((50,50), True, 's'), ((110,90), True, 'm'), ((550, 700), False, '')]
-IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
-ALLOWED_CONTENT_TYPES = IMAGE_CONTENT_TYPES +  \
-        ['application/msword', 'application/msexcel', 'application/pdf']
+from settings import PIC_SIZES,IMAGE_CONTENT_TYPES, ALLOWED_CONTENT_TYPES
             
 class AddHandler(BaseHandler):
     html = r"""

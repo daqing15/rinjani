@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from settings import IMAGE_CONTENT_TYPES
+
 _base_js_escapes = (
     ('\\', r'\x5C'),
     ('\'', r'\x27'),
@@ -58,14 +60,72 @@ def alternate(items):
 def get(val, default):
     return val or default
 
+def group(seq, size): 
+    """
+    Returns an iterator over a series of lists of length size from iterable.
+
+        >>> list(group([1,2,3,4], 2))
+        [[1, 2], [3, 4]]
+    """
+    if not hasattr(seq, 'next'):  
+        seq = iter(seq)
+    while True: 
+        yield [seq.next() for i in xrange(size)]
+
+# web.py utils
+def to36(q):
+    """
+    Converts an integer to base 36 (a useful scheme for human-sayable IDs).
+    
+        >>> to36(35)
+        'z'
+        >>> to36(119292)
+        '2k1o'
+        >>> int(to36(939387374), 36)
+        939387374
+        >>> to36(0)
+        '0'
+        >>> to36(-393)
+        Traceback (most recent call last):
+            ... 
+        ValueError: must supply a positive integer
+    
+    """
+    if q < 0: raise ValueError, "must supply a positive integer"
+    letters = "0123456789abcdefghijklmnopqrstuvwxyz"
+    converted = []
+    while q != 0:
+        q, r = divmod(q, 36)
+        converted.insert(0, letters[r])
+    return "".join(converted) or '0'
+
+# http://birdnest.googlecode.com/svn/branches/gae/web/utils.py
+def cond(predicate, consequence, alternative=None):
+    """
+    Function replacement for if-else to use in expressions.
+        
+        >>> x = 2
+        >>> cond(x % 2 == 0, "even", "odd")
+        'even'
+        >>> cond(x % 2 == 0, "even", "odd") + '_row'
+        'even_row'
+    """
+    if predicate:
+        return consequence
+    else:
+        return alternative
+
 def getarr(arr, idx, default=None):
     try:
         return arr[idx]
     except: pass
     return default
 
-def medium_size(attachment):
-    return attachment['thumb_src'].replace('.s.', '.m.')
+def medium_size(attachments):
+    for a in attachments:
+        if a['type'] in IMAGE_CONTENT_TYPES:
+            return a['thumb_src'].replace('.s.', '.m.')
+    return 'default_cover.png'
 
 ### html tag helpers
 def link_to(to, label=None, **attrs):

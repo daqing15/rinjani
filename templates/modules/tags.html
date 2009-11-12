@@ -8,28 +8,4 @@
 <hr class="hrthin" />
 {% end %}
 
-{% if current_user %}
-<form action="">
-    <h3 style="margin-bottom:5px">{{ _('Your Tag')}}:</h3>
-    <div class="mytag">
-        <label class="tag t1"> <input type="radio" class="ut" name="usertag"/>Penting <span>(23)</span></label>
-        <label class="tag t2 me"> <input type="radio" class="ut" name="usertag"/>Menarik <span>(19)</span></label>
-        <label class="tag t3"> <input type="radio" class="ut" name="usertag"/>Membosankan <span>4</span></label>
-        <label class="tag t4"> <input type="radio" class="ut" name="usertag"/>Gak Relevan <span>1</span></label>
-        <label class="tag ts"> <input type="radio" class="ut" name="usertag"/>Sampah <span>0</span></label>
-        <label class="tag hidden"> <input type="radio" class="ut" name="usertag"/>Sampah <span>0</span></label>
-    </div>  
-</form>
-
-{% else %}
-    <h3>{{ _('User tag')}}</h3>
-    <div class="mytag">
-        <label class="tag t1">Penting <span>(23)</span></label>
-        <label class="tag t2 me">Menarik <span>(19)</span></label>
-        <label class="tag t3">Membosankan <span>4</span></label>
-        <label class="tag t4">Gak Relevan <span>1</span></label>
-        <label class="tag ts">Sampah <span>0</span></label>
-        <label class="tag hidden">Sampah <span>0</span></label>
-    </div>  
-{% end %}
 

@@ -6,7 +6,7 @@
 
 {{ f.rendernote(f.note) }}
 
-<form action="{{BP}}/register" method="post">
+<form action="{{BP}}/register" method="post" class="withtips">
 
 <div id="subheader">
     <h2>{{ _('Register') }}</h2>
@@ -19,7 +19,7 @@
 
 
 <div class="line">
-	<div class="unit size1of3">
+	<div class="unit size1of4">
 	   <div class="mod simple2">
 	       <div class="inner">
 	           <div class="hd"><h3>Tips</h3></div>
@@ -33,7 +33,7 @@
 	       </div>
 	   </div>
 	</div>
-	<div class="lastUnit size2of3">
+	<div class="lastUnit size3of4">
 	   <div class="sep-left leftpadded10">
 			
             {{ modules.Formfield(f.username) }}

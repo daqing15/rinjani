@@ -10,6 +10,8 @@ from utils.inline import processor, AttachmentInline, SlideshowInline
 
 class EditDisallowedError(Exception): pass
 
+RATING = {'b':'Bagus', 'm':'Menarik', 'p':'Penting'}
+
 class BaseDocument(MongoDocument):
     db_host = app_settings['db_host']
     db_port = app_settings['db_port']
@@ -152,8 +154,6 @@ class User(BaseDocument):
         'preferences': list,
         'badges': list,
         'reputation': int,
-        'up_votes': int,
-        'down_votes': int,
         'article_count': int,
         'activity_count': int,
         'donation_count': int,
@@ -165,7 +165,7 @@ class User(BaseDocument):
         'status': u'active',
         'is_admin': False,
         'article_count': 0, 'activity_count': 0, 'donation_count': 0,  
-        'created_at':datetime.datetime.utcnow, 
+        'created_at':datetime.datetime.now, 
         'type': u'public'
     }
 
@@ -177,13 +177,12 @@ class User(BaseDocument):
             return
         
         self.populate(data)
-        logging.error(data)
         if user and data.has_key('bank_accounts'):
             self.update_bank_accounts(user, data['bank_accounts'])
         super(User, self).save(True, True)
     
     def update_bank_accounts(self, user, accounts):
-        _accounts = list(user.related.bank_accounts())
+        _accounts = list(user.get_bank_accounts())
         prev_accounts = [acc['_id'] for acc in _accounts]
         updated_accounts = []
         
@@ -194,10 +193,10 @@ class User(BaseDocument):
                     BankAccount.add_account(user, acc)
                 elif acc[4] in prev_accounts:
                     i = prev_accounts.index(acc[4])
-                    del(prev_accounts[i])
+                    #del(prev_accounts[i])
+                    updated_accounts.append(acc[4])
                     if self.is_bank_data_dirty(acc, _accounts[i]):
                         logging.warning("%s is dirty. Updating..." % acc[4])
-                        updated_accounts.append(acc[4])
                         BankAccount.update_account(acc)
             except: pass
         
@@ -262,6 +261,7 @@ class Content(BaseDocument):
             new = True
             self.fill_slug_field(self['title'])
         
+        self.updated_at = datetime.datetime.now()
         super(Content, self).save(True, True)
         self.post_save(new)
     
@@ -291,6 +291,7 @@ class Article(Content):
         'comment_count': int,
         'view_count': int,
         'tags': list,
+        'rating': dict,
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
@@ -325,17 +326,20 @@ class Activity(Content):
         'location': {'lat': float, 'lang': float},
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
         'tags': list,
-        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'checked_by': list,
-        'links': list,
+        'links': unicode,
         'enable_comment': bool,
         'need_volunteer': bool,
+        'volunteer_tags': list,
         'need_donation': bool,
         'donation_amount_needed': int,
         'donation_amount': float,
         'comment_count': int,
         'view_count': int,
-        'created_at': datetime.datetime
+        'rating': dict,
+        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
+        'created_at': datetime.datetime,
+        'updated_at': datetime.datetime
     }
     required_fields = ['author', 'status', 'title', 'content']
     sanitized_fields = ['excerpt', 'content', 'deliverable']
@@ -363,7 +367,7 @@ class Page(Content):
     }
     required_fields = ['title', 'content']
     sanitized_fields = ['content']
-    default_values = {'created_at':datetime.datetime.utcnow}
+    default_values = {'created_at':datetime.datetime.now}
     
     def get_url(self):
         return "/page/" + self['slug']
@@ -384,7 +388,7 @@ class Comment(BaseDocument):
        'updated_at': datetime.datetime
     }
     required_fields = ['author', 'text']
-    default_values = {'created_at':datetime.datetime.utcnow}
+    default_values = {'created_at':datetime.datetime.now}
     
 class Volunteer(BaseDocument):
     collection_name = 'volunteers'
@@ -396,7 +400,7 @@ class Volunteer(BaseDocument):
         'status_updated_at': datetime.datetime 
     } 
     required_fields = ['user', 'activity']
-    default_values = {'status': u'pending', 'asked_at':datetime.datetime.utcnow}
+    default_values = {'status': u'pending', 'asked_at':datetime.datetime.now}
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'
@@ -410,7 +414,7 @@ class BankAccount(BaseDocument):
     }  
     required_fields = ['owner', 'label', 'bank', 'number', 'holder']
     fields = ['label', 'bank', 'number', 'holder']
-    default_values = {'created_at':datetime.datetime.utcnow}
+    default_values = {'created_at':datetime.datetime.now}
     indexes = [ { 'fields': ['bank', 'number'], 'unique': True} ]
     
     @classmethod
@@ -456,5 +460,5 @@ class Donation(BaseDocument):
         'created_at': datetime.datetime
     }  
     required_fields = ['from', 'to', 'transfer_no', 'amount']
-    default_values = {'is_validated': False, 'created_at':datetime.datetime.utcnow}
+    default_values = {'is_validated': False, 'created_at':datetime.datetime.now}
     validators = { "amount": lambda x: x > 0}

@@ -4,43 +4,47 @@
 
 {% block body %}
 
-<div id="subheader">
-    <h2>{{ _('Users') }}</h2>
-    <div id="tabs">
-        <a href="{{BP}}/users?tab=a" class="youarehere">{{_('social org')}}</a>
-		<a href="{{BP}}/users?tab=s">{{_('sponsor')}}</a>
-		<a href="{{BP}}/users?tab=p">{{_('public')}}</a>
-    </div>
-</div>
+{{ modules.Tabs('users', tab) }}
 
 <div class="items">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% for user in pagination.get_objects() %}
-<div class="unit size1of3 {{h.alternate(c)}}">
-      <div class="mod bubble bubbleBottom yoyo bubbleVerticalExt"> 
-         <b class="top"><b class="tl"></b><b class="tr"></b></b> 
-         <div class="inner">
-             <div class="bd">
-               {% if user.about %}<h5>{{ user.about }}</h5>{% end %}
-               <p>
-               {% if user.article_count %}{{user.article_count}} articles {% end %}
-               {% if user.activity_count %}{{user.activity_count}} activities{% end %}
-               </p>
+
+{% if pagination.get_objects().count() %}
+
+    {% for user in pagination.get_objects() %}
+    <div class="unit size1of3 {{h.alternate(c)}}">
+        
+          <div class="mod bubble bubbleBottom yoyo bubbleVerticalExt"> 
+             <b class="top"><b class="tl"></b><b class="tr"></b></b> 
+             <div class="inner">
+                 <div class="bd">
+                   {% if user.about or user.article_count or user.activity_count %}
+                       {% if user.about %}<h5>{{ user.about }}</h5>{% end %}
+                       <p>
+                       {% if user.article_count %}{{user.article_count}} articles {% end %}
+                       {% if user.activity_count %}{{user.activity_count}} activities{% end %}
+                       </p>
+                    {% else %}
+                        <p>{{ _('No activity yet') }}</p>
+                    {% end %}
+                 </div>
              </div>
+             <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
          </div>
-         <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
-     </div>
-       <div class="media attribution atb2">
-          {{ modules.Avatar(user) }}
-          <div class="bd">
-            <a href="{{user.get_url()}}">{{ user.username}}</a> 
-            <span class="detail">
-            {{_('joined since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
-            </span>
-          </div>
-      </div>      
-</div>
-{% end %}
+           <div class="media attribution atb2">
+              {{ modules.Avatar(user) }}
+              <div class="bd">
+                <a href="{{user.get_url()}}">{{ user.username}}</a> 
+                <span class="detail">
+                {{_('joined since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+                </span>
+              </div>
+          </div>      
+    </div>
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None yet') }}</p>
+{% end %}    
 </div>
 <p class="clear"></p>
 

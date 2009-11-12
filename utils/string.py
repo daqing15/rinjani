@@ -13,7 +13,89 @@ def title(s):
 def capfirst(s):
     """Capitalizes the first character of the value."""
     return s and s[0].upper() + s[1:]
+
+def _strips(direction, text, remove):
+    if direction == 'l': 
+        if text.startswith(remove): 
+            return text[len(remove):]
+    elif direction == 'r':
+        if text.endswith(remove):   
+            return text[:-len(remove)]
+    else: 
+        raise ValueError, "Direction needs to be r or l."
+    return text
+
+def rstrips(text, remove):
+    """
+    removes the string `remove` from the right of `text`
+
+        >>> rstrips("foobar", "bar")
+        'foo'
     
+    """
+    return _strips('r', text, remove)
+
+def lstrips(text, remove):
+    """
+    removes the string `remove` from the left of `text`
+    
+        >>> lstrips("foobar", "foo")
+        'bar'
+    
+    """
+    return _strips('l', text, remove)
+
+def strips(text, remove):
+    """
+    removes the string `remove` from the both sides of `text`
+
+        >>> strips("foobarfoo", "foo")
+        'bar'
+    
+    """
+    return rstrips(lstrips(text, remove), remove)
+
+def commify(n, sep='.'):
+    """Add commas to an integer `n`"""
+
+    if n is None: return None
+    r = []
+    for i, c in enumerate(reversed(str(n))):
+        if i and (not (i % 3)):
+            r.insert(0, sep)
+        r.insert(0, c)
+    return ''.join(r)
+
+def numify(string):
+    """
+    Removes all non-digit characters from `string`.
+    
+        >>> numify('800-555-1212')
+        '8005551212'
+        >>> numify('800.555.1212')
+        '8005551212'
+    
+    """
+    return ''.join([c for c in str(string) if c.isdigit()])
+
+def denumify(string, pattern):
+    """
+    Formats `string` according to `pattern`, where the letter X gets replaced
+    by characters from `string`.
+    
+        >>> denumify("8005551212", "(XXX) XXX-XXXX")
+        '(800) 555-1212'
+    
+    """
+    out = []
+    for c in pattern:
+        if c == "X":
+            out.append(string[0])
+            string = string[1:]
+        else:
+            out.append(c)
+    return ''.join(out)
+
 def listify(value, separator=','):
     if value and value.strip():
         return [item.strip() for item in value.split(separator)if item.strip()]

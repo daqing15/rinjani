@@ -37,10 +37,6 @@ class ArticleLatest(BaseUIModule):
             return self.render_string("modules/articles-latest.html", articles=articles)
         else: return ''
         
-class ArticleStat(BaseUIModule):
-    def render(self, article):
-        return self.render_string("modules/article-stat.html", article=article)
-
 class ArticlesRelated(BaseUIModule):
     def render(self, tags):
         return self.render_string("modules/articles-related.html", articles={}) 
@@ -104,7 +100,11 @@ class IsDraft(BaseUIModule):
         if item.status == 'draft':
             return self.render_string('modules/draft.html')
         return ""
-                                          
+
+class ItemStat(BaseUIModule):
+    def render(self, item):
+        return self.render_string("modules/item-stat.html", item=item)
+                                              
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
         return self.render_string(template, item=item)
@@ -170,7 +170,7 @@ class Slideshow(BaseUIModule):
 
 class Splash(BaseUIModule):
     def render(self):
-        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}, 'attachments.type':{'$ne':'application/pdf'}})\
+        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}})\
             .sort("created_at", pymongo.DESCENDING).limit(3)
         return self.render_string("modules/splash.html", items=items)
     
@@ -208,8 +208,8 @@ class Tags(BaseUIModule):
         return self.render_string("modules/tags.html", tags=tags)
 
 class TagSuggestion(BaseUIModule):
-    def render(self, tags):
-        return self.render_string("modules/tags-suggestion.html", tags=tags)
+    def render(self, tags, el=None):
+        return self.render_string("modules/tags-suggestion.html", tags=tags, el=el)
     
 class TagContent(BaseUIModule):
     def render(self, slug, type='article'):

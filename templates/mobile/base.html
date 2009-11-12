@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{{_('Welcome')}}{% end %} - {{ escape(settings.blog_title) }}</title>
+    {% block head %}{% end %}
+</head>
+
+<body><div class="page">
+
+<div class="head">
+    <p>Peduli.com. <a href="/">Home</a> <a href="/articles">Articles</a></p>
+</div><!-- /.head -->     
+
+    <div class="body roundedbig">
+        <div class="main">
+            <div class="mainWrapper {% block wpclass %}{% end %}">
+		        {{ modules.Flash() }}
+		        {% block body %}{% end %}
+            </div>
+        </div>
+        <div class="rightCol">
+            {% block sidebar %}{% end %}
+        </div>
+
+    </div>
+</div><!-- /.page -->
+</body>
+</html>

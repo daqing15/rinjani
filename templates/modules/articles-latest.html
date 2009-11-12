@@ -10,7 +10,7 @@
 	{% for article in articles %}
 	<div class="line">
 	   <div class="unit size1of7">
-        <img src="/static/uploads/avatars/avatar3.jpg" />
+        {{ modules.Avatar(article.author) }}
 	   </div>
 	   <div class="lastUnit size6of7">
 	       <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>

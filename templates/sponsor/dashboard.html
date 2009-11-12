@@ -1,0 +1,39 @@
+{% extends '_dashboard.html' %}
+
+{% block tabContent %}
+
+{{ modules.Tabs('dashboard_agent', 'dashboard') }}
+
+<div class="line">
+    <div class="unit size2of3">
+        {{ modules.ProfileStreams(current_user) }}
+    </div>
+    
+    <div class="lastUnit size1of3">
+        <div class="mod simple">
+            <div class="inner">
+                <div class="hd"><h3>{{ _('Draft Items')}}</h3></div>
+                <div class="bd">
+
+{% if pg_article.total_pages > 0 or pg_activity.total_pages > 0 %}
+<ul>
+{% for item in pg_article.get_objects() %}
+    <li><a href="/article/edit/{{item.slug}}">{{item.title}}</a></li>
+{% end %}
+
+{% for item in pg_activity.get_objects() %}
+    <li><a href="/activity/edit/{{item.slug}}">{{item.title}}</a></li>
+{% end %}
+</ul>
+
+{% else %}
+<p class="grey">{{ _('None') }}</p>
+{% end %}        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}
+

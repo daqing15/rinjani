@@ -45,3 +45,9 @@ activities = ('Activities', [
     ('/activities?tab=popular', 'popular'),
 ])
 
+
+users = ('Users', [
+    ('/users?tab=social+org', 'social org'),
+    ('/users?tab=sponsor', 'sponsor'),
+    ('/users?tab=public', 'public'),
+])

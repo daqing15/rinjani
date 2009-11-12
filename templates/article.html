@@ -32,7 +32,7 @@
         {{ h.link_if_editor(current_user, article.author, BP + '/article/edit/' + article.slug, _('Edit'), _class='button') }} 
         {{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }} 
     </div>
-    {{ modules.ArticleStat(article) }}
+    {{ modules.ItemStat(article) }}
 {% end %}
 
 
