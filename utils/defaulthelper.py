@@ -60,17 +60,31 @@ def alternate(items):
 def get(val, default):
     return val or default
 
+def groups(seq, size):
+    if not hasattr(seq, 'next'):  
+            seq = iter(seq)
+    while True: 
+        yield [seq.next() for i in range(size)]
+        
 def group(seq, size): 
     """
     Returns an iterator over a series of lists of length size from iterable.
-
-        >>> list(group([1,2,3,4], 2))
-        [[1, 2], [3, 4]]
+        >>> list(group([1,2,3,4,5], 2))
+        [[1, 2], [3, 4], [5]]
     """
     if not hasattr(seq, 'next'):  
         seq = iter(seq)
     while True: 
-        yield [seq.next() for i in xrange(size)]
+        x = []
+        for i in range(size):
+            try:
+                x.append(seq.next())
+            except: pass 
+        
+        if x:
+            yield x
+        else:
+            raise StopIteration
 
 # web.py utils
 def to36(q):

@@ -20,8 +20,11 @@ from utils.string import sanitize
 
 class HomeHandler(BaseHandler):
     def get(self):
+        was_here = self.get_cookie('was_here', False)
+        if not was_here:
+            self.set_cookie('was_here', '1')
         articles = Article.all({'slug': 'article-pertama'}) 
-        self.render("home", articles=articles)
+        self.render("home", articles=articles, was_here=was_here)
 
 class MarkdownPreviewHandler(BaseHandler):
     def post(self):

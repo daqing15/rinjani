@@ -23,9 +23,9 @@ import web.form
 from pymongo.dbref import DBRef
 
 from main import BaseHandler, authenticated
-from models import User, Article, Activity, BankAccount
+from models import User, Article, Activity, BankAccount, Comment
 from utils.pagination import Pagination
-from forms import profile_form, register_form, new_user_form, account_form, InvalidFormDataError
+from forms import profile_form, register_form, new_user_form, account_form, comment_form, InvalidFormDataError
 from utils.utils import extract_input_array, move_attachments, parse_attachments
 from settings import BANKS, FIELD_TAGS
 
@@ -220,16 +220,37 @@ class CommentsHandler(BaseHandler):
         pass
         
 class ProfileCommentsHandler(BaseHandler):
-    def get(self, username):
+    def get_comments_for(self, username):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        pagination = Pagination(self, User, {}, 1)
-        self.render('public/profile-comments', pagination=pagination, user=user)
+        spec = {'for': DBRef(User.collection_name, user._id)}
+        return (user, Pagination(self, Comment, spec))
+    
+    def get(self, username):
+        user, pagination = self.get_comments_for(username)
+        f = comment_form()
+        self.render('public/profile-comments', pagination=pagination, user=user, f=f)
     
     @authenticated()
-    def post(self):
-        pass
+    def post(self, username):
+        user, pagination = self.get_comments_for(username)
+        f = comment_form()
+        data = self.get_arguments()
+        try:
+            if f.validates(Storage(data)):
+                comment = Comment()
+                comment['from'] = self.current_user
+                comment['for'] = user
+                comment['comment'] = data['comment']
+                comment.save()
+                self.set_flash("Comment has been saved")
+                self.redirect("/profile/comments/" + username)
+                return
+            raise Exception()
+        except Exception, e:
+            f.note = f.note if f.note else e
+            self.render('public/profile-comments', pagination=pagination, user=user, f=f)
 
 class ArticlesHandler(BaseHandler):
     def get(self, username):

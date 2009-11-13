@@ -165,10 +165,10 @@ var Rinjani = {
 	        t.focus();
 	    }
 	    //MOZILLA/NETSCAPE support
-	    else if (this.selectionStart || this.selectionStart == '0') {
-	        var startPos = this.selectionStart;
-	        var endPos = this.selectionEnd;
-	        var scrollTop = this.scrollTop;
+	    else if (t.selectionStart || t.selectionStart == '0') {
+	        var startPos = t.selectionStart;
+	        var endPos = t.selectionEnd;
+	        var scrollTop = t.scrollTop;
 	        t.value = t.value.substring(0, startPos)
 	              + s
 	              + t.value.substring(endPos, t.value.length);

@@ -108,7 +108,11 @@ class ItemStat(BaseUIModule):
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
         return self.render_string(template, item=item)
-    
+
+class ItemComment(BaseUIModule):
+    def render(self, item):
+        return self.render_string('modules/item-comment.html', item=item)
+        
 class Locale(BaseUIModule):
     def render(self):
         from tornado.locale import LOCALE_NAMES
@@ -159,7 +163,7 @@ class ReportBox(BaseUIModule):
 class Static(BaseUIModule):
     def render(self, template):
         path = os.path.join(self.handler.application.settings['template_path'], \
-            "modules", "statics", template + ".html")
+            "modules", "statics", template.lower() + ".html")
         if os.path.exists(path):
             return self.render_string("modules/statics/%s.html" % template)
         return ''

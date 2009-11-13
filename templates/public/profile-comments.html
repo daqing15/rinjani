@@ -6,28 +6,59 @@
 
 {{ modules.Tabs('profile_public', 'comments', fullname=user.username, username=user.username) }}
 
-<div class="mod simple3">
-<b class="top"><b class="tl"></b><b class="tr"></b></b>
-<div class="inner">
-    <div class="bd">
-        <div class="line item-summary">
-           <div class="unit thumb2"></div>
-           <div class="lastUnit">
-               <p>Apito: Apa kabar?<p>
-           </div>
+
+<div class="line">
+    <div class="unit size2of3">
+    {% set objects = pagination.get_objects() %}
+    {% if objects.count() %}
+        {% for items in h.group(objects,2) %}
+            <div class="line">
+              <div class="unit size1of2">
+                  {{ modules.ItemComment(items.pop()) }}
+              </div>
+              {% if len(items) %}
+              <div class="lastUnit size1of2">
+                  {{ modules.ItemComment(items.pop()) }}
+              </div>
+              {% end %}
+            </div>
+        {% end %}
+    {% else %}
+        <p>La</p>
+    {% end %}
+    </div>
+    <div class="lastUnit size1of3">
+        <div class="mod simple">
+            <div class="bd" style="position:relative">
+                {% if current_user %}
+                {{ f.rendernote(f.note) }}
+                <form method="post" class="line withtips">
+                    {{ modules.Formfield(f.comment) }}
+                    {{ xsrf_form_html() }}
+                    <div class="buttons">
+                        <button class="positive" name="send">{{_('Give Comment')}}</button>
+                    </div>
+                </form>
+                {% else %}
+                    <p>{{ _('Login to give comment to this user') }}</p>
+                {% end %}
+            </div>
         </div>
-        <div class="line item-summary">
-           <div class="unit thumb2">
-           </div>
-           <div class="lastUnit">
-               <p>Phajero: Whoo.. where've you been?</p>
-           </div>
-        </div>
-        <p class="grey small">events related to this profile (comment, donations, etc)</p>
     </div>
 </div>
-<b class="bottom"><b class="bl"></b><b class="br"></b></b>
-</div>
+
+{% if current_user %}
+<style>
+.jmaxtext { float: right; }
+</style>
+<script type="text/javascript">
+$("#comment").maxinput({
+    limit: 100,
+    position: 'before',
+    message: '{{_('characters left')}}'
+});
+</script>
+{% end %}
 
 {% end %}
 

@@ -1,0 +1,25 @@
+<div class="line comment">
+    <div class="unit size2of5">
+        <div class="media attribution">
+          {{ modules.Avatar(item['from']) }}
+          <div class="bd">
+            <a href="{{BP}}/profile/{{item['from'].username}}">{{ item['from'].username}}</a> 
+            <span class="detail">
+            {{ h.timesince(h.utc_to_local(item.created_at))}}
+            </span>
+          </div>
+        </div>
+     </div>
+     
+     <div class="lastUnit size3of5">
+        <div class="mod bubble bubbleLeft lol"> 
+              <b class="top"><b class="tl"></b><b class="tr"></b></b> 
+              <div class="inner">
+                  <div class="bd">
+                    <p>{{ s.truncate_words(item.comment, 100) }}</p>
+                  </div>
+              </div>
+              <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
+          </div>
+     </div>
+ </div><!-- /.comment -->

@@ -53,9 +53,9 @@ def move_attachments(basepath, attachments):
     def get_path(path):
         src = os.path.join(basepath, sanitize_path(path, "tmp"))
         dest = os.path.join(basepath, sanitize_path(path))
-        logging.warning("Moving from %s to %s" % (src, dest))
         return (src, dest)
-
+    
+    from .string import lstrips
     for i, a in enumerate(attachments):
         if a['src'][0:4] == "tmp/":
             for size in ['.', '.s.', '.m.']:
@@ -63,8 +63,8 @@ def move_attachments(basepath, attachments):
                     logging.error("moving " + a['thumb_src'].replace('.s.', size))
                     shutil.move(*get_path(a['thumb_src'].replace('.s.', size)))
                 except: pass
-            a['src'] = a['src'].lstrip("tmp/")
-            a['thumb_src'] = a['thumb_src'].lstrip("tmp/")
+            a['src'] = lstrips(a['src'], "tmp/")
+            a['thumb_src'] = lstrips(a['thumb_src'], "tmp/")
             attachments[i] = a
     return attachments
 
@@ -78,7 +78,6 @@ def parse_attachments(attachments, is_edit=False):
         thumb_src = sanitize_path(a[2], prefix)
         attachment = dict(type=a[0], src=src, thumb_src=thumb_src, filename=a[3])
         _attachments.append(attachment)
-
     return _attachments
 
 

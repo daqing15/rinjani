@@ -85,7 +85,7 @@ class Button(form.Button):
 class MaxLength(form.Validator):
     def __init__(self, len):
         self.len = len
-        self.msg = "Max length is %d" % len 
+        self.msg = "Maximum %d chars" % len 
     def valid(self, value):
         if not value: return True
         return bool(len(value) <= self.len) 
@@ -142,10 +142,10 @@ login_form = MyForm(
 )
 
 activity_form = MyForm(
-    Textbox("title", form.notnull, size=43, description="Title"),
+    Textbox("title", form.notnull, size=39, description="Title"),
     Datefield("date_start", _class="date", size=15, description="Start"),
     Datefield("date_end", _class="date", size=15, description="End"),
-    Textarea("excerpt", rows=3, cols=43, description="Excerpt/Lead"),
+    Textarea("excerpt", rows=3, cols=39, description="Excerpt/Lead"),
     Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description="Content"),
     Textarea("deliverable", _class="rte", rel="#deliverablePreview", rows=9, cols=35, description="Deliverable"),
     Textbox("donation_amount_needed", size=30, description="Amount of donation needed (Rp)"),
@@ -163,8 +163,8 @@ article_form = MyForm(
     Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=50, description="Tags", title="Separate with comma")
  )
 
-commentbox_form = MyForm(
-    Textarea("content", form.notnull, rows=3, cols=25, description="Say something"),
+comment_form = MyForm(
+    Textarea("comment", form.notnull, MaxLength(100), maxlength=140, style="width:90%", rows=4, cols=25, description="Say something"),
 )
 
 page_form = MyForm(

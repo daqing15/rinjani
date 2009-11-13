@@ -262,15 +262,23 @@ class Content(BaseDocument):
             self.fill_slug_field(self['title'])
         
         self.updated_at = datetime.datetime.now()
+        self.pre_save()
         super(Content, self).save(True, True)
         self.post_save(new)
     
     def remove(self):
         self.status = u'deleted'
+        self.pre_remove()
         self.save()
         self.post_remove()
     
+    def pre_save(self):
+        if self.has_key('tags'):
+            from utils.string import sanitize_tags
+            self['tags'] = sanitize_tags(self['tags'])
+        
     def post_save(self, is_new): pass
+    def pre_remove(self): pass
     def post_remove(self): pass
     
     def get_url(self):
@@ -374,20 +382,23 @@ class Page(Content):
 
 
 class ArticleVote(BaseDocument):
-    pass 
+    collection_name = 'votes'
+    structure = {
+        'author': User,
+        'object': DBRef,
+        'type': unicode
+    }
+
 
 class Comment(BaseDocument):
     collection_name = 'comments'
     structure = {
-       'author': User,
-       'parent_type': IS(u'art', u'act', u'usr'), 
-       'parent_id': ObjectId, 
-       'text': unicode, 
-       'html': unicode,
+       'from': User,
+       'for': User,
+       'comment': unicode, 
        'created_at': datetime.datetime,
-       'updated_at': datetime.datetime
     }
-    required_fields = ['author', 'text']
+    required_fields = ['from', 'for', 'comment']
     default_values = {'created_at':datetime.datetime.now}
     
 class Volunteer(BaseDocument):

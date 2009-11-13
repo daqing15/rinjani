@@ -97,8 +97,12 @@ def denumify(string, pattern):
     return ''.join(out)
 
 def listify(value, separator=','):
+    """
+        >>> listify('good, day , ha ha', ',')
+        ['good', 'day', 'ha ha']
+    """
     if value and value.strip():
-        return [item.strip() for item in value.split(separator)if item.strip()]
+        return [item.strip() for item in value.split(separator) if item.strip()]
 
 def sanitize(value):
     """ 
@@ -116,6 +120,20 @@ def sanitize(value):
         tag.attrs = [(attr, r.sub('', val)) for attr, val in tag.attrs
                      if attr in validAttrs]
     return soup.renderContents().decode('utf8')
+
+def strip_tags(value):
+    """
+        >>> strip_tags('< a good="day">ha</a>')
+        'ha'
+    """
+    return re.sub(r'<[^<]*?/?>', '', value)
+
+def sanitize_tags(tags):
+    _tags = []
+    for tag in tags:
+        tag = slugify(tag)
+        _tags.append(tag.replace('-',' '))
+    return _tags
 
 def slugify(value):
     """

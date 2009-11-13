@@ -1,5 +1,6 @@
-{% if items.count() %}
-
+{% if not items.count() %}
+    {{ modules.Static('intro') }}
+{% else %}    
 <div class="wrSplash">
     <div id="splash" class="ha"> 
         {% set i = items.next() %}

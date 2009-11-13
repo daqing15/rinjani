@@ -4,17 +4,18 @@
 
 {% block body %}
 
-{{ modules.Splash() }}
-
-{{ modules.ArticleLatest(limit=5) }}
-
-{{ modules.Cloud() }}
+    {{ modules.Splash() }}
+    {{ modules.ArticleLatest(limit=5) }}
+    {{ modules.Cloud() }}
  
 {% end %}
 
 
 {% block sidebar %}
-    {{ modules.Static('welcome') }}
+    {% if not was_here %}
+        {{ modules.Static('welcome') }}
+    {% end %}
+    
     {{ modules.Streams() }}
     {{ modules.AgentFeatured() }}
 {% end %}

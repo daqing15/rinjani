@@ -31,6 +31,7 @@ profile_public = ('%(fullname)s', [
     ('/profile/%(username)s', 'profile'),
     ('/profile/articles/%(username)s', 'articles'),
     ('/profile/activities/%(username)s', 'activities'),
+    ('/profile/comments/%(username)s', 'comments'),
 ])
 
 articles = ('Articles', [
