@@ -58,7 +58,7 @@ div.modal div.close {
 /* :::: GALLERY OVERLAY :::: */
 .slideshow { margin-left: 10px;}
 .slideshow .unit { margin-right: 5px; }
-.overlay {
+.ovl {
     display:none;
     z-index:10000;
     background:#fff;
@@ -69,7 +69,7 @@ div.modal div.close {
     border: 1px solid #333;
 }
 
-.overlay .close {
+.ovl .close {
     background-image:url(img/close.png);
     position:absolute;
     right:-15px;
@@ -79,7 +79,7 @@ div.modal div.close {
     width:35px;
 }
 
-.next, .prev {
+.ovl .next, .ovl .prev {
     position:absolute;
     top:40%;    
     border:1px solid #ccc;  
@@ -92,7 +92,7 @@ div.modal div.close {
     -webkit-border-radius:5px;  
 }
 
-.prev {
+.ovl .prev {
     left:0;
     border-left:0;
     -moz-border-radius-topleft:0;
@@ -101,7 +101,7 @@ div.modal div.close {
     -webkit-border-top-left-radius:0;
 }
 
-.next {
+.ovl .next {
     right:0;
     border-right:0;
     -moz-border-radius-topright:0;
@@ -110,7 +110,7 @@ div.modal div.close {
     -webkit-border-top-right-radius:0;  
 }
 
-.next:hover, .prev:hover {
+.ovl .next:hover, .ovl .prev:hover {
     text-decoration:underline;
     background-color:#000;
 }
@@ -118,7 +118,7 @@ div.modal div.close {
 .disabled {
 }
 
-.overlay .info {
+.ovl .info {
     position:absolute;
     bottom:0;
     left:0; 
@@ -134,7 +134,7 @@ div.modal div.close {
     display:none;
 }
 
-.next, .prev, .info {
+.ovl .next, .ovl .prev, .info {
     background:#333 !important;
     background:rgba(0, 0, 0, 0.6) url(img/h80.png) repeat-x;       
 }
@@ -196,12 +196,12 @@ margin:0 2px;
 div.tooltip { 
     background-color:#FFA500; 
     border:1px solid #fff; 
-    padding:5px; 
+    padding:3px; 
     width:200px; 
     display:none; 
     color:#fff; 
     text-align:left; 
-    font-size:1.2em; 
+    font-size:.9em; 
 }
 
 /* CALENDAR */

@@ -14,21 +14,17 @@
 # under the License.
 
 from main import BaseHandler
-from forms import article_form, InvalidFormDataError
-from models import Article
-from web.utils import Storage
-from utils.string import slugify
+from models import Tag, ContentTag, Article, Activity
 from utils.pagination import Pagination
-import tornado.web
+from itertools import islice
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Article, {}, 2)
-        self.render('tags', pagination=pagination)
+        tab = self.get_argument("tab", "content")
+        pagination = Pagination(self, Tag, {})
+        self.render('tags', pagination=pagination, tab=tab, islice=islice)
 
 class ViewHandler(BaseHandler):
-    def get(self, slug):
-        article = Article.one({"slug": slug})
-        if not article:
-             raise tornado.web.HTTPError(404)
-        self.render("article", article=article)
+    def get(self, tag):
+        pagination = Pagination(self, ContentTag(tag, [Article, Activity]), {})
+        self.render('articles', pagination=pagination)

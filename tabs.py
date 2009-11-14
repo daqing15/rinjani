@@ -1,6 +1,6 @@
 dashboard_agent = ('Dashboard', [
     ('/dashboard', 'dashboard'),
-    ('/profile/donations', 'donations'),
+    ('/profile/articles', 'donations'),
     ('/profile/comments', 'comments'),
     ('/profile/supporters', 'supporters'),
     ('/profile/supports', 'supports'),
@@ -46,9 +46,14 @@ activities = ('Activities', [
     ('/activities?tab=popular', 'popular'),
 ])
 
-
 users = ('Users', [
     ('/users?tab=social+org', 'social org'),
     ('/users?tab=sponsor', 'sponsor'),
     ('/users?tab=public', 'public'),
+])
+
+
+tags = ('Tags', [
+    ('/tags?tab=content', 'content'),
+    ('/tags?tab=user', 'user')
 ])

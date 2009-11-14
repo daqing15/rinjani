@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs('profile_public', type, fullname=user.username, username=user.username) }}
+{{ modules.Tabs('profile_public', type, fullname=get(user.last_name, user.username), username=user.username) }}
 
 <div class="items line">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}

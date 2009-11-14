@@ -1,10 +1,10 @@
 {% extends '../base.html' %}
 
-{% block title %} {{ user.username }} - {{_('Comments')}}{% end %}
+{% block title %} {{ get(user.last_name, user.username) }} - {{_('Comments')}}{% end %}
 
 {% block body %}
 
-{{ modules.Tabs('profile_public', 'comments', fullname=user.username, username=user.username) }}
+{{ modules.Tabs('profile_public', 'comments', fullname=get(user.last_name, user.username), username=user.username) }}
 
 
 <div class="line">
@@ -24,7 +24,7 @@
             </div>
         {% end %}
     {% else %}
-        <p>La</p>
+        <p>&nbsp;</p>
     {% end %}
     </div>
     <div class="lastUnit size1of3">

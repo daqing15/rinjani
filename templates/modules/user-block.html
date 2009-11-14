@@ -1,24 +1,26 @@
 <div class="mod simple userblock">
     <div class="inner">
-        <div class="bd leftpadded10">
+        <div class="bd">
             <div class="line">
-		       <div class="unit">
-                {{ modules.Avatar(user) }}
+		       
+               <div class="unit">
+                    <div class=" leftpadded10">
+                        {{ modules.Avatar(user) }}
+                    </div>
 		       </div>
+               
 		       <div class="lastUnit">
-                    <p><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a>
-                    {% if user.article_count %}
-                        <span title="{{_('articles')}}" class="badge b-karma">169</span><span class="badgecount">{{user.article_count }}</span>
-                    {% end %}
-                     
+                    <p><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a> 
+                    <span title="{{_('articles')}}" class="badge b-karma">169</span>
                     {% if user.article_count %}
                         <span title="{{_('articles')}}" class="badge b-article">&#9679;</span><span class="badgecount">{{user.article_count }}</span>
                     {% end %}
                     {% if user.activity_count %}
                         <span title="{{_('activities')}}" class="badge b-activity">&#9679;</span><span class="badgecount">{{user.activity_count }}</span>
-                    {% end %}
+                    {% end %}                    
                     </p>
-                    {% if user.website %}<p><a href="{{user.website}}}}">{{user.website}}</a></p>{% end %}
+                    <p class="smallx">{{ _('Joined')}} {{ h.timesince(user.created_at) }}</p>
+                    
                </div>
             </div>
         </div>

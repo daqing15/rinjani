@@ -12,7 +12,7 @@
 
 <form method="post" class="withtips">
 <div id="subheader">
-    <h2>{{ _('Profile') }}</h2>
+    <h2>{{ _('Profile') }} - {{ user.username }}</h2>
     <div id="tabs">
         <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
         <a href="{{BP}}/account">{{ _('account') }}</a>
@@ -38,7 +38,11 @@
                         </div> -->
                         {{ modules.Formfield(f.last_name) }}
                         {{ modules.Formfield(f.about) }}
+                        {{ modules.Formfield(f.timezone) }}
                         {{ modules.Formfield(f.tags) }}
+                        <div class="tags suggestedtags">
+                            {{ modules.TagSuggestion(FIELD_TAGS, '#tags')}}
+                        </div>
                     </div>
                     <div class="lastUnit size1of3">
                         <div style="padding:10px;">
@@ -52,7 +56,6 @@
                                 <p>Avatar from your Facebook profile.</p>
                             </div>
                         </div>
-                        <p>Validate...</p>
                     </div>
                  </div>
             </div>
@@ -69,7 +72,7 @@
              <div class="pane">
                 <div class="line">
                     <div class="unit size3of5">
-                        {{ modules.Formfield(f.phones) }}
+                        {{ modules.FormfieldInColumns(f.phones, f.fax) }}
                         {{ modules.Formfield(f.email) }}
                         {{ modules.Formfield(f.website) }}
                         {{ modules.Formfield(f.address) }}
@@ -124,32 +127,6 @@
                     {% end %}{% end %}
                 </div>
                 <button class="cp button">{{ _('Add') }}</button>
-                <script type="text/javascript">
-                    $('.account .rm').live('click', function() {
-                        $parent = $(this).parents('.account')
-                        if ($parent.find('input[type=hidden]').val() != "0") {
-                            if (!confirm("Are you sure?")) {
-                                return false;
-                            }
-                        }
-                        $parent.remove();
-                        if ($('.account').length < 1) { $('.account-header').hide(); }
-                    });
-                    $account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
-                    $('.cp').click(function() {
-                        $new_account = $account.clone(true);
-                        $new_account.find(':input').each(function() {
-                            $i = $(this)
-                            if ($i.attr('name') != undefined) {
-                                idx = $i.attr('name') + ($('.account').length + 1);
-                                $i.attr('name', idx);
-                            }
-                        })
-                        $('.accounts').append($new_account.show());
-                        if ($('.account').length > 0) { $('.account-header').show(); }
-                        return false;
-                    });
-                </script>
             </div>
         </div>
     </div>
@@ -174,6 +151,36 @@ is_new_doc = 0;
 textarea = '#profile_content';
 slug = '{{ user.username }}';
 </script>
+
+<script type="text/javascript">
+$('.account .rm').live('click', function() {
+    $parent = $(this).parents('.account')
+    if ($parent.find('input[type=hidden]').val() != "0") {
+        if (!confirm("Are you sure?")) {
+            return false;
+        }
+    }
+    $parent.remove();
+    if ($('.account').length < 1) { $('.account-header').hide(); }
+});
+
+$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
+
+$('.cp').click(function() {
+    $new_account = $account.clone(true);
+    $new_account.find(':input').each(function() {
+        $i = $(this)
+        if ($i.attr('name') != undefined) {
+            idx = $i.attr('name') + ($('.account').length + 1);
+            $i.attr('name', idx);
+        }
+    })
+    $('.accounts').append($new_account.show());
+    if ($('.account').length > 0) { $('.account-header').show(); }
+    return false;
+});
+</script>
+                
 
 {% end %}
 

@@ -238,7 +238,7 @@ $(function() {
     // select all desired input fields and attach tooltips to them 
   $("form.withtips :input[title], .tt").tooltip({ 
       position: "center right", 
-      offset: [0,-10], 
+      offset: [-10,-5], 
       effect: "fade", 
       tip: '.tooltip' 
   });

@@ -43,7 +43,7 @@ url_handlers = [
     
     (r"/users", 'handlers.profile.UserListHandler'),
     
-    (r"/tag/is/([a-z0-9]+)", 'handlers.tag.ViewHandler'),
+    (r"/tag/([a-z0-9]+)", 'handlers.tag.ViewHandler'),
     (r"/tags", 'handlers.tag.ListHandler'),
     
     (r"/report", 'handlers.report.Handler'),

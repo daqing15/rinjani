@@ -11,5 +11,5 @@ install these or put into lib/ :
     web
     python-json/python-simplejson
     py-amqplib
-    python-magic
     python-imaging
+    python-tz

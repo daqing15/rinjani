@@ -23,10 +23,14 @@ class Pagination(object):
         self.doc_class = doc_class
         self.query = query
         self.per_page = per_page
-        self.translate = req.locale.translate
-        self.total = doc_class.all(query).count()
         
-        self.pages = int(math.ceil(self.total / float(self.per_page)))
+        self.translate = req.locale.translate
+        if getattr(doc_class, 'get_total', None):
+            self.total = doc_class.get_total()
+        else:
+            self.total = doc_class.all(query).count()
+        
+        self.pages = int(math.ceil(self.total / float(per_page)))
         self.necessary = self.pages > 1
         
         if link_func is None:
@@ -49,11 +53,18 @@ class Pagination(object):
             return u''
         return u'<div class="pagination">%s</div>' % self.generate()
 
-    def get_objects(self, raise_not_found=True):
+    def get_objects(self, sort_by='created_at', raise_not_found=True):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
             raise HTTPError(404)
-        rv = self.doc_class.all(self.query).sort('created_at', pymongo.DESCENDING).skip(self.offset).limit(self.per_page)
+        if getattr(self.doc_class, 'get_objects', None):
+            rv = self.doc_class.get_objects(
+                            offset=self.offset, per_page=self.per_page)
+        else:
+            rv = self.doc_class.all(self.query) \
+                .sort(sort_by, pymongo.DESCENDING) \
+                .skip(self.offset).limit(self.per_page)
+                
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()
         return rv

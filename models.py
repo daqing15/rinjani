@@ -2,7 +2,7 @@ import datetime
 import logging
 import re
 import markdown2
-from mongokit import DBRef, MongoDocument, IS, ObjectId, SchemaTypeError
+from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import app_settings
 from utils.string import force_unicode, listify, sanitize
 from utils.time import date_to_striso
@@ -140,6 +140,7 @@ class User(BaseDocument):
         'email': unicode,
         'website': unicode,
         'document_scan': unicode,
+        'timezone': unicode,
         'tags': list,
         
         'about': unicode,
@@ -149,8 +150,8 @@ class User(BaseDocument):
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         
         # site-related
-        'followed_users': list,
-        'followedby_users': list,
+        'following': list,
+        'followers': list,
         'preferences': list,
         'badges': list,
         'reputation': int,
@@ -163,9 +164,10 @@ class User(BaseDocument):
     sanitized_fields = ['address', 'email', 'website', 'about']
     default_values = {
         'status': u'active',
+        'timezone': u'Asia/Jakarta',
         'is_admin': False,
         'article_count': 0, 'activity_count': 0, 'donation_count': 0,  
-        'created_at':datetime.datetime.now, 
+        'created_at':datetime.datetime.utcnow, 
         'type': u'public'
     }
 
@@ -261,7 +263,7 @@ class Content(BaseDocument):
             new = True
             self.fill_slug_field(self['title'])
         
-        self.updated_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.utcnow()
         self.pre_save()
         super(Content, self).save(True, True)
         self.post_save(new)
@@ -306,7 +308,7 @@ class Article(Content):
     }
     required_fields = ['author', 'title', 'content']
     sanitized_fields = ['excerpt', 'content']
-    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
+    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def post_save(self, is_new):
@@ -351,7 +353,7 @@ class Activity(Content):
     }
     required_fields = ['author', 'status', 'title', 'content']
     sanitized_fields = ['excerpt', 'content', 'deliverable']
-    default_values = {'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.now}
+    default_values = {'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
     def post_save(self, is_new):
@@ -375,7 +377,7 @@ class Page(Content):
     }
     required_fields = ['title', 'content']
     sanitized_fields = ['content']
-    default_values = {'created_at':datetime.datetime.now}
+    default_values = {'created_at':datetime.datetime.utcnow}
     
     def get_url(self):
         return "/page/" + self['slug']
@@ -399,7 +401,7 @@ class Comment(BaseDocument):
        'created_at': datetime.datetime,
     }
     required_fields = ['from', 'for', 'comment']
-    default_values = {'created_at':datetime.datetime.now}
+    default_values = {'created_at':datetime.datetime.utcnow}
     
 class Volunteer(BaseDocument):
     collection_name = 'volunteers'
@@ -411,7 +413,7 @@ class Volunteer(BaseDocument):
         'status_updated_at': datetime.datetime 
     } 
     required_fields = ['user', 'activity']
-    default_values = {'status': u'pending', 'asked_at':datetime.datetime.now}
+    default_values = {'status': u'pending', 'asked_at':datetime.datetime.utcnow}
 
 class BankAccount(BaseDocument):
     collection_name = 'bank_accounts'
@@ -425,7 +427,7 @@ class BankAccount(BaseDocument):
     }  
     required_fields = ['owner', 'label', 'bank', 'number', 'holder']
     fields = ['label', 'bank', 'number', 'holder']
-    default_values = {'created_at':datetime.datetime.now}
+    default_values = {'created_at':datetime.datetime.utcnow}
     indexes = [ { 'fields': ['bank', 'number'], 'unique': True} ]
     
     @classmethod
@@ -471,5 +473,46 @@ class Donation(BaseDocument):
         'created_at': datetime.datetime
     }  
     required_fields = ['from', 'to', 'transfer_no', 'amount']
-    default_values = {'is_validated': False, 'created_at':datetime.datetime.now}
+    default_values = {'is_validated': False, 'created_at':datetime.datetime.utcnow}
     validators = { "amount": lambda x: x > 0}
+
+class Cache(MongoDocument):
+    db_name = app_settings['db_name']
+    collection_name = 'caches'
+    skip_validation = True
+    use_dot_notation = False
+    structure = {
+        'key': unicode,
+        'ttl': datetime.datetime,
+        'value': unicode
+    }
+
+class Tag(MongoDocument):
+    db_name = app_settings['db_name']
+    use_dot_notation = True
+    skip_validation = True
+    collection_name = 'tags'
+    structure = {
+        'count': dict
+    }
+
+class ContentTag(object):
+    def __init__(self, tag, classes):
+        self.tag = tag
+        self.classes = classes
+        total = 0
+        for cls in classes:
+            total += cls.all({'tags': tag}).count()
+        self.total = total
+        
+    def get_objects(self, **kwargs):
+        from itertools import chain, islice
+        results = [cls.all({'tags': self.tag}) for cls in self.classes]
+        it = chain(*results)
+        offset = kwargs.pop('offset')
+        return islice(it, offset, offset + kwargs.pop('per_page'))
+        
+    def get_total(self):
+        return self.total
+
+    

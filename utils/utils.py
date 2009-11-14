@@ -17,30 +17,22 @@ def is_mobile_agent(request):
     
     from useragents import search_strings
     
-    # need to check whether this is provided by tornado
+    # need to check whether this one provided by tornado
     if request.headers.has_key("HTTP_X_OPERAMINI_FEATURES"):
-        #Then it's running opera mini. 'Nuff said.
-        #Reference from:
         # http://dev.opera.com/articles/view/opera-mini-request-headers/
         return True
 
     if request.headers.has_key("Accept"):
         s = request.headers["Accept"].lower()
         if 'application/vnd.wap.xhtml+xml' in s:
-            # Then it's a wap browser
             return True
 
     if request.headers.has_key("User-Agent"):
-        # This takes the most processing. Surprisingly enough, when I
-        # Experimented on my own machine, this was the most efficient
-        # algorithm. Certainly more so than regexes.
-        # Also, Caching didn't help much, with real-world caches.
         s = request.headers["User-Agent"].lower()
         for ua in search_strings:
             if ua in s:
                 return True
 
-    #Otherwise it's not a mobile
     return False
 
 def sanitize_path(path, real_prefix=None):

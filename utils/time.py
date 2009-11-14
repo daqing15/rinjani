@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 
 def date_to_striso(dt, sep='/'):
     return sep.join(dt.isoformat()[0:10].split('-'))
@@ -8,19 +9,16 @@ def striso_to_date(s, sep="/"):
 
 def timesince(time=False, now=False):
     """
-    Get a datetime object or a int() Epoch timestamp and return a
-    pretty string like 'an hour ago', 'Yesterday', '3 months ago',
-    'just now', etc
+    Get a *UTC* datetime object and return a pretty string 
+    like 'an hour ago', 'Yesterday', '3 months ago', 'just now', etc
     
     Modified from http://evaisse.com/post/93417709/python-pretty-date-function
     """
     if not now:
-        now = datetime.now()
+        now = datetime.utcnow()
         
     if type(time) is int:
-        diff = now - datetime.fromtimestamp(time)
-    elif type(time) is str:
-        diff = now - datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+        diff = now - datetime.fromtimestamp(time, tzinfo=pytz.utc)
     elif time is False:
         diff = now - now
     else:
@@ -61,7 +59,7 @@ def timeuntil(dt):
     if not dt:
         return u''
     try:
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         return timesince(now, dt)
     except (ValueError, TypeError):
         return u''

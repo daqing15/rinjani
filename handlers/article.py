@@ -31,7 +31,7 @@ PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Article, {'status':'published'}, 4)
+        pagination = Pagination(self, Article, {'status':'published'})
         self.render('articles', pagination=pagination)
 
 class ViewHandler(BaseHandler):

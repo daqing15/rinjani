@@ -34,7 +34,7 @@
            <div class="media attribution atb2">
               {{ modules.Avatar(user) }}
               <div class="bd">
-                <a href="{{user.get_url()}}">{{ user.username}}</a> 
+                <a href="{{user.get_url()}}">{{ user.last_name}}</a> 
                 <span class="detail">
                 {{_('joined since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
                 </span>

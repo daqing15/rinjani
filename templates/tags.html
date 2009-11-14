@@ -4,28 +4,26 @@
 
 {% block body %}
 
-<div id="subheader">
-    <h2>{{ _('Tags') }}</h2>
-    
-    <div id="tabs">
-        <a href="/?tab=hot" class="youarehere">{{ _('articles') }}</a>
-        <a href="/?tab=featured">{{ _('activities') }}</a>
-        
-    </div>
-</div>
+{{ modules.Tabs('tags', tab) }}
 
-<div class="items">
+<div class="cb">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% for article in pagination.get_objects() %}
-    <div class="unit size1of2 {{h.alternate(c)}}">
-        {{ modules.ItemSummary(article) }}
+{% set items = pagination.get_objects(sort_by='_id') %}
+
+{% if items.count() %}
+    <div class="line">
+        <ul class="tags">
+            {% for tag in items %}
+                <li><a class="tag" href="{{BP}}/tag/{{url_escape(tag._id)}}">{{ escape(tag._id) }}</a> <span>x{{ int(tag.count) }}</span></li>
+            {% end %}
+        </ul>            
     </div>
+    <p class="clear"></p>
+    {{ pagination }}
+
 {% end %}
+
 </div>
-
-<p class="clear"></p>
-
-{{ pagination }}
 
 {% end %}
 

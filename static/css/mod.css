@@ -36,10 +36,9 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 
 
 /*==== BLOCK SKINS ====*/
-/* remove *background-image:" to default to square corners for IE */
 /* ----- simple extends the mod ----- */
 
-.simple .inner { background: #E5EACE; }
+.simple .inner { background: #ECF1D5;}
 .simple h3 { color: #777; }
 
 .highlight .inner { background: #FFE741;}
@@ -81,10 +80,10 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .discuss b b{border-top-color:#F8E9DD;}
 
 /* lol (extends bubbleLeft) */
-.lol .inner{background-color:#F8F8D2;}
-.lol b b{border-right-color:#F8F8D2;}
-.rodd .lol .inner { background-color:#EEFCE8; }
-.rodd .lol b b{border-right-color:#EEFCE8;}
+.lol .inner{background-color:#E0EBF7;}
+.lol b b{border-right-color:#E0EBF7;}
+.rodd .lol .inner { background-color:#E0EBF7; }
+.rodd .lol b b{border-right-color:#E0EBF7;}
 
 /* meep (extends bubbleRight) */
 .meep .inner{background-color:#ECEFDC;}
@@ -98,16 +97,16 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 /* header */
 .fire, .fire *{color: #000; font-size:18px; border-bottom: 1px dashed #fff;}
 .attribution{margin-left:0;}
-.atb2 { margin-left: 120px; }
+.atb2 { margin-left: 50px; }
 
 .bubble h3 { font-size: 100%; padding: 3px 10px;}
 .bubble h3, .bubble p { line-height: 1.2em; }
 .bubble p { font-size: 90%; }
 .bubble .inner {
-	padding-left: 10px; 
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
+	padding-left: 7px; 
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
 	/**
 	-moz-border-radius-topleft: 9px;-webkit-border-radius-topleft: 9px;border-radius-topleft: 9px;
 	-moz-border-radius-bottomright: 9px;-webkit-border-radius-bottomright: 9px;border-radius-bottomright: 9px;

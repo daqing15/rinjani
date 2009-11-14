@@ -1,21 +1,37 @@
 {% extends '../base.html' %}
 
-{% block title %} {{ user.username }} -  {{_('Profile')}}{% end %}
+{% block title %} {{ user.last_name }} -  {{_('Profile')}}{% end %}
 
 {% block body %}
 
-{{ modules.Tabs('profile_public', 'profile', fullname=user.username, username=user.username) }}
+{{ modules.Tabs('profile_public', 'profile', fullname=get(user.last_name, user.username), username=user.username) }}
 
 <div class="line">
-    <div class="unit size1of2">
-        {{ user.profile_content_html }}
+    <div class="unit size2of3">
+        <div class="cb">
+            {{ user.profile_content_html }}
+        </div>
     </div>
-    <div class="lastUnit size1of2">
+    <div class="lastUnit size1of3">
+        {{ modules.UserBlock(user) }}
+        
         <div class="mod simple">
             <div class="inner">
                 <div class="bd">
-                    <p>Joined us {{ h.timesince(user.created_at) }}</p>
-                    {% if user.website %}<p><a href="{{user.website}}" target="_blank">{{ user.website }}</a></p>{% end %}
+                    
+                    {% if user.phones %}
+                        <h3>{{ _('Phones') }}</h3>
+                        <p>{{ ', '.join(user.phones) }}</p>
+                    {% end %}
+                    {% if user.fax %}
+                        <h3>{{ _('Fax') }}</h3>
+                        <p>{{ ', '.join(user.fax) }}</p>
+                    {% end %}
+                    
+                    {% if user.website %}
+                        <h3>{{ _('Website') }}</h3>
+                        <p><a href="{{user.website}}" target="_blank">{{ user.website }}</a></p>
+                    {% end %}
                 </div>
             </div>
         </div>

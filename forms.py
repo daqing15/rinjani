@@ -2,7 +2,7 @@ from web import form
 from datetime import datetime
 from utils.string import listify
 import re
-from settings import USERTYPE
+from settings import USERTYPE, TIMEZONE
 
 class InvalidFormDataError(Exception): pass
 
@@ -185,9 +185,10 @@ profile_form = MyForm(
     Textarea("about", form.notnull, rows=3, cols=40, description="About You",title="Describe your entity in short paragraph"),
     Textarea("profile_content", form.notnull, _class="rte", rel="#contentPreview", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
     Textbox("contact_person", size=40, description="Contact Person Name"),
-    Textbox("phones", size=40, description="Phones", title="You can enter more than one number. Separate them with comma"),
-    Textbox("fax", size=40, description="Fax"),
+    Textbox("phones", size=20, description="Phones", title="Separate numbers with comma"),
+    Textbox("fax", size=20, description="Fax", title="Separate numbers with comma"),
     Textarea("address", rows=3, cols=40, description="Address"),
+    Dropdown('timezone', args=TIMEZONE, description='Timezone'),
     Textbox("email", size=40, description="E-Mail"),
     Textbox("website", size=40, description="Website"),
     Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Your Fields")
