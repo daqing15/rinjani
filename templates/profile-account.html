@@ -30,7 +30,10 @@
 <script type="text/javascript">
     $('input[name=password]').focus();
 </script>
-<div class="actionbar"><input class="button" name="submit" type="submit" value="{{ _('Change')}}"/></div>
+<div class="buttons">
+<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
+<button class="submit" name="action" value="change"><span><span>{{_('Change')}}</span></span></button>
+</div>
 </div>
 
 

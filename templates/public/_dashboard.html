@@ -5,7 +5,7 @@
 {% block body %}
 
 <div class="box">
-    <a class="button" href="{{BP}}/article/new">{{ _('New Article') }}</a> 
+    <a class="button" href="{{BP}}/article/new"><span><span>{{ _('New Article') }}</span></span></a> 
     {{ h.link_if_auth(current_user, BP + '/page/new', _('New Page'), 'admin', _class='button') }}
     {{ h.link_if_auth(current_user, BP + '/profile/edit', _('Edit Profile'), 'public', _class='button') }}
 </div>   

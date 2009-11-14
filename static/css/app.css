@@ -305,7 +305,6 @@ margin-right: 15px; margin-top: -17px; margin-left: -20px;
 
 .note { background-color: #eee; }
 .box { margin: 10px 0; padding: 10px; }
-button, .button { text-transform: capitalize; cursor: pointer; display: inline-block; padding: 3px 10px; margin: 3px 10px 3px 0; border: 1px solid #ccc; background: #efefef;}
 .clear { clear: both; }
 .ultrabig { font-size: 350%; line-height: 100%; font-weight: bold; }
 .grey { color: #999; }

@@ -65,7 +65,7 @@
                 
                 <div class="line attachments"></div>
                 <div class="line uploader">
-                    <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                    <button id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></button>  
                     <div id="loading" style="display:none">uploading...</div>
                 </div>
             </div>
@@ -133,11 +133,12 @@
 </div>
 
 <div class="buttons">
-<input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
-<input class="button" name="submit" type="submit" value="Save"/></div>
+<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
+<button class="submit" name="action" value="save"><span><span>{{_('Save')}}</span></span></button>
 
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in user.attachments]) }}" />
 <input type="hidden" name="attachment_counter" value="{{len(user.attachments)}}" />
+</div>
 
 {{ xsrf_form_html() }}
 

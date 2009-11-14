@@ -146,7 +146,7 @@ def link_to(to, label=None, **attrs):
     attrs = attrs_to_str(attrs)
     if not label:
         label = to
-    return "<a href='%s' %s>%s</a>" % (to, attrs, label)
+    return "<a href='%s' %s><span><span>%s</span></span></a>" % (to, attrs, label)
 
 def link_if_auth(user, to, label, usertype_needed='all', **attrs):
     if user:

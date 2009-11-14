@@ -42,7 +42,7 @@
                 
                 <div class="line attachments"></div>
                 <div class="line uploader">
-                    <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
+                    <button id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></button> 
                     <div id="loading" style="display:none">{{_('uploading...')}}</div>
                 </div>
                     
@@ -51,18 +51,18 @@
 	</div>
 </div>
 
-<div class="buttons">
-<button class="button" onclick="history.back(); return false;" name="action" value="back">{{_('cancel')}}</button>
+<div class="buttons line">
+<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
 
 {% if not article.slug or article.status == 'draft' %}
-    <button class="positive" name="status" value="draft">{{_('Save')}}</button>
-    <button class="positive" name="status" value="published">{{_('Publish')}}</button>
+    <button class="positive" name="status" value="draft"><span><span>{{_('Save')}}</span></span></button>
+    <button class="positive" name="status" value="published"><span><span>{{_('Publish')}}</span></span></button>
 {% elif article.status == 'published' %}
-    <button class="positive" name="status" value="published">{{_('Save')}}</button>
-    <button class="positive" name="status" value="draft">{{_('Unpublish')}}</button>
+    <button class="submit" name="status" value="published"><span><span>{{_('Save')}}</span></span></button>
+    <button class="positive" name="status" value="draft"><span><span>{{_('Unpublish')}}</span></span></button>
 {% end %}
 
-{% if article.slug %}    
+{% if article.slug %}   
     {{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
 {% end %}
 

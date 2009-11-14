@@ -12,7 +12,7 @@
 
 <form method="post" class="withtips">
 <div id="subheader">
-    <h2>{{ _('Profile') }}</h2>
+    <h2>{{ _('Profile') }} - {{ user.username }}</h2>
     <div id="tabs">
         <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
         <a href="{{BP}}/account">{{ _('account') }}</a>
@@ -38,7 +38,11 @@
                         </div> -->
                         {{ modules.Formfield(f.last_name) }}
                         {{ modules.Formfield(f.about) }}
+                        {{ modules.Formfield(f.timezone) }}
                         {{ modules.Formfield(f.tags) }}
+                        <div class="tags suggestedtags">
+                            {{ modules.TagSuggestion(FIELD_TAGS, '#tags')}}
+                        </div>
                     </div>
                     <div class="lastUnit size1of3">
                         <div style="padding:10px;">
@@ -52,7 +56,6 @@
                                 <p>Avatar from your Facebook profile.</p>
                             </div>
                         </div>
-                        <p>Validate...</p>
                     </div>
                  </div>
             </div>
@@ -60,38 +63,23 @@
                 {{ modules.Formfield(f.profile_content) }}
                 <div id="contentPreview" class="cb"></div>
                 
-                <div class="line">
-                    <div class="unit size2of3 photos">
-                        <div class="line attachments">
-                            
-                        </div>
-                        <div class="line uploader">
-                            <button class="button" id="upload-button">{{_('Add Attachment...')}}...</button> 
-                            <div id="loading" style="display:none">uploading...</div>
-                        </div>
-                    </div>
-                    <div class="lastUnit size1of3">
-                        <div class="mod highlight">
-                            <div class="inner">
-                                <div class="bd">
-                                    <p>{{_('Help')}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="line attachments"></div>
+                <div class="line uploader">
+                    <button id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></button>  
+                    <div id="loading" style="display:none">uploading...</div>
                 </div>
             </div>
              <div class="pane">
                 <div class="line">
                     <div class="unit size3of5">
-                        {{ modules.Formfield(f.phones) }}
+                        {{ modules.FormfieldInColumns(f.phones, f.fax) }}
                         {{ modules.Formfield(f.email) }}
                         {{ modules.Formfield(f.website) }}
                         {{ modules.Formfield(f.address) }}
                     </div>
                     <div class="lastUnit size2of5">
                         <label>{{_('Select your location in map')}}</label>
-                        <div style="width:400px; height: 200px; background:#eee;">
+                        <div class="loc" style="width:250px; height:180px; background:url(/static/uploads/maps/psm.gif) no-repeat;">
                         </div>
                     </div>
                  </div>
@@ -139,43 +127,18 @@
                     {% end %}{% end %}
                 </div>
                 <button class="cp button">{{ _('Add') }}</button>
-                <script type="text/javascript">
-                    $('.account .rm').live('click', function() {
-                        $parent = $(this).parents('.account')
-                        if ($parent.find('input[type=hidden]').val() != "0") {
-                            if (!confirm("Are you sure?")) {
-                                return false;
-                            }
-                        }
-                        $parent.remove();
-                        if ($('.account').length < 1) { $('.account-header').hide(); }
-                    });
-                    $account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
-                    $('.cp').click(function() {
-                        $new_account = $account.clone(true);
-                        $new_account.find(':input').each(function() {
-                            $i = $(this)
-                            if ($i.attr('name') != undefined) {
-                                idx = $i.attr('name') + ($('.account').length + 1);
-                                $i.attr('name', idx);
-                            }
-                        })
-                        $('.accounts').append($new_account.show());
-                        if ($('.account').length > 0) { $('.account-header').show(); }
-                        return false;
-                    });
-                </script>
             </div>
         </div>
     </div>
 </div>
 
 <div class="buttons">
-<input class="button" onclick="history.back()" name="cancel" type="button" value="{{_('Cancel')}}"/>
-<input class="button" name="submit" type="submit" value="Save"/></div>
+<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
+<button class="submit" name="status" value="published"><span><span>{{_('Save')}}</span></span></button>
 
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in user.attachments]) }}" />
 <input type="hidden" name="attachment_counter" value="{{len(user.attachments)}}" />
+</div>
 
 {{ xsrf_form_html() }}
 
@@ -190,6 +153,36 @@ textarea = '#profile_content';
 slug = '{{ user.username }}';
 </script>
 
+<script type="text/javascript">
+$('.account .rm').live('click', function() {
+    $parent = $(this).parents('.account')
+    if ($parent.find('input[type=hidden]').val() != "0") {
+        if (!confirm("Are you sure?")) {
+            return false;
+        }
+    }
+    $parent.remove();
+    if ($('.account').length < 1) { $('.account-header').hide(); }
+});
+
+$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
+
+$('.cp').click(function() {
+    $new_account = $account.clone(true);
+    $new_account.find(':input').each(function() {
+        $i = $(this)
+        if ($i.attr('name') != undefined) {
+            idx = $i.attr('name') + ($('.account').length + 1);
+            $i.attr('name', idx);
+        }
+    })
+    $('.accounts').append($new_account.show());
+    if ($('.account').length > 0) { $('.account-header').show(); }
+    return false;
+});
+</script>
+                
+
 {% end %}
 
 {% block inlinejs %}
@@ -202,5 +195,7 @@ slug = '{{ user.username }}';
 {% block postinlinejs %}
 <script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
 {% end %}
+
+
 
 

@@ -1,3 +1,113 @@
+/*===== Simply Buttons, version 1.0 (c) 2007-2009 Kevin Miller =====*/
+.buttons { height: 24px; }
+button, a.button, a.button:link, a.button:visited {
+  padding: 0;
+  margin: 0 3px 0 3px;
+  border: none;
+  display: block;
+  float: left;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  white-space: nowrap;
+  overflow: visible;
+  font-size:13px;
+}
+
+  * html a.button,
+  * html a.button:link,
+  * html a.button:visited {
+    width: 1%; /* IE6 fix to make link fit text.  */
+  }
+
+  button, x:-moz-any-link {
+    margin: 0 0 0 0;
+  }
+
+  *:first-child+html button {
+    margin: 0 3px 0 3px; /* Reset IE7 back to what it was for previous fix. */
+  }
+
+  button span,
+  a.button span,
+  a.button:link span,
+  a.button:visited span {
+    display: block;
+  }
+
+/*--------------------------------------------------------------------------------------------------
+   CUSTOMIZATIONS 
+*/
+button,
+a.button,
+a.button:link,
+a.button:visited {
+  height: 24px; 
+  font-family: "Helvetica Neue", Helvetica, clean, sans-serif;
+  color: #666;
+  background-color: #fff;
+}
+
+  button.button_active,
+  a.button_active {
+  }
+
+  button span,
+  a.button span,
+  a.button:link span,
+  a.button:visited span {
+    padding: 0 14px 0 0;
+    height: 24px;
+    background: url(img/bg_button_right.gif) top right;
+  }
+
+  button span span,
+  a.button span span,
+  a.button:link span span,
+  a.button:visited span span {
+    padding: 0 0 0 13px;
+    height: 24px;
+    line-height: 24px;
+    background: url(img/bg_button_left.gif) top left;
+  }
+
+  button:hover,
+  a.button:hover {
+    color: #000000;
+  }
+
+  button.submit span span,
+  a.submit span span,
+  a.submit:link span span,
+  a.submit:visited span span {
+    padding-left: 26px;
+    background-image: url(img/bg_button_left_submit.gif);
+  }
+
+  button.cancel span span,
+  a.cancel span span,
+  a.cancel:link span span,
+  a.cancel:visited span span {
+    padding-left: 26px;
+    background-image: url(img/bg_button_left_cancel.gif);
+  }
+
+  button:active span,
+  a:active:active span,
+  button.button_active span,
+  a.button_active:active span {
+    background-position: bottom right;
+  }
+
+  button:active span span,
+  a:active:active span span,
+  button.button_active span span,
+  a.button_active:active span span {
+    background-position: bottom left;
+  }
+
+
+
 
 .tabWrapper { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
 ul.tabs { padding: 0 0 10px 0; }
