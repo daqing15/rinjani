@@ -36,7 +36,7 @@
                     {{ modules.Formfield(f.comment) }}
                     {{ xsrf_form_html() }}
                     <div class="buttons">
-                        <button class="positive" name="send">{{_('Give Comment')}}</button>
+                        <button class="submit" name="send"><span><span>{{_('Give Comment')}}</span></span></button>
                     </div>
                 </form>
                 {% else %}

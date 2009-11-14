@@ -26,5 +26,5 @@ class ListHandler(BaseHandler):
 
 class ViewHandler(BaseHandler):
     def get(self, tag):
-        pagination = Pagination(self, ContentTag(tag, [Article, Activity]), {})
+        pagination = Pagination(self, ContentTag({'tags': tag}, [Article, Activity]), {})
         self.render('articles', pagination=pagination)

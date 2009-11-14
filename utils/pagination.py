@@ -4,7 +4,6 @@ Adapted from solace.utils.pagination
 
 import math
 from tornado.web import HTTPError
-import pymongo
 from werkzeug import url_encode
 
 class Pagination(object):
@@ -62,8 +61,9 @@ class Pagination(object):
                             offset=self.offset, per_page=self.per_page)
         else:
             rv = self.doc_class.all(self.query) \
-                .sort(sort_by, pymongo.DESCENDING) \
-                .skip(self.offset).limit(self.per_page)
+                .skip(self.offset)\
+                .limit(self.per_page) \
+                .sort(sort_by, -1)
                 
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()

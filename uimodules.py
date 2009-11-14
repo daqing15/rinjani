@@ -1,6 +1,6 @@
 import os
 import tornado.web
-from models import Article, Activity
+from models import Article, Activity, Tag
 import pymongo
 
 class BaseUIModule(tornado.web.UIModule):
@@ -45,10 +45,6 @@ class Avatar(BaseUIModule):
     def render(self, user):
         return self.render_string("modules/avatar.html", user=user) 
     
-class Cloud(BaseUIModule):
-    def render(self, **kwargs):
-        return self.render_string("modules/cloud.html")
-
 class CommentBox(BaseUIModule):
     def render(self, **kwargs):
         from forms import commentbox_form
@@ -206,7 +202,17 @@ class Tabs(BaseUIModule):
             return html
         else:
             return ''
-    
+
+class TagCloud(BaseUIModule):
+    def render(self, **kwargs):
+        from utils.utils import calculate_cloud
+        import random
+        tags = Tag.all().sort('count', -1).limit(15)
+        tags = [tag for tag in tags]
+        tags = calculate_cloud(tags)
+        random.shuffle(tags)
+        return self.render_string("modules/tag-cloud.html", tags=tags[0:10], min=min)
+        
 class Tags(BaseUIModule):
     def render(self, tags):
         return self.render_string("modules/tags.html", tags=tags)

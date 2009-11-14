@@ -493,21 +493,21 @@ class Tag(MongoDocument):
     skip_validation = True
     collection_name = 'tags'
     structure = {
-        'count': dict
+        'count': int
     }
 
 class ContentTag(object):
-    def __init__(self, tag, classes):
-        self.tag = tag
+    def __init__(self, spec, classes):
+        self.spec = spec
         self.classes = classes
         total = 0
         for cls in classes:
-            total += cls.all({'tags': tag}).count()
+            total += cls.all(spec).count()
         self.total = total
         
     def get_objects(self, **kwargs):
         from itertools import chain, islice
-        results = [cls.all({'tags': self.tag}) for cls in self.classes]
+        results = [cls.all(self.spec).sort('created_at', -1) for cls in self.classes]
         it = chain(*results)
         offset = kwargs.pop('offset')
         return islice(it, offset, offset + kwargs.pop('per_page'))

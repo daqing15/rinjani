@@ -15,10 +15,10 @@
     <div class="lastUnit size1of3">
         {{ modules.UserBlock(user) }}
         
+        {% if user.phones or user.fax or user.website %}
         <div class="mod simple">
             <div class="inner">
                 <div class="bd">
-                    
                     {% if user.phones %}
                         <h3>{{ _('Phones') }}</h3>
                         <p>{{ ', '.join(user.phones) }}</p>
@@ -35,6 +35,9 @@
                 </div>
             </div>
         </div>
+        {% else %}
+            <p>&nbsp;</p>
+         {% end %}
     </div>
 </div>
 
