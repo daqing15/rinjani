@@ -42,9 +42,14 @@
                     
                     </div>
                     <div class="lastUnit size1of2">
-                        <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                        <div class="loc" style="width:240px; height:180px; background:url(/static/uploads/maps/psm.gif) no-repeat;">
-                            
+                        <div class="deps">
+                            <div class="depsrc">
+                                <label><input type="checkbox" name="choose_loc" /> Select Location</label>
+                            </div>
+                            <div class="deptarget">
+                                <div class="loc" style="width:240px; height:150px; background:url(/static/uploads/maps/psm.gif) no-repeat;"></div>
+                                {{ modules.FormfieldInColumns(f.lat, f.long) }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,10 +69,6 @@
                         <div id="loading" style="display:none">{{_('uploading...')}}</div>
                     </div>
                 </div>
-                
-                {{ modules.Formfield(f.deliverable) }}
-                <div id="deliverablePreview"></div>
-                
 			</div>
 			<div class="pane">
                 <div class="line">

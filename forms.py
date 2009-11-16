@@ -147,13 +147,14 @@ activity_form = MyForm(
     Datefield("date_end", _class="date", size=15, description="End"),
     Textarea("excerpt", rows=3, cols=39, description="Excerpt/Lead"),
     Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description="Content"),
-    Textarea("deliverable", _class="rte", rel="#deliverablePreview", rows=9, cols=35, description="Deliverable"),
     Textbox("donation_amount_needed", size=30, description="Amount of donation needed (Rp)"),
     Checkbox("need_donation", value="1", description="Needs donations"),
     Checkbox("need_volunteer", value="1", description="Needs volunteers"),
     Textbox("volunteer_tags", size="30", description="Volunteer skills needed"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
-    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=43, description="Tags")
+    Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=39, description="Tags"),
+    Textbox("lat", size=14, description="Latitude"),
+    Textbox("long", size=14, description="Longitude"),
  )
 
 article_form = MyForm(
@@ -197,7 +198,6 @@ profile_form = MyForm(
 profile_public_form = MyForm(
     Textbox("first_name", form.notnull, size=50, description="First Name"),
     Textbox("last_name", form.notnull, size=50, description="Last Name"),
-    Textbox("dateofbirth", size=50, description="Date of Birth"),
-    Textarea("about", form.notnull, rows=3, cols=50, description="Short description about you"),
+    Textarea("about", form.notnull, MaxLength(100), rows=3, cols=50, description="Short description about you"),
 )
 

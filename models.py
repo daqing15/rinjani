@@ -2,10 +2,10 @@ import datetime
 import logging
 import re
 import markdown2
+
 from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import app_settings
-from utils.string import force_unicode, listify, sanitize
-from utils.time import date_to_striso
+from utils.string import force_unicode, listify, sanitize, slugify
 from utils.inline import processor, AttachmentInline, SlideshowInline
 
 class EditDisallowedError(Exception): pass
@@ -21,21 +21,6 @@ class BaseDocument(MongoDocument):
     use_autorefs = True
     structure = {}
     sanitized_fields = []
-    
-    def authored_by(self, user):
-        return self['author'] is user
-    
-    def fill_slug_field(self, s):
-        from utils.string import slugify
-        s = slugify(s)
-        _s = s
-        i = 2
-        while True:
-            if not self.__class__.one({"slug": s}):
-                break
-            s = "%s-%d" % (_s, i)
-            i += 1
-        self['slug'] = unicode(s)
     
     def save(self, uuid=True, validate=None, safe=True, *args, **kwargs):
         super(BaseDocument, self).save(uuid, validate, safe, *args, **kwargs)
@@ -238,6 +223,26 @@ class User(BaseDocument):
 class Content(BaseDocument): 
     base_url = '/'
     
+    def authored_by(self, user):
+        return self['author'] is user
+    
+    # is this atomic op?
+    def set_slug(self, doc, s):
+        _s, s = s, slugify(s)
+        spec = {'slug': s}
+        if '_id' in doc:
+            spec.update({'_id': {'$ne': doc['_id']}})
+            
+        i = 1
+        while True:
+            i += 1
+            if not self.__class__.one(spec):
+                break
+            s = "%s-%d" % (_s, i)
+        
+        doc['slug'] = s
+        #self.__class__.collection.update({'_id': self._id}, {'$set': {'slug': unicode(s)}})
+    
     def process_inline(self, field, src):
         if field not in ['content']:
             return src
@@ -253,45 +258,53 @@ class Content(BaseDocument):
         if not data:
             super(Content,self).save(True, True)
             return
-        self.populate(data)
         
-        new = False
+        if 'featured' in data and user['type'] != 'admin':
+            del(data['featured'])
+        
+        self.populate(data)
+        self.updated_at = datetime.datetime.utcnow()
+        
+        new_doc = False
         if '_id' in self:
             self.check_edit_permission(user)
         else:
             self['author'] = user
-            new = True
-            self.fill_slug_field(self['title'])
-        
-        self.updated_at = datetime.datetime.utcnow()
-        self.pre_save()
+            new_doc = True
+            
+        self.pre_save(data, new_doc)
+        self.set_slug(self, self['title'])
         super(Content, self).save(True, True)
-        self.post_save(new)
+        self.post_save(data, new_doc)
     
-    def remove(self):
-        self.status = u'deleted'
+    def remove(self, force=False):
         self.pre_remove()
-        self.save()
+        if force:
+            self.remove()
+        else:
+            self.status = u'deleted'
+            self.save()
         self.post_remove()
     
-    def pre_save(self):
-        if self.has_key('tags'):
+    def pre_save(self, data, new_doc):
+        if self.has_key('tags') and data.has_key('tags'):
             from utils.string import sanitize_tags
             self['tags'] = sanitize_tags(self['tags'])
         
-    def post_save(self, is_new): pass
+    def post_save(self, data, new_doc): pass
     def pre_remove(self): pass
     def post_remove(self): pass
     
     def get_url(self):
-        return self.base_url + date_to_striso(self.created_at) + "/" + self.slug
+        return self.base_url + self.slug
 
 class Article(Content):
     collection_name = 'articles'
     base_url = '/article/'
     structure = {
         'author': User,
-        'status': IS(u'published', u'draft', u'deleted'), 
+        'status': IS(u'published', u'draft', u'deleted'),
+        'featured': bool,  
         'title': unicode,
         'slug': unicode, 
         'excerpt': unicode,
@@ -301,18 +314,23 @@ class Article(Content):
         'comment_count': int,
         'view_count': int,
         'tags': list,
-        'rating': dict,
+        'votes': dict,
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}], 
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
     required_fields = ['author', 'title', 'content']
     sanitized_fields = ['excerpt', 'content']
-    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0, 
+                      'status': u'published', 
+                      'featured': False,
+                      'created_at':datetime.datetime.utcnow, 
+                      'updated_at':datetime.datetime.utcnow
+                      }
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
-    def post_save(self, is_new):
-        if is_new:
+    def post_save(self, data, new_doc):
+        if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': 1}})
     
     def post_remove(self):
@@ -324,6 +342,7 @@ class Activity(Content):
     structure = {
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'), 
+        'featured': bool,
         'title': unicode,
         'slug': unicode,
         'excerpt': unicode,
@@ -331,13 +350,10 @@ class Activity(Content):
         'date_end': datetime.datetime, 
         'content': unicode,
         'content_html': unicode,
-        'deliverable': unicode,
-        'deliverable_html': unicode,
         'location': {'lat': float, 'lang': float},
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
         'tags': list,
-        'checked_by': list,
-        'links': unicode,
+        'validated_by': list,
         'enable_comment': bool,
         'need_volunteer': bool,
         'volunteer_tags': list,
@@ -346,18 +362,26 @@ class Activity(Content):
         'donation_amount': float,
         'comment_count': int,
         'view_count': int,
-        'rating': dict,
+        'votes': dict,
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
     required_fields = ['author', 'status', 'title', 'content']
     sanitized_fields = ['excerpt', 'content', 'deliverable']
-    default_values = {'view_count': 0, 'comment_count': 0, 'status': u'published', 'created_at':datetime.datetime.utcnow}
+    default_values = {'view_count': 0, 'comment_count': 0, 
+                      'status': u'published', 
+                      'featured': False,
+                      'created_at':datetime.datetime.utcnow,
+                      'updated_at':datetime.datetime.utcnow
+                      }
     indexes = [ { 'fields': 'slug', 'unique': True}, { 'fields': 'created_at'} ]
     
-    def post_save(self, is_new):
-        if is_new:
+    def pre_save(self, data, new_doc):
+        pass
+    
+    def post_save(self, data, new_doc):
+        if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': 1}})
     
     def post_remove(self):
@@ -377,20 +401,19 @@ class Page(Content):
     }
     required_fields = ['title', 'content']
     sanitized_fields = ['content']
-    default_values = {'created_at':datetime.datetime.utcnow}
+    default_values = {'created_at':datetime.datetime.utcnow, 'updated_at':datetime.datetime.utcnow}
     
     def get_url(self):
         return "/page/" + self['slug']
 
 
-class ArticleVote(BaseDocument):
+class Vote(BaseDocument):
     collection_name = 'votes'
     structure = {
-        'author': User,
-        'object': DBRef,
-        'type': unicode
+        'uid': unicode,
+        'cid': unicode,
+        'vote': int,
     }
-
 
 class Comment(BaseDocument):
     collection_name = 'comments'
@@ -493,9 +516,18 @@ class Tag(MongoDocument):
     skip_validation = True
     collection_name = 'tags'
     structure = {
-        'count': int
+        'value': int
     }
 
+class ArticleTag(Tag):
+    collection_name = 'articles_tags'
+    
+class ActivityTag(Tag):
+    collection_name = 'activities_tags'
+     
+class UserTag(Tag):
+    collection_name = 'users_tags'
+            
 class ContentTag(object):
     def __init__(self, spec, classes):
         self.spec = spec
@@ -506,6 +538,9 @@ class ContentTag(object):
         self.total = total
         
     def get_objects(self, **kwargs):
+        """
+        this is temporary solution for no UNION in mongodb problem
+        """
         from itertools import chain, islice
         results = [cls.all(self.spec).sort('created_at', -1) for cls in self.classes]
         it = chain(*results)

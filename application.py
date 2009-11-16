@@ -7,8 +7,9 @@ import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
 
 from utils.mod import get_mod_handler, import_module
-from pymongo.errors import ConnectionFailure
+from pymongo.errors import ConnectionFailure, AutoReconnect
 from handlers.main import ErrorHandler
+import logging
 
 class BaseApplication(tornado.web.Application):
     def __call__(self, request):
@@ -36,7 +37,8 @@ class BaseApplication(tornado.web.Application):
                             handler_class = import_module(mod_name, handler_classname)
                             handler = handler_class(self, request, **kwargs)
                         except ConnectionFailure:
-                            handler = ErrorHandler(self, request, 500, message="DB Error.")
+                            logging.critical("=======DB Connection error=============")
+                            handler = ErrorHandler(self, request, 500, message="DB died?")
                     # end of patch
                     args = match.groups()
                     break
@@ -53,8 +55,18 @@ class BaseApplication(tornado.web.Application):
         if self.settings.get("debug"):
             RequestHandler._templates = None
             RequestHandler._static_hashes = {}
-
-        handler._execute(transforms, *args)
+        
+        try:
+            handler._execute(transforms, *args)
+        except AutoReconnect:
+            from pymongo.connection import Connection
+            logging.critical("===== Reconnects to DB ========")
+            Connection("localhost", 27017)
+            RequestHandler(self, request, 500)._execute(transforms, *args)
+        except:
+            logging.critical("=========WTF? ===========")
+            RequestHandler(self, request, 500)._execute(transforms, *args)
+            
         return handler
     
     @property

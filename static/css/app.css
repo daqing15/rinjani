@@ -238,7 +238,8 @@ text-decoration:none;
 display: block; float: left; color: #999; margin: 10px 0; padding: 0 20px; font-size: 11px;}
 .uploader button { float: left; }
 
-.attachment { border-left: 5px solid #eee; margin-left: 10px; padding: 5px 10px; }
+.attachment { padding: 5px 10px; }
+.attachment .binary { border-left: 5px solid #eee; }
 .attachment .caption { padding: 0 10px; }
 
 /*=====: DISQUS =====*/
@@ -247,15 +248,15 @@ display: block; float: left; color: #999; margin: 10px 0; padding: 0 20px; font-
 
 /*==== TAG ====*/
 .cb .tags { margin: 10px 0; }
-.cb .tags li { display: block; margin: 10px;}
+.cb .tags li { display: block; margin: 5px;}
 .cb .tags span { font-size: 170%; color: #999;}
 .cb ul.tags { padding-left: 0; }
 .cb .tag { font-size: 1.4em; }
-.tags li { display: inline; margin-right: 2px; padding: 2px 0;}
-.tag, a.tag-woot {
--moz-border-radius: 4px;
--webkit-border-radius: 4px;
-border-radius: 4px;
+.tags li { display: block; float: left; padding: 5px;}
+.tag {
+-moz-border-radius: 5px 0 5px 0;
+-webkit-border-radius: 5px 0 5px 0;
+border-radius: 5px 0 5px 0;
 background-color:#309EB9;
 color:#FFFFFF !important;
 margin:0 3px 3px 0;
@@ -269,15 +270,12 @@ background-color:#52B930;
 text-decoration:none;
 }
 
-.mytag input {visibility: hidden;vertical-align: middle;  margin-left: -14px;}
-.mytag label { display: block; float: left; }
-.mytag .tag { font-size: 90%; }
-.t1 { background: #0a0; }
-.t2 { background: #036;}
-.t3 { background: #aaa; }
-.t4 { background: #ee0; }
+.flag input {visibility: hidden;vertical-align: middle;  margin-left: -14px;}
+.flag label { display: block; float: left; }
+.flag .tag { font-size: 90%; background-color: #A9C945;}
+.flag .voted { padding-left: 25px; background: #34DF3F url(img/tick.png?v=232) 5px 25% no-repeat;}
 .ts { background: #f00; }
-.mytag .me { padding-left: 20px; font-size: 135%; background: #A0E63B;text-decoration: underline;}
+.flag .me { padding-left: 20px; font-size: 135%; background: #A0E63B;text-decoration: underline;}
 
 
 /* ====== special formatting classes ====== */

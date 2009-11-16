@@ -13,18 +13,53 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from main import BaseHandler
-from models import Tag, ContentTag, Article, Activity
-from utils.pagination import Pagination
 from itertools import islice
+
+from main import BaseHandler, authenticated
+import models
+from models import User, Article, Activity, Vote, ArticleTag, ActivityTag, UserTag
+from utils.pagination import Pagination
+from settings import MY_FLAGS
 
 class ListHandler(BaseHandler):
     def get(self):
-        tab = self.get_argument("tab", "content")
-        pagination = Pagination(self, Tag, {})
-        self.render('tags', pagination=pagination, tab=tab, islice=islice)
+        t = self.get_argument('tab', 'article')
+        doc = ArticleTag if t == 'article' else ActivityTag if t == 'activity' else UserTag
+        pagination = Pagination(self, doc, {})
+        self.render('tags', pagination=pagination, tab=t)
 
 class ViewHandler(BaseHandler):
     def get(self, tag):
-        pagination = Pagination(self, ContentTag({'tags': tag}, [Article, Activity]), {})
+        t = self.get_argument('t', 'article')
+        doc = Article if t == 'article' else Activity if t == 'activity' else User
+        pagination = Pagination(self, doc, {'tags': tag})
         self.render('articles', pagination=pagination)
+        
+class FlagHandler(BaseHandler):
+    @authenticated()
+    def post(self):
+        data = self.get_arguments()
+        try:
+            cls = getattr(models, self.get_argument('type'))
+            flag = self.get_argument('flag')
+            slug = self.get_argument('slug')
+            cid = cls.one({'slug': slug})['_id']
+            uid = self.current_user['_id']
+            if int(flag) in [x for x,y in MY_FLAGS]:
+                has_vote = Vote.one({'uid': uid ,'cid': cid})
+                if not has_vote:
+                    cls.collection.update(
+                        {'slug': slug}, {'$inc': { "votes." + flag: 1}}
+                    )
+                    vote = Vote()
+                    vote['uid'],  vote['cid'], vote['vote'] = uid, cid, int(flag)
+                    vote.save()
+                    self.json_response("Your vote has been noted", "OK")
+                raise Exception("Has vote")
+            raise Exception("Invalid vote")
+        except Exception, e:
+            return self.json_response(e.__str__(), "ERROR", data)
+        
+        self.json_response(None, "OK", data)
+        
+        

@@ -20,11 +20,10 @@ from web.utils import Storage
 
 from main import BaseHandler, authenticated
 from forms import article_form
-from settings import CONTENT_TAGS
+from settings import CONTENT_TAGS, MY_FLAGS
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
-from utils.time import striso_to_date
 
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
@@ -35,11 +34,8 @@ class ListHandler(BaseHandler):
         self.render('articles', pagination=pagination)
 
 class ViewHandler(BaseHandler):
-    def get(self, dt, slug):
-        date = striso_to_date(dt)
-        one_day = datetime.timedelta(days=1)
-        
-        article = Article.one({'status':'published', "slug": slug, "created_at": {'$gte': date, '$lte': date + one_day}})
+    def get(self, slug):
+        article = Article.one({'status':'published', "slug": slug})
         if not article:
             raise tornado.web.HTTPError(404)
         Article.collection.update({'slug': slug}, {'$inc': { 'view_count': 1}})

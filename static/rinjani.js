@@ -12,7 +12,7 @@ var Rinjani = {
            to the login page.  That sucks, it would be better
            if we would display a login overlay. */
         if (response.login_could_fix)
-          document.location.href = Rinjani.URL_ROOT + 'login?next='
+          document.location.href = '/login?next='
             + encodeURIComponent(document.location.href);
         else if (response.message)
           Rinjani.flash(response.message, true);

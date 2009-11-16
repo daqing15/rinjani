@@ -52,7 +52,7 @@ class Pagination(object):
             return u''
         return u'<div class="pagination">%s</div>' % self.generate()
 
-    def get_objects(self, sort_by='created_at', raise_not_found=True):
+    def get_objects(self, sort_by='created_at', sort_order=-1, raise_not_found=True):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
             raise HTTPError(404)
@@ -63,7 +63,7 @@ class Pagination(object):
             rv = self.doc_class.all(self.query) \
                 .skip(self.offset)\
                 .limit(self.per_page) \
-                .sort(sort_by, -1)
+                .sort(sort_by, sort_order)
                 
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()

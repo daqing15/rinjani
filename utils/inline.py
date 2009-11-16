@@ -116,19 +116,17 @@ class YoutubeInline(TemplateInline):
     """
     base_url = "http://www.youtube.com/v"
     code = """
-<object type="application/x-shockwave-flash" style="width:%(width)spx; height:%(height)spx;" 
-    data="%(base_url)/%(id)s">
+<object type="application/x-shockwave-flash" style="width:550px; height:331px;" 
+    data="%(base_url)s/%(id)s">
     <param name="movie" value="http://www.youtube.com/v/%(id)s" />
 </object> 
 """       
     def render(self):
-        return "YOUTUBE"
-        video_id = self.value
-        match = re.search(r'(?<=v\=)[\w]+', video_id)
+        match = re.search(r'(?<=v\=)[\w]+', self.value)
         if match:
             video_id = match.group()
-        print self.kwargs
-        return "<embed youtube string here>"
+            return self.code % { 'id': video_id, 'base_url': self.base_url}
+        return ""
 
 IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 
@@ -157,8 +155,8 @@ class AttachmentInline(TemplateInline):
     """
         {{ attachment idx caption="the caption" url="http://example.com" }}
     """
-    code_image = "<img src='/static/uploads/%(src)s' />"        
-    code = "<a target='_blank' href='/static/uploads/%(src)s'><img src='/static/img/attachment.png' /></a>"
+    code_image = "<div class='image'><img src='/static/uploads/%(src)s' /></div>"        
+    code = "<div class='binary'><a target='_blank' href='/static/uploads/%(src)s'><img src='/static/uploads/attachment.png' /></a></div>"
     wrapper = "<div class='attachment'>%(code)s<p class='caption'>%(caption)s</p></div>"
     
     def __init__(self, attachments):

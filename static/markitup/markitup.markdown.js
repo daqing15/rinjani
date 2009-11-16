@@ -28,7 +28,10 @@ mySettings = {
 		{separator:'---------------'},	
 		{name:'Quotes', openWith:'> '},
 		{name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
+		{separator:'---------------'},	
 		{name:'Insert Slideshow', key: 'S', className:'slideshow', openWith:'{{ slideshow }}\n'},
+		{name:'Insert Youtube Video', key: 'Y', className:'youtube', openWith:'{{ youtube ', 
+			closeWith: '[![Paste the url here, eg. http://youtube.com/watch?v=_VZ1QnKSpgc:!:]!] }}', placeHolder: ''},
 		{separator:'---------------'},
 		{name:'Show/Hide Preview', openWith:function(m) { togglePreview(m); }, className:"tPreview"},
 		{name:'Preview', call:'preview', className:"preview"}

@@ -9,11 +9,6 @@
 	
 	<div class="cb">
 	    {{ activity.content_html }}
-        
-        {% if activity.deliverable %}
-	    <h4>Deliverable</h4>
-	    	{{ activity.deliverable_html }}
-	    {% end %}
 	</div>
 	
 </div>
@@ -47,16 +42,11 @@
               {% if accounts.count() %}
                 <p><a class="dialog button" rel="#accounts" href="#">Donate</a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}">{{ _('Confirm My Donation') }}</a></p>
               {% end %}
-              
-              
             </div>
         </div>
     </div>
-    {% end %}
     
-    {{ modules.ItemStat(activity) }}
-    
-{% if current_user != activity.author and accounts.count() %}
+    {% if current_user != activity.author and accounts.count() %}
     <div id="accounts" class="modal facebox">
         <div class="wDialog">
             <h3>{{_('Bank accounts of ')}} {{ h.get(activity.author.last_name, activity.author.username) }}</h3> 
@@ -71,8 +61,11 @@
             </table>
         </div>
     </div>
-{% end %}    
-          
+    {% end %} 
+    {% end %}
+    
+    {{ modules.ItemStat(activity) }}
+    
 <div class="modal facebox" id="boxdonation"><div class="wDialog"></div></div>  
 <div class="ovl" id="slideshow"> 
     <a class="prev">{{_('prev')}}</a> 

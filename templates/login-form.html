@@ -25,8 +25,8 @@
 	   <div class="sep-left leftpadded10">
 	        <form method="post">
 	        {{ f.render_css() }}
-	        <div class="actionbar">
-	            <input class="button" type="submit" value="{{ _('Login') }}"/>
+	        <div class="buttons">
+	            <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
 	            <input type="hidden" name="next" value="{{next}}" />
 	        </div>
 	          {{ xsrf_form_html() }}
@@ -35,7 +35,6 @@
 	            $('input[name=username]').focus();
 	        </script>
 	    </div>
-	    <p class="grey small">This form is for development only</p>
     </div>
     
 </div>

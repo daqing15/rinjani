@@ -189,7 +189,7 @@ class EditHandler(BaseHandler):
         except Exception, e:
             if not isinstance(e, InvalidFormDataError): raise
             f.note = f.note if f.note else e
-            self.render(user.type + '/profile-edit', f=f, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
+            self.render(user.type + '/profile-edit', f=f, user=user, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
         
         
 class Dashboard(BaseHandler):

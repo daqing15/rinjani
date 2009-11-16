@@ -33,10 +33,8 @@ class ListHandler(BaseHandler):
         self.render('activities', pagination=pagination)
 
 class ViewHandler(BaseHandler):
-    def get(self, dt, slug):
-        date = striso_to_date(dt)
-        one_day = datetime.timedelta(days=1)
-        activity = Activity.one({"slug": slug, "created_at": {'$gte': date, '$lte': date + one_day}})
+    def get(self, slug):
+        activity = Activity.one({'status':'published', 'slug': slug})
         if not activity:
             raise tornado.web.HTTPError(404)
         Activity.collection.update({'slug': slug}, {'$inc': { 'view_count': 1}})

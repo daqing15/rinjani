@@ -27,14 +27,14 @@ url_handlers = [
     (r"/activity/edit/([A-Za-z0-9\-]+)", 'handlers.activity.EditHandler'),
     (r"/activity/edit", 'handlers.activity.EditHandler'),
     (r"/activity/remove/([A-Za-z0-9\-]+)", 'handlers.activity.RemoveHandler'),
-    (r"/activity/([0-9]{4}/[0-9]{1,2}/[0-9]{1,2})/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
+    (r"/activity/([A-Za-z0-9\-]+)", 'handlers.activity.ViewHandler'),
     
     (r"/articles", 'handlers.article.ListHandler'),
     (r"/article/new", 'handlers.article.EditHandler'),
     (r"/article/edit/([A-Za-z0-9\-]+)", 'handlers.article.EditHandler'),
     (r"/article/edit", 'handlers.article.EditHandler'),
     (r"/article/remove/([A-Za-z0-9\-]+)", 'handlers.article.RemoveHandler'),
-    (r"/article/([0-9]{4}/[0-9]{1,2}/[0-9]{1,2})/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
+    (r"/article/([A-Za-z0-9\-]+)", 'handlers.article.ViewHandler'),
     
     (r"/page/new", 'handlers.page.EditHandler'),
     (r"/page/edit/([A-Za-z0-9\-]+)", 'handlers.page.EditHandler'),
@@ -45,6 +45,7 @@ url_handlers = [
     
     (r"/tag/([a-z0-9]+)", 'handlers.tag.ViewHandler'),
     (r"/tags", 'handlers.tag.ListHandler'),
+    (r"/flag", 'handlers.tag.FlagHandler'),
     
     (r"/report", 'handlers.report.Handler'),
     

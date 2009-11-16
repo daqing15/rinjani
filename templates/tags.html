@@ -8,13 +8,13 @@
 
 <div class="cb">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% set items = pagination.get_objects(sort_by='_id') %}
+{% set items = pagination.get_objects(sort_by='_id', sort_order=1) %}
 
 {% if items.count() %}
     <div class="line">
         <ul class="tags">
             {% for tag in items %}
-                <li><a class="tag" href="{{BP}}/tag/{{url_escape(tag._id)}}">{{ escape(tag._id) }}</a> <span>x{{ int(tag.count) }}</span></li>
+                <li><a class="tag" href="{{BP}}/tag/{{url_escape(tag._id)}}?t={{tab}}">{{ escape(tag._id) }}</a> <span>x{{ int(tag.value) }}</span></li>
             {% end %}
         </ul>            
     </div>

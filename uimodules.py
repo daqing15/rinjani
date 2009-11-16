@@ -99,7 +99,22 @@ class IsDraft(BaseUIModule):
 
 class ItemStat(BaseUIModule):
     def render(self, item):
-        return self.render_string("modules/item-stat.html", item=item)
+        from settings import MY_FLAGS
+        from models import Vote
+        import logging
+        votes = {}
+        for f in MY_FLAGS:
+            votes[str(f[0])] = 0
+        votes.update(item.votes)
+        FLAGS = {}
+        for f in MY_FLAGS:
+            FLAGS[str(f[0])] = f[1]
+        
+        if self.handler.current_user:
+            vote = Vote.one({'uid':self.handler.current_user['_id'], 'cid': item._id})
+        else:
+            vote = False
+        return self.render_string("modules/item-stat.html", item=item, vote=vote, votes=votes, FLAGS=FLAGS)
                                               
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item.html'):
@@ -209,7 +224,7 @@ class TagCloud(BaseUIModule):
         import random
         tags = Tag.all().sort('count', -1).limit(15)
         tags = [tag for tag in tags]
-        tags = calculate_cloud(tags)
+        tags = calculate_cloud(tags, 5, 2)
         random.shuffle(tags)
         return self.render_string("modules/tag-cloud.html", tags=tags[0:10], min=min)
         
