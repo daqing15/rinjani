@@ -5,7 +5,7 @@ import markdown2
 
 import tornado.web
 from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
-from settings import app_settings
+from settings import DB
 from utils.string import force_unicode, listify, sanitize, slugify
 from utils.inline import processor, AttachmentInline, SlideshowInline
 
@@ -14,9 +14,7 @@ class EditDisallowedError(Exception): pass
 RATING = {'b':'Bagus', 'm':'Menarik', 'p':'Penting'}
 
 class BaseDocument(MongoDocument):
-    db_host = app_settings['db_host']
-    db_port = app_settings['db_port']
-    db_name = app_settings['db_name']
+    db_host, db_port, db_name = DB
     #skip_validation = True
     use_dot_notation = True
     use_autorefs = True
@@ -509,7 +507,7 @@ class Donation(BaseDocument):
     validators = { "amount": lambda x: x > 0}
 
 class Cache(MongoDocument):
-    db_name = app_settings['db_name']
+    db_host, db_port, db_name = DB
     collection_name = 'caches'
     skip_validation = True
     use_dot_notation = False
@@ -520,7 +518,7 @@ class Cache(MongoDocument):
     }
 
 class Tag(MongoDocument):
-    db_name = app_settings['db_name']
+    db_host, db_port, db_name = DB
     use_dot_notation = True
     skip_validation = True
     collection_name = 'tags'
@@ -538,7 +536,8 @@ class UserTag(Tag):
     collection_name = 'users_tags'
             
 
-def get_or_404(cls, query={}):
+def get_or_404(cls, query=None):
+    query = query if query else {}
     o = cls.one(query)
     if not o:
         raise tornado.web.HTTPError(404)

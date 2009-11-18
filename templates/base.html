@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>{% block title %}{{_('Welcome')}}{% end %} - {{ escape(settings.blog_title) }}</title>
+    <title>{% block title %}{{_('Welcome')}}{% end %} - {{ escape(settings.BLOG_TITLE) }}</title>
     <link rel="stylesheet" href="{{ static_url('css/app.css') }}" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ static_url('css/mod.css') }}" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ static_url('css/uicomponents.css') }}" type="text/css" media="screen, projection" />
@@ -90,5 +90,8 @@
 
 {% block postinlinejs %}{% end %}
 
+{% if settings.live %}
+    modules.GoogleAnalytic()   
+{% end %}
 </body>
 </html>

@@ -14,7 +14,6 @@
 # under the License.
 
 
-import logging
 import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
 from pymongo.errors import ConnectionFailure, AutoReconnect

@@ -6,16 +6,19 @@ be used for social activity discussion.
 
 this is my first 'real' app using python, so consider that when peeking
 through the code :p
+
+upcoming updates will be posted in https://twitter.com/peduli_dev
   
-install these apps: 
-===================
+INSTALL
+-------
+
+install these apps:
 
 - nginx
 - mongodb (1.1)
 - redis (not yet used hehe)
 
-install these or put into lib/:
-===============================
+and libs (using easy_install):
 
 - markdown2 
 - pymongo 
@@ -24,14 +27,13 @@ install these or put into lib/:
 - web.py
 - python-json/python-simplejson
 - python-imaging
-- python-tz
-- 
+- python-tz 
 
-run these:
-==========
+then run these:
+----------
 
-$ mkdir -p INSTALLDIR/static/uploads/tmp
-$ mkdir INSTALLDIR/static/uploads/avatars
-$ cp avatar.png INSTALLDIR/static/uploads/avatars #40x40px
+    INSTALLDIR/$ mkdir -p static/uploads/tmp
+    INSTALLDIR/$ mkdir static/uploads/avatars
+    INSTALLDIR/$ cp ~/avatar.png static/uploads/avatars #40x40px
 
 

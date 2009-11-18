@@ -112,12 +112,12 @@ class BaseHandler(tornado.web.RequestHandler):
         
         return dict(
             current_path = self.request.uri, 
-            BP = self.settings['context'],
-            h = defaulthelper,
+            BP = self.settings.BASE_URL,
             get = lambda x,y: x or y,
-            s = string,
             log = logging,
-            settings = self.settings
+            settings = self.settings,
+            h = defaulthelper,
+            s = string
         ) 
     
     def is_xhr(self): 

@@ -86,12 +86,20 @@ class Formfield(BaseUIModule):
     def render(self, i):
         import forms
         is_checkbox = isinstance(i, forms.Checkbox)
-        return self.render_string('modules/field', i=i, is_checkbox=is_checkbox, is_required=is_required)
+        return self.render_string('modules/field', i=i, 
+                                  is_checkbox=is_checkbox, 
+                                  is_required=is_required)
 
 class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
-        return self.render_string('modules/field-incolumns', inputs=inputs, is_required=is_required)
+        return self.render_string('modules/field-incolumns', 
+                                  inputs=inputs, is_required=is_required)
 
+class GoogleAnalytic(BaseUIModule):
+    def render(self):
+        code = self.settings.google_analytic_code
+        return self.render_string('modules/google-analytic', code=code, legacy=False)
+    
 class ItemAction(BaseUIModule):
     def render(self, item):
         return self.render_string('modules/item-action', item=item)
@@ -110,7 +118,12 @@ class ItemStat(BaseUIModule):
             vote = Vote.one({'uid':self.handler.current_user['_id'], 'cid': item._id})
         else:
             vote = False
-        return self.render_string('modules/item-stat', item=item, vote=vote, votes=votes, FLAGS=FLAGS)
+        return self.render_string('modules/item-stat', 
+                                  item=item, 
+                                  vote=vote, 
+                                  votes=votes, 
+                                  FLAGS=FLAGS
+                                  )
                                               
 class ItemSummary(BaseUIModule):
     def render(self, item, template='modules/item'):
@@ -201,7 +214,11 @@ class Tabs(BaseUIModule):
         _title, tabs = self.get_tabs(tabs)
         if tabs:
             title = title if title else _title 
-            html = self.render_string('modules/tabs', title=title, tabs=tabs, selected=selected)
+            html = self.render_string('modules/tabs', 
+                                      title=title, 
+                                      tabs=tabs, 
+                                      selected=selected
+                                      )
             if kwargs:
                 html = html % kwargs
             return html
@@ -243,5 +260,8 @@ class UsersThumbs(BaseUIModule):
     def render(self, users, title='', style=''):
         if isinstance(users, list):
             users = User.all({'username': {"$in": users}})
-        return self.render_string('modules/users-thumbs', users=users, title=title, style=style)  
+        return self.render_string('modules/users-thumbs', 
+                                  users=users, 
+                                  title=title, 
+                                  style=style)  
     

@@ -2,30 +2,30 @@
 
 import os.path
 import sys
-sys.path = [
-    '.',
-    os.path.dirname(__file__) + "/lib",
-    '/usr/lib/python2.6',
-    '/usr/lib/python2.6/lib-dynload', 
-    '/usr/lib/python2.6/dist-packages', 
-    '/usr/lib/python2.6/dist-packages/PIL',
-    '/var/lib/python-support/python2.6', 
-]
+sys.path.insert(0, os.path.dirname(__file__) + "/lib")
 
 import re
 import tornado.httpserver
 import tornado.ioloop
 import tornado.locale
 import tornado.options
+
 from application import BaseApplication, MissingHandler
 import uimodules
-from settings import app_settings
 from urls import url_handlers
 
+def get_settings():
+    import settings
+    return dict([(varname,getattr(settings,varname))
+         for varname in dir(settings)
+         if not varname.startswith("_") ])
+
+app_settings = get_settings()
+     
 # we'll run one app per core
 from tornado.options import define, options
-define("port", default=app_settings.get('port', 8888), help="run on the given port", type=int)
-define("mobile", default=app_settings.get('mobile', False), help="is this a mobile-site frontend?", type=int)
+define("port", default=app_settings.get('PORT', 8888), help="run on the given port", type=int)
+define("mobile", default=app_settings.get('MOBILE', False), help="is this a mobile-site frontend?", type=int)
 tornado.options.parse_command_line()
 
 class Application(BaseApplication):

@@ -40,7 +40,9 @@
             {{ modules.FormfieldInColumns(f.password, f.password2) }}
             {{ modules.Formfield(f.type) }}
             {{ modules.Formfield(f.agree) }}
-            
+            <script type="text/javascript">
+                $('input[name=username]').focus();
+            </script>
             <div class="actionbar">
                 <button class="submit" name="register"><span><span>{{_('Register')}}</span></span></button>
             </div>
