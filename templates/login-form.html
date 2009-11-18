@@ -27,13 +27,14 @@
 	        {{ f.render_css() }}
 	        <div class="buttons">
 	            <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
-	            <input type="hidden" name="next" value="{{ current_path }}" />
+	            <input type="hidden" name="next" value="{{ next }}" />
 	        </div>
 	          {{ xsrf_form_html() }}
 	        </form>
 	        <script type="text/javascript">
 	            $('input[name=username]').focus();
 	        </script>
+            <p class="small">try apitoh/hermione or phajero/hermione</p>
 	    </div>
     </div>
     

@@ -115,7 +115,6 @@ class User(BaseDocument):
         'fullname': unicode,
         'birthday_date': datetime.datetime,
         'location': list,
-        'proxied_email': unicode,
         'contact_person': unicode,
         'phones': list,
         'fax': list,
@@ -137,7 +136,7 @@ class User(BaseDocument):
         'followers': list,
         'preferences': list,
         'badges': list,
-        'reputation': int,
+        'points': int,
         'article_count': int,
         'activity_count': int,
         'donation_count': int,
@@ -149,7 +148,7 @@ class User(BaseDocument):
         'status': u'active',
         'timezone': u'Asia/Jakarta',
         'is_admin': False,
-        'article_count': 0, 'activity_count': 0, 'donation_count': 0,  
+        'article_count': 0, 'activity_count': 0, 'donation_count': 0, 'points': 0,  
         'created_at':datetime.datetime.utcnow, 
         'type': u'public'
     }

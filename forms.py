@@ -2,7 +2,7 @@ from web import form
 from datetime import datetime
 from utils.string import listify
 import re
-from settings import USERTYPE, TIMEZONE
+from settings import USERTYPE, TIMEZONES
 
 class InvalidFormDataError(Exception): pass
 
@@ -189,7 +189,7 @@ profile_form = MyForm(
     Textbox("phones", size=20, description="Phones", title="Separate numbers with comma"),
     Textbox("fax", size=20, description="Fax", title="Separate numbers with comma"),
     Textarea("address", rows=3, cols=40, description="Address"),
-    Dropdown('timezone', args=TIMEZONE, description='Timezone'),
+    Dropdown('timezone', args=TIMEZONES, description='Timezone'),
     Textbox("email", size=40, description="E-Mail"),
     Textbox("website", size=40, description="Website"),
     Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Your Fields/Skills"),
