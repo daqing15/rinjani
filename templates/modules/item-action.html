@@ -1,0 +1,15 @@
+{% if item.status == 'draft' %}
+<div class="mod simple">
+    <div class="inner">
+        <div class="bd"><p>This page is only can be viewed by you</div>
+    </div>
+</div>
+{% end %}
+
+{% if current_user %}
+<div class="line buttons"><p>   
+    {{ h.link_if_editor(current_user, item.author, item.get_edit_url(), _('Edit'), _class='button') }} 
+    {{ h.link_button_if_editor(current_user, item.author, item.get_remove_url(), _('Remove'), handler.xsrf_token) }}
+    </p> 
+</div>
+{% end %}

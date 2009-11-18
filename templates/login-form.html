@@ -27,7 +27,7 @@
 	        {{ f.render_css() }}
 	        <div class="buttons">
 	            <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
-	            <input type="hidden" name="next" value="{{next}}" />
+	            <input type="hidden" name="next" value="{{ current_path }}" />
 	        </div>
 	          {{ xsrf_form_html() }}
 	        </form>

@@ -24,11 +24,6 @@ class Pagination(object):
         self.per_page = per_page
         
         self.translate = req.locale.translate
-        if getattr(doc_class, 'get_total', None):
-            self.total = doc_class.get_total()
-        else:
-            self.total = doc_class.all(query).count()
-        
         self.pages = int(math.ceil(self.total / float(per_page)))
         self.necessary = self.pages > 1
         
@@ -41,9 +36,9 @@ class Pagination(object):
         self.link_func = link_func
     
     @property
-    def total_pages(self):
-        return self.pages
-    
+    def total(self):
+        return self.doc_class.all(self.query).count()
+        
     def __str__(self):
         return str(self.__unicode__())
     
@@ -106,3 +101,22 @@ class Pagination(object):
                           (self.link_func(next), _(u'Next &gt;')))
 
         return u''.join(result)
+    
+class ListPagination(Pagination):
+    def __init__(self, req, objects, per_page=15, link_func=None):
+        self.objects = objects
+        super(ListPagination, self).__init__( \
+                req, object, {}, per_page, link_func)
+    
+    @property
+    def total(self):
+        return len(self.objects)
+    
+    def get_objects(self):
+        from itertools import islice
+        return islice(
+                iter(self.objects), 
+                self.offset, 
+                self.offset + self.per_page
+            )
+            

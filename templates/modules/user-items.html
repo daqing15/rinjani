@@ -1,0 +1,11 @@
+{% if user.reputation %}
+<span title="{{_('articles')}}" class="badge b-karma">169</span>
+{% end %}
+
+{% if user.article_count %}
+    <span title="{{_('articles')}}" class="badge b-article">&#9679;</span><span class="badgecount">{{user.article_count }}</span>
+{% end %}
+
+{% if user.activity_count %}
+    <span title="{{_('activities')}}" class="badge b-activity">&#9679;</span><span class="badgecount">{{user.activity_count }}</span>
+{% end %}                    

@@ -1,9 +1,10 @@
-{% extends 'base.html' %}
+{% extends "error.html" %}
 
 {% block title %}{{ _("Method Not Allowed") }}{% end %}
 
 {% block body %}
-<h1>Method Not Allowed</h1>
-<p></p>
-{% end %}
 
+<h1>{{_('Method Not Allowed')}}... {{ _(message) if message else "" }}</h1>
+<p>{{ _('Consult google.com for what this means :p')}}</p>
+
+{% end %}

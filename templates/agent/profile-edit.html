@@ -36,7 +36,7 @@
                         <!-- <div class="i">
                             <label>Username: <span class="grey">{{ user.username}}</span></label>
                         </div> -->
-                        {{ modules.Formfield(f.last_name) }}
+                        {{ modules.Formfield(f.fullname) }}
                         {{ modules.Formfield(f.about) }}
                         {{ modules.Formfield(f.timezone) }}
                         {{ modules.Formfield(f.tags) }}
@@ -65,7 +65,7 @@
                 
                 <div class="line attachments"></div>
                 <div class="line uploader">
-                    <button id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></button>  
+                    <a href="#" class="button" id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></a>  
                     <div id="loading" style="display:none">uploading...</div>
                 </div>
             </div>
@@ -78,14 +78,20 @@
                         {{ modules.Formfield(f.address) }}
                     </div>
                     <div class="lastUnit size2of5">
-                        <label>{{_('Select your location in map')}}</label>
-                        <div class="loc" style="width:250px; height:180px; background:url(/static/uploads/maps/psm.gif) no-repeat;">
+                        <div class="deps">
+                            <div class="depsrc">
+                                <label><input type="checkbox" name="choose_loc" /> Select Location</label>
+                            </div>
+                            <div class="deptarget">
+                                <div class="loc" style="width:240px; height:150px; background:url(/static/uploads/maps/psm.gif) no-repeat;"></div>
+                                {{ modules.FormfieldInColumns(f.lat, f.long) }}
+                            </div>
                         </div>
                     </div>
                  </div>
             </div>
             <div class="pane">
-                <label class="grey lined tips">{{_('Public Bank Accounts')}}</label>
+                <label class="grey lined tips">{{_('Bank Accounts')}}</label>
                 <div class="line account-header" style="{% if not accounts %}display:none{% end %}">
                     <div class="unit size1of5 grey">Label</div>
                     <div class="unit size1of5 grey">Bank</div>
@@ -126,7 +132,7 @@
                     </div>
                     {% end %}{% end %}
                 </div>
-                <button class="cp button">{{ _('Add') }}</button>
+                <button class="cp button"><span><span>{{ _('Add') }}</span></span></button>
             </div>
         </div>
     </div>
@@ -144,6 +150,11 @@
 
 </form>
 
+<style>
+.deptarget { display:none; margin-left: 22px;}
+.suggestedtags p { padding:3px 0; }
+</style>
+
 <script type="text/javascript">
 $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
@@ -153,46 +164,16 @@ textarea = '#profile_content';
 slug = '{{ user.username }}';
 </script>
 
-<script type="text/javascript">
-$('.account .rm').live('click', function() {
-    $parent = $(this).parents('.account')
-    if ($parent.find('input[type=hidden]').val() != "0") {
-        if (!confirm("Are you sure?")) {
-            return false;
-        }
-    }
-    $parent.remove();
-    if ($('.account').length < 1) { $('.account-header').hide(); }
-});
-
-$account = $('.accountsrc').clone(true).removeClass('accountsrc').addClass('account');
-
-$('.cp').click(function() {
-    $new_account = $account.clone(true);
-    $new_account.find(':input').each(function() {
-        $i = $(this)
-        if ($i.attr('name') != undefined) {
-            idx = $i.attr('name') + ($('.account').length + 1);
-            $i.attr('name', idx);
-        }
-    })
-    $('.accounts').append($new_account.show());
-    if ($('.account').length > 0) { $('.account-header').show(); }
-    return false;
-});
-</script>
-                
-
 {% end %}
 
 {% block inlinejs %}
 <script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
 <link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.template.min.js') }}"></script>
 {% end %}
 
 {% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('profile.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
 {% end %}
 

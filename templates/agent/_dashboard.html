@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<div class="box">
+<div class="buttons">
     <a class="button" href="{{BP}}/article/new"><span><span>{{ _('New Article') }}</span></span></a> 
     <a class="button" href="{{BP}}/activity/new"><span><span>{{ _('New Activity') }}</span></span></a>
     {{ h.link_if_auth(current_user, BP + '/profile/edit', _('Edit Profile'), ['agent','sponsor'], _class='button') }}

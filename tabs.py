@@ -1,9 +1,7 @@
 dashboard_agent = ('Dashboard', [
     ('/dashboard', 'dashboard'),
-    ('/profile/articles', 'donations'),
-    ('/profile/comments', 'comments'),
-    ('/profile/supporters', 'supporters'),
-    ('/profile/supports', 'supports'),
+    ('/profile/donations', 'donations'),
+    ('/profile/comments', 'comments')
 ])
 
 new_public = ('New', [
@@ -28,7 +26,7 @@ dashboard_public = ('Dashboard', [
 ])
 
 profile_public = ('%(fullname)s', [
-    ('/profile/%(username)s', 'profile'),
+    ('/profile/%(username)s', 'about'),
     ('/profile/articles/%(username)s', 'articles'),
     ('/profile/activities/%(username)s', 'activities'),
     ('/profile/comments/%(username)s', 'comments'),

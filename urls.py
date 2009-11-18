@@ -1,8 +1,7 @@
 
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
-    (r"/l/(\w+)", 'handlers.main.LocaleHandler'),
-    (r"/preview", 'handlers.home.MarkdownPreviewHandler'),
+    (r"/l/(\w+)", 'handlers.locale.SetHandler'),
     
     (r"/attachment/add", 'handlers.attachment.AddHandler'),
     (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
@@ -11,6 +10,8 @@ url_handlers = [
     
     (r"/account", 'handlers.profile.AccountHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
+    (r"/profile/follow/([A-Za-z0-9]+)", 'handlers.profile.FollowHandler'),
+    (r"/profile/followers/([A-Za-z0-9]+)", 'handlers.profile.FollowersHandler'),
     (r"/profile/donations", 'handlers.donation.ListHandler'),
     (r"/profile/comments", 'handlers.profile.CommentsHandler'),
     (r"/profile/comments/([A-Za-z0-9]+)", 'handlers.profile.ProfileCommentsHandler'),

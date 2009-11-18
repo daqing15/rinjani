@@ -3,24 +3,23 @@
         <div class="bd">
             <div class="line">
 		       
-               <div class="unit">
-                    <div class=" leftpadded10">
-                        {{ modules.Avatar(user) }}
-                    </div>
+               <div class="unit media">
+                    {{ modules.Avatar(user) }}
 		       </div>
                
 		       <div class="lastUnit">
-                    <p><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a> 
-                    <span title="{{_('articles')}}" class="badge b-karma">169</span>
-                    {% if user.article_count %}
-                        <span title="{{_('articles')}}" class="badge b-article">&#9679;</span><span class="badgecount">{{user.article_count }}</span>
-                    {% end %}
-                    {% if user.activity_count %}
-                        <span title="{{_('activities')}}" class="badge b-activity">&#9679;</span><span class="badgecount">{{user.activity_count }}</span>
-                    {% end %}                    
+                    <p class=""><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a> {{ modules.UserItems(user) }}</p>
+                    <p class="ntp detail">
+                    {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
                     </p>
-                    <p class="smallx">{{ _('Joined')}} {{ h.timesince(user.created_at) }}</p>
                     
+                    {% if current_user and current_user != user %}
+                    {% set action = 'unfollow' if current_user.username in user.followers else 'follow' %}
+                    <form method="post" action="/profile/follow/{{user.username}}?action={{action}}&next={{ current_path }}">
+                        <button class="ajax"><span><span>{{_(action.title())}}</span></span></button>
+                    </form>
+                    {% end %}
+                        
                </div>
             </div>
         </div>

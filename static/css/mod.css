@@ -122,6 +122,6 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .bam{background: #00477a url(skin/mod/header_glossy.png) repeat-x left top;color: #fff;font-size:120%;padding:5px 10px;}
 .bam h1,.bam h2,.bam h3,.bam h4,.bam h5,.bam h6{font-size:100%;color:#fff;padding:0;}
 
-.inner { padding-top: 5px; }
-.inner .bd { padding: 5px 0; }
-.leftpadded10 { padding-left: 10px !important; }
+.inner .hd { padding-top: 5px; }
+.inner .bd { padding-bottom: 5px; }
+.lp10, .leftpadded10 { padding-left: 10px !important; }

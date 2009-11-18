@@ -1,21 +1,55 @@
-"""
-Blah blah
-@author: apit
-"""
+#
+# Copyright 2009 rinjani team
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 
+
+import logging
 import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
+from pymongo.errors import ConnectionFailure, AutoReconnect
 
 from utils.mod import get_mod_handler, import_module
-from pymongo.errors import ConnectionFailure, AutoReconnect
-from handlers.main import ErrorHandler
-import logging
 
+class ErrorHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, status_code, message=""):
+        self.message = message
+        self.status_code = status_code
+        super(ErrorHandler, self).__init__(application, request)
+    
+    def get_error_html(self, status_code):
+        return self.render_string(status_code)
+    
+    @property
+    def template_vars(self):
+        return {}
+    
+    def render_string(self, template, **kwargs):
+        kwargs = {'BP':'', 'message': self.message}
+        if self.settings:
+            kwargs.update({'settings': tornado.web._O(self.application.settings)})
+        return super(ErrorHandler, self).render_string("%d.html" % self.status_code, **kwargs)
+
+class MissingHandler(ErrorHandler):
+    def __init__(self, application, request, transforms=None):
+        super(MissingHandler, self).__init__(application, request, 404)
+    
 class BaseApplication(tornado.web.Application):
     def __call__(self, request):
         """
         Called by HTTPServer to execute the request.
         monkey-patched to allow handler to be string, not class
+        plus handle MongoDB connection error
         """
         transforms = [t(request) for t in self.transforms]
         handler = None
@@ -30,23 +64,21 @@ class BaseApplication(tornado.web.Application):
             for pattern, handler_class, kwargs in handlers:
                 match = pattern.match(request.path)
                 if match:
-                    # here comes the patch
                     if not callable(handler_class):
                         try:
                             mod_name, handler_classname = get_mod_handler(handler_class)
                             handler_class = import_module(mod_name, handler_classname)
                             handler = handler_class(self, request, **kwargs)
-                        except ConnectionFailure:
-                            logging.critical("=======DB Connection error=============")
-                            handler = ErrorHandler(self, request, 500, message="DB died?")
-                    # end of patch
+                        except (AutoReconnect, ConnectionFailure):
+                            handler = ErrorHandler(self, request, 500, "Database Connection Error")
+                            
                     args = match.groups()
                     break
             if not handler:
                 handler = ErrorHandler(self, request, 404)
         
         # force debug if ip in registered remote debugger ips
-        if self.settings.get("debug_ip"):
+        if self.settings.get("debug_ip", None):
             if request.remote_ip in self.settings.get("debug_ip"):
                 self.settings['debug'] = True
                 
@@ -56,19 +88,7 @@ class BaseApplication(tornado.web.Application):
             RequestHandler._templates = None
             RequestHandler._static_hashes = {}
         
-        try:
-            handler._execute(transforms, *args)
-        except AutoReconnect:
-            from pymongo.connection import Connection
-            logging.critical("===== Reconnects to DB ========")
-            Connection("localhost", 27017)
-            RequestHandler(self, request, 500)._execute(transforms, *args)
-        except:
-            logging.critical("=========WTF? ===========")
-            RequestHandler(self, request, 500)._execute(transforms, *args)
+        handler._execute(transforms, *args)
             
         return handler
     
-    @property
-    def queue(self):
-        pass

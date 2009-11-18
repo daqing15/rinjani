@@ -104,12 +104,11 @@ class BaseHandler(tornado.web.RequestHandler):
         return tornado.locale.get(loc)
 
     def get_error_html(self, status_code):
-        return self.render_string(str(status_code) + ".html", message=None, **self.template_vars)
+        return self.render_string(str(status_code), message=None, **self.template_vars)
     
     @property
     def template_vars(self):
-        from utils import defaulthelper
-        from utils import string
+        from utils import defaulthelper, string
         
         return dict(
             current_path = self.request.uri, 
@@ -127,41 +126,12 @@ class BaseHandler(tornado.web.RequestHandler):
     
     def json_response(self, message, status='OK', data=None):
         self.finish(dict(status=status, message=message, data=data))
-    
-    # choose template based on request type
-    def render(self, template, **kwargs):
-        ''' Select appropriate template based on request type and add additional template vars '''
-        ext = 'html'
-        if self.is_xhr():
-            ext = 'ajax'
-            
-        if self.settings.is_mobile_site:
-            template = os.path.join("mobile", template)      
-                  
-        template = template + "." + ext
+        
+    def render_string(self, template, **kwargs):
         kwargs.update(self.template_vars)
-        super(BaseHandler, self).render(template, **kwargs)
-
-class MissingHandler(BaseHandler):
-    def get(self, *kargs, **kwargs):
-        self.set_status(404)
-        self.render("404")
-
-class ErrorHandler(BaseHandler):
-    def __init__(self, *kargs, **kwargs):
-        if kwargs.has_key('message'):
-            self.message = kwargs.pop('message')
-        else:
-            self.message = ""
-        super(ErrorHandler, self).__init__(*kargs, **kwargs)
-        
-    def get(self, *kargs, **kwargs):
-        self.set_status(500)
-        self.render("500", message=self.message)
-        
-class LocaleHandler(tornado.web.RequestHandler):
-    def get(self,loc):
-        self.set_cookie("loc", loc)
-        self.redirect(self.get_argument("next", "/"))
+        if self.settings.is_mobile_site:
+            template = os.path.join("mobile", template)   
+        template += '.html'
+        return super(BaseHandler, self).render_string(template, **kwargs)
 
 

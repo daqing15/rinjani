@@ -6,21 +6,18 @@ function getCookie(name) {
 var Rinjani = {
   /* Solace. helper for dynamicSubmit and request */
   _standardRemoteCallback : function(func) {
-    return function(response) {
-      if (response.status != 'OK') {
-        /* if a login could fix that error, we simply redirect
-           to the login page.  That sucks, it would be better
-           if we would display a login overlay. */
-        if (response.login_could_fix)
-          document.location.href = '/login?next='
+    return function(resp) {
+      if (resp.status != 'OK') {
+        if (resp.try_login) {
+           document.location.href = '/login-form?next='
             + encodeURIComponent(document.location.href);
-        else if (response.message)
-          Rinjani.flash(response.message, true);
+        }
       } else {
-        if (response.message)
-          Rinjani.flash(response.message);
-        if (func)
-          func(response);
+        if (func) { func(resp); }
+      }
+      if (resp.message) { Rinjani.flash(resp.message); }
+      if (resp.data && resp.data.html) { 
+    	  $(resp.data.html_target).html(resp.data.html);
       }
     };
   },
@@ -39,6 +36,11 @@ var Rinjani = {
       success:  Rinjani._standardRemoteCallback(callback)
     });
   },
+  
+  displayLoginForm: function() {
+	  
+  },
+  
 	/* flash container enhanced? */
   _flash_container_enhanced : false,
 
@@ -213,7 +215,6 @@ $(function() {
       top: '25%',
       closeOnClick: false,
       onBeforeLoad: function() { 
-          // grab wrapper element inside content 
           var wrap = this.getContent().find(".wDialog");
           url = this.getTrigger().attr("href");
           if (url != '#') {
@@ -235,6 +236,11 @@ $(function() {
     template: '<span>${index} of ${total}</span>'
   }) }
   
+  $('button.ajax').click(function() { 
+	    var action=$(this).parent('form').attr('action');
+	    R.request(action, {}, 'POST');
+	    return false;
+	 });
     // select all desired input fields and attach tooltips to them 
   $("form.withtips :input[title], .tt").tooltip({ 
       position: "center right", 
@@ -257,5 +263,16 @@ $(function() {
     scroll(0,0);
   }
   
-  $("ul.tabs").tabs("div.panes > div"); 
+  $("ul.tabs").tabs("div.panes > div");
+  $("ul.vtabs").tabs("div.vpanes > div"); 
+  
+  $('.deps').each(function() {
+	    $src = $(this).find('.depsrc input[type=checkbox]');
+	    $src.click(function(i) { 
+	        $(this).parents('.deps').find('.deptarget').toggle();
+	    });
+	    if ($src.attr('checked')) {
+	    	$(this).find('.deptarget').show();
+	    }
+	});
 });

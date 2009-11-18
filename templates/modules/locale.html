@@ -1,4 +1,4 @@
 
 {% for l in locales %}
-    <a href="/l/{{ l }}?next={{ next }}">{{ locales[l] }}</a>
+    <a href="/l/{{ l }}?next={{ current_path }}">{{ locales[l] }}</a>
 {% end %}

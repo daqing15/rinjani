@@ -1,0 +1,9 @@
+{% if users %}
+<div class="line">
+{% for user in users %}
+<div class="unit">
+    <p title="{{ user.username }}">{{ modules.Avatar(user) }}</p>
+</div>
+{% end %}
+</div>
+{% end %}

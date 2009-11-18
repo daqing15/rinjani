@@ -17,8 +17,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.locale
 import tornado.options
-from handlers.main import MissingHandler
-from application import BaseApplication
+from application import BaseApplication, MissingHandler
 import uimodules
 from settings import app_settings
 from urls import url_handlers

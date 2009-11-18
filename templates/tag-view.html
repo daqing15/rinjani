@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Articles')}}{% end %}
+
+{% block body %}
+
+{{ modules.Tabs('tags', tab) }}
+
+<div class="items line">
+{% set c = ['rodd','rodd', 'reven', 'reven'] %}
+{% for article in pagination.get_objects() %}
+    <div class="unit size1of2 {{h.alternate(c)}}">
+        {{ modules.ItemSummary(article) }}
+    </div>
+{% end %}
+</div>
+
+<p class="clear"></p>
+
+{{ pagination }}
+
+{% end %}
+

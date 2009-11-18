@@ -15,7 +15,7 @@
                 <div class="hd"><h3>{{ _('Draft Items')}}</h3></div>
                 <div class="bd">
 
-{% if pg_article.total_pages > 0 or pg_activity.total_pages > 0 %}
+{% if pg_article.pages > 0 or pg_activity.pages > 0 %}
 <ul>
 {% for item in pg_article.get_objects() %}
     <li><a href="/article/edit/{{item.slug}}">{{item.title}}</a></li>

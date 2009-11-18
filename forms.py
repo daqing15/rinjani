@@ -116,13 +116,13 @@ class PassValidator(form.Validator):
         self.msg = "Password didn't match"
         return False
 
-vusername = form.regexp(r"[a-z0-9]{6,11}", "6 to 11 characters of alphabets and numbers, without space")    
+vusername = form.regexp(r"[a-z0-9]{6,9}", "4-9 characters of alphabets and numbers, without space")    
 vpass = form.regexp(r".{6,20}", 'Must be between 6 and 20 characters')
 vemail = form.regexp(r".*@.*", "Must be a valid email address")
 
 
 register_form = MyForm(
-    Textbox("username", form.notnull, vusername, description="User Name", title="6 to 11 characters of alphabets and numbers, without space"),
+    Textbox("username", form.notnull, vusername, description="User Name", title="4-9 characters of alphabets and numbers, without space"),
     Password("password", form.notnull, vpass, description="Password"),
     Password("password2", form.notnull, description="Repeat password", title="Retype password"),
     Dropdown(name='type', args=USERTYPE, description='I am a'),
@@ -153,8 +153,8 @@ activity_form = MyForm(
     Textbox("volunteer_tags", size="30", description="Volunteer skills needed"),
     Checkbox("enable_comment", value="1", description="Enable comments"),
     Textbox("tags", MaxChunks(6, ',', "Must be at most six tags"), size=39, description="Tags"),
-    Textbox("lat", size=14, description="Latitude"),
-    Textbox("long", size=14, description="Longitude"),
+    Textbox("lat", size=10, description="Latitude"),
+    Textbox("long", size=10, description="Longitude"),
  )
 
 article_form = MyForm(
@@ -165,7 +165,7 @@ article_form = MyForm(
  )
 
 comment_form = MyForm(
-    Textarea("comment", form.notnull, MaxLength(100), maxlength=140, style="width:90%", rows=4, cols=25, description="Say something"),
+    Textarea("comment", form.notnull, MaxLength(100), maxlength=140, style="width:180px", rows=4, cols=25, description="Say something"),
 )
 
 page_form = MyForm(
@@ -182,9 +182,9 @@ account_form = MyForm(
 )
 
 profile_form = MyForm(
-    Textbox("last_name", form.notnull, size=40, description="Full Name", title="Your organization/ corporate full name, eg. ACT Dompet Dhuafa"),
+    Textbox("fullname", form.notnull, size=40, description="Full Name", title="Your organization/ corporate full name, eg. ACT Dompet Dhuafa"),
     Textarea("about", form.notnull, rows=3, cols=40, description="About You",title="Describe your entity in short paragraph"),
-    Textarea("profile_content", form.notnull, _class="rte", rel="#contentPreview", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
+    Textarea("profile_content", _class="rte", rel="#contentPreview", rows=10, cols=70, description="Your Organization in Lengthy Words", title="Tulis yang panjang"),
     Textbox("contact_person", size=40, description="Contact Person Name"),
     Textbox("phones", size=20, description="Phones", title="Separate numbers with comma"),
     Textbox("fax", size=20, description="Fax", title="Separate numbers with comma"),
@@ -192,12 +192,8 @@ profile_form = MyForm(
     Dropdown('timezone', args=TIMEZONE, description='Timezone'),
     Textbox("email", size=40, description="E-Mail"),
     Textbox("website", size=40, description="Website"),
-    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Your Fields")
-)
-
-profile_public_form = MyForm(
-    Textbox("first_name", form.notnull, size=50, description="First Name"),
-    Textbox("last_name", form.notnull, size=50, description="Last Name"),
-    Textarea("about", form.notnull, MaxLength(100), rows=3, cols=50, description="Short description about you"),
+    Textbox("tags", MaxChunks(4, ',', "Must be at most three tags"), size=40, description="Your Fields/Skills"),
+    Textbox("lat", size=10, description="Latitude"),
+    Textbox("long", size=10, description="Longitude")
 )
 

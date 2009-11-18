@@ -3,6 +3,7 @@ import logging
 import re
 import markdown2
 
+import tornado.web
 from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import app_settings
 from utils.string import force_unicode, listify, sanitize, slugify
@@ -113,8 +114,7 @@ class User(BaseDocument):
         
         # information
         'sex': unicode,
-        'last_name': unicode,
-        'first_name': unicode,
+        'fullname': unicode,
         'birthday_date': datetime.datetime,
         'location': list,
         'proxied_email': unicode,
@@ -297,6 +297,12 @@ class Content(BaseDocument):
     
     def get_url(self):
         return self.base_url + self.slug
+    
+    def get_edit_url(self):
+        return self.base_url + 'edit/' + self.slug
+    
+    def get_remove_url(self):
+        return self.base_url + 'remove/' + self.slug
 
 class Article(Content):
     collection_name = 'articles'
@@ -421,10 +427,12 @@ class Comment(BaseDocument):
        'from': User,
        'for': User,
        'comment': unicode, 
+       'replies': [{'from': User, 'comment': unicode, 'created_at': datetime.datetime}],
        'created_at': datetime.datetime,
     }
     required_fields = ['from', 'for', 'comment']
-    default_values = {'created_at':datetime.datetime.utcnow}
+    default_values = {'created_at':datetime.datetime.utcnow, \
+                      'replies.created_at': datetime.datetime.utcnow}
     
 class Volunteer(BaseDocument):
     collection_name = 'volunteers'
@@ -459,6 +467,7 @@ class BankAccount(BaseDocument):
         data = dict([(field, acc[idx]) for idx, field in enumerate(cls.fields)])
         account.populate(data)
         account['owner'] = user
+        logging.warning("saving new account")
         account.save()
     
     @classmethod
@@ -528,26 +537,10 @@ class ActivityTag(Tag):
 class UserTag(Tag):
     collection_name = 'users_tags'
             
-class ContentTag(object):
-    def __init__(self, spec, classes):
-        self.spec = spec
-        self.classes = classes
-        total = 0
-        for cls in classes:
-            total += cls.all(spec).count()
-        self.total = total
-        
-    def get_objects(self, **kwargs):
-        """
-        this is temporary solution for no UNION in mongodb problem
-        """
-        from itertools import chain, islice
-        results = [cls.all(self.spec).sort('created_at', -1) for cls in self.classes]
-        it = chain(*results)
-        offset = kwargs.pop('offset')
-        return islice(it, offset, offset + kwargs.pop('per_page'))
-        
-    def get_total(self):
-        return self.total
 
+def get_or_404(cls, query={}):
+    o = cls.one(query)
+    if not o:
+        raise tornado.web.HTTPError(404)
+    return o
     

@@ -1,16 +1,16 @@
 
+{% set user = item.author %}
 <div class="line item-summary">
       <div class="unit size2of7">
-            <div class="media attribution">
-                  {{ modules.Avatar(item.author) }}
-                  <div class="bd">
-                    <a href="{{BP}}/profile/{{item.author.username}}">{{ item.author.username}}</a> 
-                    <span class="detail">
-                    {{ h.timesince(h.utc_to_local(item.created_at))}}
-                    <span>{% if item.author.article_count %}<a href="#">{{ item.author.article_count }} articles</a>.<br />{% end %} {% if item.author.activity_count %}<a href="#">{{ item.author.activity_count }} activities</a>.{% end %}</span>
-                    </span>
-                  </div>
-              </div>      
+            <div class="media attribution" title="{{ escape(user.about)}}">
+              {{ modules.Avatar(user) }}
+              <div class="bd">
+                <a href="{{user.get_url()}}">{{ user.username }}</a><br />{{ modules.UserItems(user) }} 
+                <span class="detail">
+                {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+                </span>
+              </div>
+          </div>        
       </div>
       <div class="lastUnit size5of7">
           <div class="mod bubble bubbleLeft lol"> 
@@ -25,3 +25,4 @@
           </div>
       </div>
 </div>
+

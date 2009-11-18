@@ -33,7 +33,7 @@ class ViewHandler(BaseHandler):
         t = self.get_argument('t', 'article')
         doc = Article if t == 'article' else Activity if t == 'activity' else User
         pagination = Pagination(self, doc, {'tags': tag})
-        self.render('articles', pagination=pagination)
+        self.render('tag-view', tab=t, pagination=pagination)
         
 class FlagHandler(BaseHandler):
     @authenticated()

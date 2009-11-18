@@ -1,8 +1,10 @@
-{% extends 'base.html' %}
+{% extends "error.html" %}
 
 {% block title %}{{ _("Forbidden") }}{% end %}
 
 {% block body %}
-<h1>Forbidden</h1>
+
+<h1>{{_('Forbidden')}}... {{ _(message) if message else "" }}</h1>
 <p>{{_('Naah. You are not allowed to view this page. Please log in.')}}</p>
+
 {% end %}

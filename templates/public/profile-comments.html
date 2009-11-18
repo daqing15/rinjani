@@ -8,57 +8,52 @@
 
 
 <div class="line">
-    <div class="unit size2of3">
+    <div class="unit size3of4">
     {% set objects = pagination.get_objects() %}
     {% if objects.count() %}
-        {% for items in h.group(objects,2) %}
-            <div class="line">
-              <div class="unit size1of2">
-                  {{ modules.ItemComment(items.pop()) }}
-              </div>
-              {% if len(items) %}
-              <div class="lastUnit size1of2">
-                  {{ modules.ItemComment(items.pop()) }}
-              </div>
-              {% end %}
-            </div>
+        <div class="line">
+        {% set i = 0 %}
+        {% for cols in list(h.group(objects,int(math.ceil(float(objects.count())/2)))) %}
+          {% set i+= 1 %}
+          <div class="{{ 'unit' if i==1 else 'lastUnit'}} size1of2">
+            {% for item in cols %}
+              {{ modules.ItemComment(item) }}
+            {% end %}
+          </div>
         {% end %}
+        </div>
     {% else %}
         <p>&nbsp;</p>
     {% end %}
     </div>
-    <div class="lastUnit size1of3">
-        <div class="mod simple">
-            <div class="bd" style="position:relative">
-                {% if current_user %}
-                {{ f.rendernote(f.note) }}
-                <form method="post" class="line withtips">
-                    {{ modules.Formfield(f.comment) }}
-                    {{ xsrf_form_html() }}
-                    <div class="buttons">
-                        <button class="submit" name="send"><span><span>{{_('Give Comment')}}</span></span></button>
-                    </div>
-                </form>
-                {% else %}
-                    <p>{{ _('Login to give comment to this user') }}</p>
-                {% end %}
-            </div>
-        </div>
+    <div class="lastUnit size1of4">
+        {{ modules.CommentBox(user) }}
     </div>
-</div>
+</div> 
 
 {% if current_user %}
-<style>
-.jmaxtext { float: right; }
-</style>
 <script type="text/javascript">
-$("#comment").maxinput({
-    limit: 100,
-    position: 'before',
-    message: '{{_('characters left')}}'
-});
+    $('.fComment input').click(function(e) {
+        $this = $(this); $this.hide();
+        $cmb = $('.cmb', $(this).parent());
+        var i = this;
+        var t = $cmb.show().find('textarea').focus().get(0);
+        var b = $cmb.find('button').get(0);
+        var c = $cmb.get(0);
+        $('body').click(function(event) {
+            e = event.target;
+            if (e != b && e != t && e!=i) {
+                $(c).hide(); $(i).show();
+            }});
+    });
+    
 </script>
 {% end %}
+
+<style>
+.cReplies { font-size: 12px; }
+.fComment input { color: #999; }
+</style>
 
 {% end %}
 

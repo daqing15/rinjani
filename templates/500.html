@@ -1,8 +1,10 @@
-{% extends "base.html" %}
+{% extends "error.html" %}
 
 {% block title %}{{ _("Server Error") }}{% end %}
 
 {% block body %}
-<h1>Uh no... {{ message }}</h1>
+
+<h1>{{_('Uh no')}}... {{ _(message) if message else "" }}</h1>
 <p>{{ _('Something unexpected happened. Please smash head against keyboard. When done, you may run around in circles, wave your hands, and scream.')}}</p>
+
 {% end %}

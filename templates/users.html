@@ -6,44 +6,26 @@
 
 {{ modules.Tabs('users', tab) }}
 
-<div class="items">
+<div class="line">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
 
 {% if pagination.get_objects().count() %}
 
     {% for user in pagination.get_objects() %}
     <div class="unit size1of3 {{h.alternate(c)}}">
-        
-          <div class="mod bubble bubbleBottom yoyo bubbleVerticalExt"> 
-             <b class="top"><b class="tl"></b><b class="tr"></b></b> 
-             <div class="inner">
-                 <div class="bd">
-                   {% if user.about or user.article_count or user.activity_count %}
-                       {% if user.about %}<h5>{{ user.about }}</h5>{% end %}
-                       <p>
-                       {% if user.article_count %}{{user.article_count}} articles {% end %}
-                       {% if user.activity_count %}{{user.activity_count}} activities{% end %}
-                       </p>
-                    {% else %}
-                        <p>{{ _('No activity yet') }}</p>
-                    {% end %}
-                 </div>
-             </div>
-             <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
-         </div>
-           <div class="media attribution atb2">
+           <div class="media attribution" title="{{ escape(user.about)}}">
               {{ modules.Avatar(user) }}
               <div class="bd">
-                <a href="{{user.get_url()}}">{{ get(user.last_name, user.username) }}</a> 
+                <a href="{{user.get_url()}}">{% if user.fullname %}{{ user.fullname}} ({{user.username}}) {% else %} {{ get(user.fullname, user.username) }}{% end %}</a> {{ modules.UserItems(user) }} 
                 <span class="detail">
-                {{_('joined since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+                {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
                 </span>
               </div>
           </div>      
     </div>
     {% end %}
 {% else %}
-    <p class="grey" style="margin-top: 20px;">{{ _('None yet') }}</p>
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
 {% end %}    
 </div>
 <p class="clear"></p>
