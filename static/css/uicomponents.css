@@ -106,6 +106,7 @@ a.button:visited {
     background-position: bottom left;
   }
 
+#dsq-content button span { background: none; height: auto;}
 
 
 

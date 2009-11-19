@@ -4,8 +4,6 @@
 
 {% block body %}
 
-{{ modules.Tabs('articles', 'latest') }}
-
 <div class="items line">
 {% set c = ['rodd','rodd', 'reven', 'reven'] %}
 {% for article in pagination.get_objects() %}

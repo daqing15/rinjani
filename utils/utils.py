@@ -134,10 +134,18 @@ def save_user_upload(path, file_content):
 
 def fill_fb_data(api_key, secret_key, uid, fields, data):
     facebook = Facebook(api_key, secret_key)
-    infos = facebook.users.getInfo(uid, fields)
-
-    for key in infos.keys():
-        data[key] = infos[key]
+    infos = facebook.users.getInfo(uid, fields)[0]
+    logging.warning(infos)
+    
+    for k, nk in infos.iteritems():
+        data[k] = infos[k]
+        
+    table = {'pic_square': 'avatar'}
+    for k,nk in table.iteritems():
+        if data.get(k, None):
+            data[nk] = data[k] 
+            del(data[k])
+    
     return data
 
 def extract_input_array(d, prefix):

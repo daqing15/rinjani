@@ -97,7 +97,7 @@ class FormfieldInColumns(BaseUIModule):
 
 class GoogleAnalytic(BaseUIModule):
     def render(self):
-        code = self.settings.google_analytic_code
+        code = self.handler.settings.GOOGLE_ANALYTIC_CODE
         return self.render_string('modules/google-analytic', code=code, legacy=False)
     
 class ItemAction(BaseUIModule):

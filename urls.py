@@ -51,9 +51,8 @@ url_handlers = [
     (r"/report", 'handlers.report.Handler'),
     
     (r"/login/fb", 'handlers.auth.FacebookLoginHandler'),
-    #(r"/login/google", 'handlers.auth.GoogleLoginHandler'),
-    #(r"/login/twitter", 'handlers.auth.GoogleLoginHandler'),
-    (r"/login-form", 'handlers.auth.LoginFormHandler'),
-    (r"/login", 'handlers.auth.LoginHandler'),
+    (r"/login/google", 'handlers.auth.GoogleLoginHandler'),
+    (r"/login/twitter", 'handlers.auth.GoogleLoginHandler'),
+    (r"/login", 'handlers.auth.LoginFormHandler'),
     (r"/logout.*", 'handlers.auth.LogoutHandler'),
 ]

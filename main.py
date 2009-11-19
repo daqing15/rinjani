@@ -2,7 +2,9 @@
 
 import os.path
 import sys
-sys.path.insert(0, os.path.dirname(__file__) + "/lib")
+
+DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path = [ DIR, os.path.join(DIR, "lib") ] + sys.path
 
 import re
 import tornado.httpserver
@@ -21,7 +23,7 @@ def get_settings():
          if not varname.startswith("_") ])
 
 app_settings = get_settings()
-     
+
 # we'll run one app per core
 from tornado.options import define, options
 define("port", default=app_settings.get('PORT', 8888), help="run on the given port", type=int)

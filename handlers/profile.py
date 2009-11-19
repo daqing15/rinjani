@@ -87,32 +87,36 @@ class NewUserHandler(BaseHandler):
         if not user_cookie:
             raise tornado.web.HTTPError(403, "Direct access to new-user page")
         
+        user = json_decode(user_cookie)
         if data.has_key('username'):
-            user = User.one({'username': data['username']})
+            new_user = User.one({'username': data['username']})
             f.validators.append(web.form.Validator("The username you wanted is already taken", 
-                                lambda x: not bool(user)) )
+                                lambda x: not bool(new_user)) )
             
         try:
             if f.validates(Storage(data)):
-                data.update(json_decode(user_cookie))
+                data.update()
                 
-                """
-                if data['auth_provider'] == 'facebook':
-                    from utils import fill_fb_data
-                    data = fillin_fb_data(
-                            self.settings['facebook_api_key'], 
-                            self.settings['facebook_secret'],
-                            ['pic_square', 'pic_smal', 'sex', 'website', 'birthday_date', 
-                             'timezone', 'interests'],
+                if user['auth_provider'] == 'facebook':
+                    from utils.utils import fill_fb_data
+                    fill_fb_data(
+                            self.settings.facebook_api_key, 
+                            self.settings.facebook_secret,
+                            user['uid'],
+                            ['pic_square', 'website', 'birthday_date', 'timezone'],
                             data
-                            )
-                """
-                 
-                user = User()
-                logging.info("\n=============\nNEW USER via %s: %s %s============\n" \
-                                 % (user['auth_provider'], user['first_name'], user['last_name']))
-                user.save(data)
-                self.set_secure_cookie("username", user['username'])
+                        )
+                
+                logging.info("\n=============\nNEW USER via %s: %s============\n" \
+                                 % (user['auth_provider'], user['uid']))
+                
+                data['uid'] = user['uid']
+                data['auth_provider'] = user['auth_provider']
+                
+                new_user = User()
+                new_user.save(data)
+                
+                self.set_secure_cookie("username", data['username'])
                 self.clear_cookie("user")
                 self.clear_cookie("ap")
                 self.set_flash("Thank your for joining with us. You may log in anytime.")

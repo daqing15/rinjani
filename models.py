@@ -56,7 +56,7 @@ class BaseDocument(MongoDocument):
                         self[k] = sanitize(self[k])
                 elif t is list:
                     self[k] = listify(data[k], ',')
-                elif t is datetime.datetime:
+                elif t is datetime.datetime and data[k]:
                     self[k] = datetime.datetime.strptime(data[k], '%d/%m/%Y')
                 elif t is bool:
                     if data[k] == 'False':

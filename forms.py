@@ -131,7 +131,7 @@ register_form = MyForm(
 )
 
 new_user_form = MyForm(
-    Textbox("username", form.notnull, description="User Name (no space, only alphabets and numbers)"),
+    Textbox("username", form.notnull, vusername, description="User Name", title="4-9 characters of alphabets and numbers, without space"),
     Dropdown(name='type', args=[('agent', 'Staff of Social Organization'), ('sponsor', 'Corporate Representative'), ('public', 'Public/None of above')], description='I am a'),
     Checkbox("agree", form.notnull, checked=False, value="1", pre_separator=True, description="I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"),
 )

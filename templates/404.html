@@ -1,11 +1,27 @@
 {% extends "error.html" %}
 
-{% block title %}{{ _("Not Found") }}{% end %}
+{% block title %}404: {{ _("Not Found") }}{% end %}
 
 {% block body %}
 
-<h1>{{ _('Not Found') }}... {{ _(message) if message else "" }}</h1>
-<p>{{ _('We have millions of pages, but not what you&rsquo;re looking for') }}</p>
-   
+<h1>{{ _('Hmmm, we’re having trouble finding that one.') }}</h1>
+<div class="line">
+    <div class="unit size1of2">
+        <h3>{{ _('We hate to say it, but we couldn’t find that page or file you’re looking for') }}</h3>
+        <ul>
+            <li>{{_('If you typed in the address, try double-checking the spelling')}}</li>
+            <li>{{_('If you followed link from somewhere, please let us know where you come from. Contact Us at admin__AT__peduli.com')}}</li>
+        </ul>
+        
+    </div>
+    <div class="lastUnit size1of2">
+        <h3>{{ _('If you are really stuck, try these pages:') }}</h3>
+        <ul>
+            <li>{{_('Our Blog')}}</li>
+            <li><a href="http://fizdoonk.multiply.com/">{{_('Multiply si apit')}}</a></li>
+        </ul>    
+    </div>
+</div>   
 {% end %}
+
 

@@ -14,7 +14,7 @@
 	   </div>
 	   <div class="lastUnit size6of7">
 	       <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>
-	       <p>{{ article.excerpt }}</p>
+	       <p>{{ article.excerpt }}  -- <span class="small">{{ h.timesince(article.created_at) }}</span></p>
 	   </div>
 	</div>
 	{% end %}

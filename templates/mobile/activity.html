@@ -59,7 +59,7 @@
 {% if current_user != activity.author and accounts.count() %}
     <div id="accounts" class="modal facebox">
         <div class="wDialog">
-            <h3>{{_('Bank accounts of ')}} {{ h.get(activity.author.last_name, activity.author.username) }}</h3> 
+            <h3>{{_('Bank accounts of ')}} {{ h.get(activity.author.fullname, activity.author.username) }}</h3> 
             <table>
               {% for acc in  accounts %}
               <tr>

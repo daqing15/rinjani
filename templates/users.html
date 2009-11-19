@@ -13,7 +13,7 @@
 
     {% for user in pagination.get_objects() %}
     <div class="unit size1of3 {{h.alternate(c)}}">
-           <div class="media attribution" title="{{ escape(user.about)}}">
+           <div class="media attribution" title="{{ escape(get(user.about, '')) }}">
               {{ modules.Avatar(user) }}
               <div class="bd">
                 <a href="{{user.get_url()}}">{% if user.fullname %}{{ user.fullname}} ({{user.username}}) {% else %} {{ get(user.fullname, user.username) }}{% end %}</a> {{ modules.UserItems(user) }} 

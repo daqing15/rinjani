@@ -37,10 +37,10 @@
         <span class="link-separator">|</span>
 		<a href="/logout/?next={{ current_path }}">{{ _('logout') }}</a>
 		{% else %}
-		{{ _('hello, guest') }}. <a href="{{BP}}/login-form">{{_('login/join')}}</a>
+		{{ _('hello, guest') }}. <a href="{{BP}}/login">{{_('login/join')}}</a>
 		{% end %} 
 		<span class="link-separator">|</span> 
-		<a href="/page/about">{{ _('about') }}</a> 
+		<a href="/page/about-us">{{ _('about') }}</a> 
 		<span class="link-separator">|</span> 
 		<a href="/page/faq">{{ _('faq') }}</a>
 		<span class="link-separator">|</span>
@@ -74,7 +74,7 @@
     <div class="foot roundedbig">
         <p>
             <span>&nbsp;</span>
-            <a href="/page/about">{{ _('About Us') }}</a>
+            <a href="/page/about-us">{{ _('About Us') }}</a>
             <a href="/page/how-it-works">{{ _('How it Works') }}</a>
             <a href="/page/faq">{{ _('FAQ') }}</a>
             <a href="/page/privacy">{{ _('Privacy') }}</a>
@@ -91,7 +91,7 @@
 {% block postinlinejs %}{% end %}
 
 {% if settings.live %}
-    modules.GoogleAnalytic()   
+    {{ modules.GoogleAnalytic() }}   
 {% end %}
 </body>
 </html>

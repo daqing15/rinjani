@@ -17,13 +17,12 @@
 import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
 from pymongo.errors import ConnectionFailure, AutoReconnect
-
 from utils.mod import get_mod_handler, import_module
 
 class ErrorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, status_code, message=""):
         self.message = message
-        self.status_code = status_code
+        self.status_code = self.set_status(status_code)
         super(ErrorHandler, self).__init__(application, request)
     
     def get_error_html(self, status_code):

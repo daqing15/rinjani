@@ -7,7 +7,7 @@
         <img src="{{static_url('uploads/' + h.medium_size(i.attachments)) }}" />
         <div style='display:block;width:190px'>
             <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
-            <p>{{ s.truncate_words(i.excerpt, 10) }}</p>
+            <p>{{ s.truncate_words(i.excerpt, 10) }} -- <span class="small">{{ h.timesince(i.created_at) }}</span></p>
         </div> 
         
         
@@ -15,7 +15,7 @@
         <img src="{{static_url('uploads/' + h.medium_size(i.attachments))}}" />
         <div>
             <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
-            <p>{{ s.truncate_words(i.excerpt, 15) }}</p>
+            <p>{{ s.truncate_words(i.excerpt, 15) }} -- <span class="small">{{ h.timesince(i.created_at) }}</span></p>
         </div>
         {% end %}
     </div>
