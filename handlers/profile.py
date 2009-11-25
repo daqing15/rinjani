@@ -17,7 +17,6 @@ import logging
 import hashlib
 
 import tornado.web
-from tornado.escape import json_decode
 from web.utils import Storage
 import web.form
 from pymongo.dbref import DBRef
@@ -25,7 +24,7 @@ from pymongo.dbref import DBRef
 from main import BaseHandler, authenticated
 from models import User, Article, Activity, BankAccount, Comment, get_or_404
 from utils.pagination import Pagination, ListPagination
-from forms import profile_form, register_form, new_user_form, account_form, comment_form, InvalidFormDataError
+from forms import profile_form, account_form, comment_form, InvalidFormDataError
 from utils.utils import extract_input_array, move_attachments, parse_attachments
 from settings import BANKS, FIELD_TAGS
 
@@ -40,99 +39,12 @@ class ViewHandler(BaseHandler):
         #    return
         self.render("profile", user=user)
 
-class RegisterHandler(BaseHandler):
-    def get(self):
-        f = register_form()
-        self.render("register", f=f)
-
-    def post(self):
-        f = register_form()
-        data = self.get_arguments()
-        
-        if data.has_key('username'):
-            user = User.one({'username': data['username']})
-            f.validators.append(web.form.Validator("The username you wanted is already taken", 
-                                lambda x: not bool(user)) )
-        
-        try:
-            if f.validates(Storage(data)):
-                logging.error(data)
-                new_user = User()
-                data['is_admin'] = False
-                data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
-                data['auth_provider'] = u'form'
-                new_user.save(data)
-                self.set_flash("You have been successfully registered. You can log in now.")
-                self.redirect("/login-form")
-                return
-            raise InvalidFormDataError("Form still have errors.")
-        except Exception, e:
-            f.note = f.note if f.note else e
-            self.render("register", f=f)
-        
-            
-class NewUserHandler(BaseHandler):
-    def get(self):
-        f = new_user_form()
-        user_cookie = self.get_secure_cookie("user")
-        if not user_cookie:
-            raise tornado.web.HTTPError(403, "Direct access to new-user page")
-        
-        self.render("new-user", f=f)
-    
-    def post(self):
-        f = new_user_form()
-        data = self.get_arguments()
-        user_cookie = self.get_secure_cookie("user")
-        if not user_cookie:
-            raise tornado.web.HTTPError(403, "Direct access to new-user page")
-        
-        user = json_decode(user_cookie)
-        if data.has_key('username'):
-            new_user = User.one({'username': data['username']})
-            f.validators.append(web.form.Validator("The username you wanted is already taken", 
-                                lambda x: not bool(new_user)) )
-            
-        try:
-            if f.validates(Storage(data)):
-                data.update()
-                
-                if user['auth_provider'] == 'facebook':
-                    from utils.utils import fill_fb_data
-                    fill_fb_data(
-                            self.settings.facebook_api_key, 
-                            self.settings.facebook_secret,
-                            user['uid'],
-                            ['pic_square', 'website', 'birthday_date', 'timezone'],
-                            data
-                        )
-                
-                logging.info("\n=============\nNEW USER via %s: %s============\n" \
-                                 % (user['auth_provider'], user['uid']))
-                
-                data['uid'] = user['uid']
-                data['auth_provider'] = user['auth_provider']
-                
-                new_user = User()
-                new_user.save(data)
-                
-                self.set_secure_cookie("username", data['username'])
-                self.clear_cookie("user")
-                self.clear_cookie("ap")
-                self.set_flash("Thank your for joining with us. You may log in anytime.")
-                self.redirect("/")
-                return
-            raise InvalidFormDataError("Form still have errors.")
-        except Exception, e:
-            f.note = f.note if f.note else e
-            self.render("new-user", f=f)
-
 class AccountHandler(BaseHandler):
     @authenticated()
     def get(self):
         f = account_form()
         self.render('account', f=f)
-    
+
     @authenticated()
     def post(self):
         f = account_form()
@@ -149,7 +61,7 @@ class AccountHandler(BaseHandler):
             raise InvalidFormDataError("Form still have errors.")
         except: pass
         self.render('account', f=f)
-                    
+
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):
@@ -160,7 +72,7 @@ class EditHandler(BaseHandler):
         user.formify()
         f.fill(user)
         self.render(user.type + "/profile-edit", f=f, user=user, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
-    
+
     @authenticated()
     def post(self):
         f = profile_form()
@@ -171,19 +83,19 @@ class EditHandler(BaseHandler):
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
-                data['attachments'] = parse_attachments(data['attachments'], True)  
-                
+                data['attachments'] = parse_attachments(data['attachments'], True)
+
             if f.validates(Storage(data)):
                 data['bank_accounts'] = accounts
                 if data.get('password', None):
                     data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
                 user.save(data, user)
-                
+
                 if attachments:
                     user['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     user.update_html()
                     user.save()
-                    
+
                 self.set_flash("Profile saved.")
                 self.redirect("/dashboard")
                 return
@@ -197,13 +109,13 @@ class FollowHandler(BaseHandler):
     @authenticated()
     def post(self, username):
         user = User.one({'username': username})
-        
+
         action = self.get_argument('action', 'follow')
-        
+
         OK = False
         if user:
             follower = self.current_user['username']
-            dbaction = '$push' if action == 'follow' else '$pull' 
+            dbaction = '$push' if action == 'follow' else '$pull'
             try:
                 User.collection.update({'username': username}, {dbaction: {'followers': follower}})
                 msg = 'You are now following that user' if action == 'follow' \
@@ -211,7 +123,7 @@ class FollowHandler(BaseHandler):
                 OK = True
             except:
                 msg = 'Error. Your admin has been notified. Please try again later'
-                  
+
             if self.is_xhr():
                 return self.json_response(msg, 'OK' if OK else 'ERROR',\
                     self.render_string('modules/user-block', user=user))
@@ -224,7 +136,7 @@ class FollowersHandler(BaseHandler):
         user = get_or_404(User, {'username': username})
         pagination = ListPagination(self, user.followers)
         self.render("profile-followers", user=user, pagination=pagination)
-                
+
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
@@ -247,11 +159,11 @@ class CommentsHandler(BaseHandler):
     def get(self):
         pagination = Pagination(self, User, {}, 1)
         self.render(self.current_user.type + '/comments', pagination=pagination)
-    
+
     @authenticated()
     def post(self):
         pass
-        
+
 class ProfileCommentsHandler(BaseHandler):
     def get_comments_for(self, username):
         user = User.one({'username': username})
@@ -259,13 +171,13 @@ class ProfileCommentsHandler(BaseHandler):
             raise tornado.web.HTTPError(404)
         spec = {'for': DBRef(User.collection_name, user._id)}
         return (user, Pagination(self, Comment, spec))
-    
+
     def get(self, username):
         import math
         user, pagination = self.get_comments_for(username)
         f = comment_form()
         self.render('public/profile-comments', pagination=pagination, user=user, f=f, math=math)
-    
+
     @authenticated()
     def post(self, username):
         user, pagination = self.get_comments_for(username)
@@ -294,7 +206,7 @@ class ArticlesHandler(BaseHandler):
         spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Article, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='articles')
-            
+
 class ActivitiesHandler(BaseHandler):
     def get(self, username):
         user = User.one({'username': username})
@@ -303,6 +215,6 @@ class ActivitiesHandler(BaseHandler):
         spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Activity, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='activities')
-    
+
 
 

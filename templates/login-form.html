@@ -14,11 +14,15 @@
 
 <div class="line" style="padding: 10px 0">
 	<div class="size1of3 unit">
-	   <h4>{{ _('Login with Your Facebook Account') }}</h4>
-	   <p class="grey">You dont need to register</p>
+	   <h4>{{ _('Login with Your Existing Account') }}</h4>
 	   <div style="margin-right:10px;">
 		    <div style="margin:2px 0; "></div>
-		    <div style="padding-left: 10px;"><a href="{{BP}}/login/fb"><img src="{{ static_url('img/fbconnect.png')}}" alt="Facebook Connect" /></a></div>
+            <div id="openid_highlight" class="line pb">
+                <a class="f" href="{{BP}}/login/fb" title="Facebook"><span>Facebook</span></a>
+                <a class="g" href="{{BP}}/login/google" title="Google"><span>Google</span></a>
+                <a class="y hidden" href="{{BP}}/login/yahoo" title="Yahoo"><span>Yahoo</span></a>
+                <a class="t" href="{{BP}}/login/twitter" title="Twitter"><span>Twitter</span></a>
+            </div>
 	    </div>
 	</div>
 	<div class="size2of3 lastUnit">

@@ -11,8 +11,6 @@ from utils.inline import processor, AttachmentInline, SlideshowInline
 
 class EditDisallowedError(Exception): pass
 
-RATING = {'b':'Bagus', 'm':'Menarik', 'p':'Penting'}
-
 class BaseDocument(MongoDocument):
     db_host, db_port, db_name = DB
     #skip_validation = True
@@ -51,9 +49,10 @@ class BaseDocument(MongoDocument):
         for k, t in self.structure.iteritems():
             if k in data:
                 if t is unicode:
-                    self[k] = force_unicode(data[k])
-                    if k in self.sanitized_fields:
-                        self[k] = sanitize(self[k])
+                    if data[k]:
+                        self[k] = force_unicode(data[k])
+                        if k in self.sanitized_fields:
+                            self[k] = sanitize(self[k])
                 elif t is list:
                     self[k] = listify(data[k], ',')
                 elif t is datetime.datetime and data[k]:
@@ -101,8 +100,8 @@ class User(BaseDocument):
         'password_hashed': unicode,
         'uid': unicode,
         'avatar': unicode,
-        'fb_session_key': unicode,
-        'auth_provider': IS(u'facebook', u'google', u'form'),
+        'access_token': unicode, #fb=session_key
+        'auth_provider': IS(u'facebook', u'google', u'twitter', u'form'),
         'status': IS(u'active', u'disabled', u'deleted'), 
         'type': IS(u'agent', u'sponsor', u'public'), 
         'is_admin': bool,
@@ -123,6 +122,8 @@ class User(BaseDocument):
         'website': unicode,
         'document_scan': unicode,
         'timezone': unicode,
+        'locale': unicode,
+        
         'tags': list,
         
         'about': unicode,
@@ -219,6 +220,7 @@ class User(BaseDocument):
 
 class Content(BaseDocument): 
     base_url = '/'
+    enable_whoosh = True
     
     def authored_by(self, user):
         return self['author'] is user

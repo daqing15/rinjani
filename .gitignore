@@ -2,6 +2,7 @@
 .project
 *.cache
 *.swp
+*.mo
 *.pyc
 .settings/*
 lib/*
