@@ -1,0 +1,847 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: hafizhuddin amin <hafizhuddin.amin@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:7
+#: /rinjani/app/templates/200.html:3
+#: /rinjani/app/templates/200.html:7
+#: /rinjani/app/templates/403.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/403.html:3
+msgid "Forbidden"
+msgstr "Dilarang"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:8
+#: /rinjani/app/templates/200.html:8
+#: /rinjani/app/templates/403.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/403.html:7
+msgid "Naah. You are not allowed to view this page. Please log in."
+msgstr ""
+
+#: /rinjani/app/templates/404.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:3
+msgid "Not Found"
+msgstr "Tidak Ketemu"
+
+#: /rinjani/app/templates/404.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:7
+msgid "Hmmm, were having trouble finding that one."
+msgstr ""
+
+#: /rinjani/app/templates/404.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:10
+msgid "We hate to say it, but we couldnt find that page or file youre looking for"
+msgstr ""
+
+#: /rinjani/app/templates/404.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:12
+msgid "If you typed in the address, try double-checking the spelling"
+msgstr ""
+
+#: /rinjani/app/templates/404.html:13
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:13
+msgid "If you followed link from somewhere, please let us know where you come from. Contact Us at admin__AT__peduli.com"
+msgstr ""
+
+#: /rinjani/app/templates/404.html:18
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:18
+msgid "If you are really stuck, try these pages:"
+msgstr ""
+
+#: /rinjani/app/templates/404.html:20
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:20
+msgid "Our Blog"
+msgstr ""
+
+#: /rinjani/app/templates/404.html:21
+#: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:21
+msgid "Multiply si apit"
+msgstr ""
+
+#: /rinjani/app/templates/405.html:3
+#: /rinjani/app/templates/405.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/405.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/405.html:7
+msgid "Method Not Allowed"
+msgstr ""
+
+#: /rinjani/app/templates/405.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/405.html:8
+msgid "Consult google.com for what this means :p"
+msgstr ""
+
+#: /rinjani/app/templates/500.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/500.html:3
+msgid "Server Error"
+msgstr "Server Ada Masalah"
+
+#: /rinjani/app/templates/500.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/500.html:7
+msgid "Uh no"
+msgstr "Oh Tidaak"
+
+#: /rinjani/app/templates/500.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/500.html:8
+msgid "Something unexpected happened. Please smash head against keyboard. When done, you may run around in circles, wave your hands, and scream."
+msgstr ""
+
+#: /rinjani/app/templates/account.html:3
+#: /rinjani/app/templates/account.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:12
+msgid "Account"
+msgstr ""
+
+#: /rinjani/app/templates/account.html:14
+#: /rinjani/app/templates/agent/profile-edit.html:17
+#: /rinjani/app/templates/public/profile-edit.html:17
+#: /rinjani/app/templates/sponsor/profile-edit.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:17
+msgid "profile"
+msgstr ""
+
+#: /rinjani/app/templates/account.html:15
+#: /rinjani/app/templates/agent/profile-edit.html:18
+#: /rinjani/app/templates/public/profile-edit.html:18
+#: /rinjani/app/templates/sponsor/profile-edit.html:18
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:18
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:18
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:18
+msgid "account"
+msgstr ""
+
+#: /rinjani/app/templates/account.html:34
+#: /rinjani/app/templates/activity-edit.html:113
+#: /rinjani/app/templates/agent/profile-edit.html:142
+#: /rinjani/app/templates/article-edit.html:55
+#: /rinjani/app/templates/donation-confirm.html:16
+#: /rinjani/app/templates/page-edit.html:27
+#: /rinjani/app/templates/public/profile-edit.html:113
+#: /rinjani/app/templates/sponsor/profile-edit.html:142
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:34
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:113
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:55
+#: /media/disk/gryffindor/projects/rinjani/app/templates/donation-confirm.html:16
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:142
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:113
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:142
+msgid "Cancel"
+msgstr ""
+
+#: /rinjani/app/templates/account.html:35
+#: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:35
+msgid "Change"
+msgstr ""
+
+#: /rinjani/app/templates/activities.html:3
+#: /rinjani/app/templates/modules/menu.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activities.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:5
+msgid "Activities"
+msgstr ""
+
+#: /rinjani/app/templates/activity-edit.html:25
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:25
+msgid "Meta"
+msgstr ""
+
+#: /rinjani/app/templates/activity-edit.html:26
+#: /rinjani/app/templates/article-edit.html:25
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:25
+msgid "Content"
+msgstr "Isi"
+
+#: /rinjani/app/templates/activity-edit.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:27
+msgid "Miscellaneous"
+msgstr "Macam-macam"
+
+#: /rinjani/app/templates/activity-edit.html:68
+#: /rinjani/app/templates/agent/profile-edit.html:68
+#: /rinjani/app/templates/article-edit.html:45
+#: /rinjani/app/templates/page-edit.html:22
+#: /rinjani/app/templates/sponsor/profile-edit.html:68
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:68
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:45
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:22
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:68
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:68
+msgid "Add Attachment..."
+msgstr ""
+
+#: /rinjani/app/templates/activity-edit.html:69
+#: /rinjani/app/templates/article-edit.html:46
+#: /rinjani/app/templates/page-edit.html:23
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:69
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:46
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:23
+msgid "uploading..."
+msgstr "mengaplot"
+
+#: /rinjani/app/templates/activity-edit.html:116
+#: /rinjani/app/templates/activity-edit.html:119
+#: /rinjani/app/templates/agent/profile-edit.html:143
+#: /rinjani/app/templates/article-edit.html:58
+#: /rinjani/app/templates/article-edit.html:61
+#: /rinjani/app/templates/page-edit.html:28
+#: /rinjani/app/templates/public/profile-edit.html:114
+#: /rinjani/app/templates/sponsor/profile-edit.html:143
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:116
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:119
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:58
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:61
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:28
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:143
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:114
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:143
+msgid "Save"
+msgstr "Simpan"
+
+#: /rinjani/app/templates/activity-edit.html:117
+#: /rinjani/app/templates/article-edit.html:59
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:117
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:59
+msgid "Publish"
+msgstr ""
+
+#: /rinjani/app/templates/activity-edit.html:120
+#: /rinjani/app/templates/article-edit.html:62
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:120
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:62
+msgid "Unpublish"
+msgstr ""
+
+#: /rinjani/app/templates/activity-edit.html:124
+#: /rinjani/app/templates/agent/profile-edit.html:112
+#: /rinjani/app/templates/agent/profile-edit.html:129
+#: /rinjani/app/templates/article-edit.html:66
+#: /rinjani/app/templates/mobile/activity.html:33
+#: /rinjani/app/templates/modules/item-action.html:12
+#: /rinjani/app/templates/page.html:27
+#: /rinjani/app/templates/public/profile-edit.html:75
+#: /rinjani/app/templates/public/profile-edit.html:92
+#: /rinjani/app/templates/sponsor/profile-edit.html:112
+#: /rinjani/app/templates/sponsor/profile-edit.html:129
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:124
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:66
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:112
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:129
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-action.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:75
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:92
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:112
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:129
+msgid "Remove"
+msgstr "Hapus"
+
+#: /rinjani/app/templates/activity.html:3
+#: /rinjani/app/templates/mobile/activity.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:3
+msgid "Activity"
+msgstr ""
+
+#: /rinjani/app/templates/activity.html:30
+#: /rinjani/app/templates/mobile/activity.html:41
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:30
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:41
+msgid "Plea for donation!"
+msgstr ""
+
+#: /rinjani/app/templates/activity.html:38
+#: /rinjani/app/templates/mobile/activity.html:48
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:38
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:48
+msgid "Confirm My Donation"
+msgstr ""
+
+#: /rinjani/app/templates/activity.html:48
+#: /rinjani/app/templates/mobile/activity.html:62
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:48
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:62
+msgid "Bank accounts of "
+msgstr ""
+
+#: /rinjani/app/templates/activity.html:67
+#: /rinjani/app/templates/article.html:15
+#: /rinjani/app/templates/page.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:67
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:15
+msgid "prev"
+msgstr ""
+
+#: /rinjani/app/templates/activity.html:68
+#: /rinjani/app/templates/article.html:16
+#: /rinjani/app/templates/page.html:16
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:68
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:16
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:16
+msgid "next"
+msgstr ""
+
+#: /rinjani/app/templates/agent/_dashboard.html:8
+#: /rinjani/app/templates/public/_dashboard.html:8
+#: /rinjani/app/templates/sponsor/_dashboard.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/_dashboard.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:8
+msgid "New Article"
+msgstr ""
+
+#: /rinjani/app/templates/agent/_dashboard.html:9
+#: /rinjani/app/templates/sponsor/_dashboard.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/_dashboard.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:9
+msgid "New Activity"
+msgstr ""
+
+#: /rinjani/app/templates/agent/_dashboard.html:10
+#: /rinjani/app/templates/agent/profile-edit.html:3
+#: /rinjani/app/templates/base.html:32
+#: /rinjani/app/templates/public/_dashboard.html:10
+#: /rinjani/app/templates/public/donations.html:6
+#: /rinjani/app/templates/public/profile-edit.html:3
+#: /rinjani/app/templates/sponsor/_dashboard.html:10
+#: /rinjani/app/templates/sponsor/profile-edit.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:32
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/_dashboard.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:6
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:3
+msgid "Edit Profile"
+msgstr ""
+
+#: /rinjani/app/templates/agent/_dashboard.html:11
+#: /rinjani/app/templates/base.html:33
+#: /rinjani/app/templates/public/_dashboard.html:11
+#: /rinjani/app/templates/sponsor/_dashboard.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/_dashboard.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:11
+msgid "Change Password"
+msgstr ""
+
+#: /rinjani/app/templates/agent/dashboard.html:15
+#: /rinjani/app/templates/sponsor/dashboard.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/dashboard.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/dashboard.html:15
+msgid "Draft Items"
+msgstr ""
+
+#: /rinjani/app/templates/agent/dashboard.html:30
+#: /rinjani/app/templates/sponsor/dashboard.html:30
+#: /rinjani/app/templates/users.html:20
+#: /media/disk/gryffindor/projects/rinjani/app/templates/users.html:20
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/dashboard.html:30
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/dashboard.html:30
+msgid "None"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:15
+#: /rinjani/app/templates/agent/profile-edit.html:27
+#: /rinjani/app/templates/profile.html:3
+#: /rinjani/app/templates/public/profile-edit.html:15
+#: /rinjani/app/templates/public/profile-items.html:3
+#: /rinjani/app/templates/sponsor/profile-edit.html:15
+#: /rinjani/app/templates/sponsor/profile-edit.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-items.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:27
+msgid "Profile"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:26
+#: /rinjani/app/templates/public/profile-edit.html:26
+#: /rinjani/app/templates/sponsor/profile-edit.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:26
+msgid "About You"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:28
+#: /rinjani/app/templates/public/profile-edit.html:27
+#: /rinjani/app/templates/sponsor/profile-edit.html:28
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:28
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:28
+msgid "Contact"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:29
+#: /rinjani/app/templates/sponsor/profile-edit.html:29
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:29
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:29
+msgid "Bank Account"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:94
+#: /rinjani/app/templates/public/profile-edit.html:57
+#: /rinjani/app/templates/sponsor/profile-edit.html:94
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:94
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:57
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:94
+msgid "Bank Accounts"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile-edit.html:135
+#: /rinjani/app/templates/public/profile-edit.html:99
+#: /rinjani/app/templates/sponsor/profile-edit.html:135
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:135
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:99
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:135
+msgid "Add"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile.html:8
+#: /rinjani/app/templates/sponsor/profile.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:8
+msgid "Profile of "
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile.html:10
+#: /rinjani/app/templates/sponsor/profile.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:10
+msgid "general info"
+msgstr ""
+
+#: /rinjani/app/templates/agent/profile.html:11
+#: /rinjani/app/templates/public/donations.html:10
+#: /rinjani/app/templates/sponsor/profile.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:11
+msgid "comments"
+msgstr ""
+
+#: /rinjani/app/templates/article-edit.html:24
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:24
+msgid "Information"
+msgstr ""
+
+#: /rinjani/app/templates/article.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:3
+msgid "Article"
+msgstr "Artikel"
+
+#: /rinjani/app/templates/articles.html:3
+#: /rinjani/app/templates/mobile/articles.html:3
+#: /rinjani/app/templates/modules/menu.html:4
+#: /rinjani/app/templates/tag-view.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/articles.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tag-view.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/articles.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:4
+msgid "Articles"
+msgstr "Artikel"
+
+#: /rinjani/app/templates/base.html:5
+#: /rinjani/app/templates/mobile/base.html:4
+#: /rinjani/app/templates/modules/statics/welcome.html:2
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/base.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/statics/welcome.html:2
+msgid "Welcome"
+msgstr "Halo!"
+
+#: /rinjani/app/templates/base.html:29
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:29
+msgid "Write Article"
+msgstr "Tulis Artikel"
+
+#: /rinjani/app/templates/base.html:30
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:30
+msgid "Write Activity"
+msgstr ""
+
+#: /rinjani/app/templates/base.html:31
+#: /rinjani/app/templates/page-edit.html:3
+#: /rinjani/app/templates/public/_dashboard.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:31
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:9
+msgid "New Page"
+msgstr ""
+
+#: /rinjani/app/templates/base.html:38
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:38
+msgid "logout"
+msgstr "keluar"
+
+#: /rinjani/app/templates/base.html:40
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:40
+msgid "hello, guest"
+msgstr ""
+
+#: /rinjani/app/templates/base.html:40
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:40
+msgid "login/join"
+msgstr "login/daftar"
+
+#: /rinjani/app/templates/base.html:43
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:43
+msgid "about"
+msgstr "perihal"
+
+#: /rinjani/app/templates/base.html:45
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:45
+msgid "faq"
+msgstr "tilil"
+
+#: /rinjani/app/templates/base.html:77
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:77
+msgid "About Us"
+msgstr "Perihal Kami"
+
+#: /rinjani/app/templates/base.html:78
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:78
+msgid "How it Works"
+msgstr "Bagaimana Kerjanya"
+
+#: /rinjani/app/templates/base.html:79
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:79
+msgid "FAQ"
+msgstr "Tilil"
+
+#: /rinjani/app/templates/base.html:80
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:80
+msgid "Privacy"
+msgstr "Privasi"
+
+#: /rinjani/app/templates/base.html:81
+#: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:81
+msgid "Contact Us"
+msgstr "Kontak Kami"
+
+#: /rinjani/app/templates/donation-confirm.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/donation-confirm.html:3
+msgid "Confirm Donation"
+msgstr ""
+
+#: /rinjani/app/templates/donation-confirm.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/donation-confirm.html:17
+msgid "Confirm"
+msgstr "Konfirmasi"
+
+#: /rinjani/app/templates/error.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/error.html:5
+msgid "Peduli"
+msgstr ""
+
+#: /rinjani/app/templates/home.html:3
+#: /rinjani/app/templates/mobile/home.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/home.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/home.html:3
+msgid "Home"
+msgstr "Depan"
+
+#: /rinjani/app/templates/login-form.html:3
+#: /rinjani/app/templates/login-form.html:10
+#: /rinjani/app/templates/login-form.html:33
+#: /rinjani/app/templates/login.html:3
+#: /rinjani/app/templates/login.html:10
+#: /rinjani/app/templates/new-user.html:14
+#: /rinjani/app/templates/register.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:14
+msgid "Login"
+msgstr "Masuk"
+
+#: /rinjani/app/templates/login-form.html:8
+#: /rinjani/app/templates/login.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:8
+msgid "Come on in!"
+msgstr ""
+
+#: /rinjani/app/templates/login-form.html:11
+#: /rinjani/app/templates/login.html:11
+#: /rinjani/app/templates/new-user.html:15
+#: /rinjani/app/templates/register.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:15
+msgid "register"
+msgstr ""
+
+#: /rinjani/app/templates/login-form.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:17
+msgid "Login with Your Existing Account"
+msgstr ""
+
+#: /rinjani/app/templates/login.html:17
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:17
+msgid "Authentication Provider"
+msgstr ""
+
+#: /rinjani/app/templates/login.html:29
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:29
+msgid "Just click the button, buddy."
+msgstr ""
+
+#: /rinjani/app/templates/login.html:31
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:31
+msgid "Login via one of the provider in the left. <br />After successfully logged in, we will ask some questions."
+msgstr ""
+
+#: /rinjani/app/templates/mobile/activity.html:32
+#: /rinjani/app/templates/modules/item-action.html:11
+#: /rinjani/app/templates/page.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:32
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-action.html:11
+msgid "Edit"
+msgstr ""
+
+#: /rinjani/app/templates/mobile/modules/item.html:10
+#: /rinjani/app/templates/modules/item-user.html:6
+#: /rinjani/app/templates/modules/item.html:10
+#: /rinjani/app/templates/modules/user-block.html:13
+#: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/modules/item.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-user.html:6
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item.html:10
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/user-block.html:13
+msgid "member since"
+msgstr ""
+
+#: /rinjani/app/templates/modules/activities-latest.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activities-latest.html:7
+msgid "Latest Activities"
+msgstr ""
+
+#: /rinjani/app/templates/modules/activity-supporters.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activity-supporters.html:5
+msgid "Supporters"
+msgstr ""
+
+#: /rinjani/app/templates/modules/activity-supporters.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activity-supporters.html:9
+msgid "These are people/org who donate or has been approved to participate in the activity"
+msgstr ""
+
+#: /rinjani/app/templates/modules/agents-featured.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/agents-featured.html:5
+msgid "Featured Org"
+msgstr ""
+
+#: /rinjani/app/templates/modules/articles-latest.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/articles-latest.html:8
+msgid "Latest Articles"
+msgstr ""
+
+#: /rinjani/app/templates/modules/comment-box.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/comment-box.html:14
+msgid "Give Comment"
+msgstr ""
+
+#: /rinjani/app/templates/modules/comment-box.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/comment-box.html:27
+msgid "Login to give comment to this user"
+msgstr ""
+
+#: /rinjani/app/templates/modules/item-comment.html:19
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-comment.html:19
+msgid "Comment"
+msgstr "Komentar"
+
+#: /rinjani/app/templates/modules/item-stat.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-stat.html:14
+msgid "User Vote"
+msgstr ""
+
+#: /rinjani/app/templates/modules/item-stat.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-stat.html:14
+msgid "What do you think?"
+msgstr ""
+
+#: /rinjani/app/templates/modules/item-stat.html:23
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-stat.html:23
+msgid "Log in to be able to vote"
+msgstr ""
+
+#: /rinjani/app/templates/modules/menu.html:6
+#: /rinjani/app/templates/tags.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tags.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:6
+msgid "Tags"
+msgstr "Penanda"
+
+#: /rinjani/app/templates/modules/menu.html:7
+#: /rinjani/app/templates/users.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/users.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:7
+msgid "Users"
+msgstr "Anggota"
+
+#: /rinjani/app/templates/modules/report-box.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/report-box.html:3
+msgid "Report This"
+msgstr ""
+
+#: /rinjani/app/templates/modules/statics/intro.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/statics/intro.html:3
+msgid "Hello, <code>World</code>"
+msgstr ""
+
+#: /rinjani/app/templates/modules/statics/supported-by.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/statics/supported-by.html:5
+msgid "Supported By"
+msgstr "Didukung oleh"
+
+#: /rinjani/app/templates/modules/statics/user-tips.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/statics/user-tips.html:4
+msgid "Tips"
+msgstr "Tips"
+
+#: /rinjani/app/templates/modules/streams.html:5
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/streams.html:5
+msgid "From the Fields"
+msgstr ""
+
+#: /rinjani/app/templates/modules/tags-suggestion.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/modules/tags-suggestion.html:4
+msgid "Suggestion (click to add)"
+msgstr ""
+
+#: /rinjani/app/templates/new-user.html:3
+#: /rinjani/app/templates/new-user.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:12
+msgid "New User"
+msgstr "Anggota Baru"
+
+#: /rinjani/app/templates/new-user.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:33
+msgid "Finish"
+msgstr "Selesai"
+
+#: /rinjani/app/templates/profile.html:19
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:19
+msgid "Info"
+msgstr ""
+
+#: /rinjani/app/templates/profile.html:20
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:20
+msgid "Followers"
+msgstr ""
+
+#: /rinjani/app/templates/profile.html:21
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:21
+msgid "Following"
+msgstr ""
+
+#: /rinjani/app/templates/profile.html:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:27
+msgid "Phones"
+msgstr "Telpon"
+
+#: /rinjani/app/templates/profile.html:30
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:30
+msgid "Fax"
+msgstr ""
+
+#: /rinjani/app/templates/profile.html:34
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:34
+msgid "Website"
+msgstr ""
+
+#: /rinjani/app/templates/profile.html:50
+#: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:50
+msgid "About"
+msgstr "Perihal"
+
+#: /rinjani/app/templates/public/donations.html:6
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:6
+msgid "Dashboard"
+msgstr ""
+
+#: /rinjani/app/templates/public/donations.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:8
+msgid "messages"
+msgstr "pesan"
+
+#: /rinjani/app/templates/public/donations.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:9
+msgid "donations"
+msgstr "donasi"
+
+#: /rinjani/app/templates/public/donations.html:24
+#: /rinjani/app/templates/public/donations.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:24
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:33
+msgid "Invalid"
+msgstr "Tidak Valid"
+
+#: /rinjani/app/templates/public/donations.html:24
+#: /rinjani/app/templates/public/donations.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:24
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:33
+msgid "Valid"
+msgstr ""
+
+#: /rinjani/app/templates/public/profile-comments.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-comments.html:3
+msgid "Comments"
+msgstr "Komentar"
+
+#: /rinjani/app/templates/public/profile-edit.html:28
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:28
+msgid "Donation"
+msgstr "Donasi"
+
+#: /rinjani/app/templates/public/profile-edit.html:103
+#: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:103
+msgid "If you want to donate certain activity or organization in Peduli and would like to be blah blah blah, list your bank account here. "
+msgstr ""
+
+#: /rinjani/app/templates/register.html:3
+#: /rinjani/app/templates/register.html:12
+#: /rinjani/app/templates/register.html:37
+#: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:3
+#: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:37
+msgid "Register"
+msgstr "Daftar"
+
+#: /rinjani/app/templates/report.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/report.html:4
+msgid "Reporting Inappropriate/Offending Content"
+msgstr ""
+
+#: /rinjani/app/templates/tag-view.html:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tag-view.html:7
+msgid "%s tagged with <span>%s</span>"
+msgstr ""
+
