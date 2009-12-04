@@ -74,6 +74,7 @@ class EditHandler(BaseHandler):
             page = Page()
             raise Exception("Invalid form data")
         except Exception, e:
+            raise
             if attachments:
                 page['attachments'] = data['attachments']
             f.note = f.note if f.note else e

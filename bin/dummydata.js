@@ -12,6 +12,7 @@ EXCERPT = [
 
 Article = {
     template : {
+		type: 'ART',
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -20,11 +21,12 @@ Article = {
     },
     type: 'Article',
     counter: 'article_count',
-    collectionName: 'articles'
+    collectionName: 'contents'
 }
 
 Activity = {
     template : {
+		type: 'ACT',
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -35,7 +37,7 @@ Activity = {
     },
     type: 'Activity',
     counter: 'activity_count',
-    collectionName: 'activities'
+    collectionName: 'contents'
 }
 
 var choose_tags = function(T) {
@@ -58,9 +60,9 @@ var choose_excerpt = function() {
 }
 
 var generate_random_content = function(ctype, id) {
-    uid = 1 + Math.floor(Math.random() * 200);
+    uid = 1 + Math.floor(Math.random() * 50);
     t = ctype.template;
-    t["_id"] = id;
+    t["_id"] = ctype.type + "-" + id;
     t["title"] = ctype.type + " #" + id;
     t["slug"] = ctype.type.toLowerCase() + "-" + id;
     t["author"] = new DBRef("users", uid);
@@ -69,17 +71,19 @@ var generate_random_content = function(ctype, id) {
     t["view_count"] = 1 + Math.floor(Math.random() * 500)
     t['tags'] = choose_tags();
     db[ctype.collectionName].save(t);
-
+    
+    assert( db.getPrevError().err == null , db.getPrevError().err );
+    
     u = db.users.findOne({_id: uid});
     if (u) {
         u[ctype.counter] += 1;
         db.users.save(u);
     }
-    //assert( db.getPrevError().err == null , db.getPrevError().err );
+    
 }
 
 ut = { _required_namespace: [], document_scan : null, last_login: new Date(), "website" : null, "profile_content_html" : null, "uid" : null, "locale" : null, "phones" : [], "auth_provider" : "form", "sex" : null, "birthday_date" : null, "timezone" : "Asia/Jakarta", "badges" : [], "attachments" : [], "preferences" : [], "article_count" : 0, "location" : [], "followers" : [], "is_verified" : true, "email" : null, "fax" : [], "tags" : [], "activity_count" : 0, "following" : [], "password_hashed" : "a7257ef242a856304478236fe46fee00f23f8a25", "is_admin" : false, "address" : null, "profile_content" : null, "fullname" : null, "access_token" : null, "type" : "agent", "points" : 0, "status" : "active", "avatar" : null, "donation_count" : 0, "contact_person" : null }
-for(var id=1; id < 200; id++) {
+for(var id=1; id < 50; id++) {
     ut["_id"] = id;
     ut["username"] = "user" + id;
     ut["created_at"] = choose_date(id);
@@ -89,11 +93,10 @@ for(var id=1; id < 200; id++) {
 }
 
 [Article, Activity].forEach(function(ctype) {
-    for (var id=1; id<2500; id++) {
+    for (var id=1; id<250; id++) {
         generate_random_content(ctype, id);
     }
 });
 
 print("User size: " + db.users.totalSize());
-print("Article size: " + db.articles.totalSize());
-print("Activity size: " + db.activities.totalSize());
+print("Content size: " + db.contents.totalSize());

@@ -15,23 +15,7 @@ r = function(key, values) {
 };
 
 
-var tagCols = ['articles', 'activities', 'users'];
-output = []
-db.tags_.drop();
-tagCols.forEach(function(col) {
-	var res = db.runCommand( { mapreduce: col, map: m, reduce: r, query: {}, out: col+'_tags' });
-	printjson(res);
-	var cur = db[res.result].find();
-	cur.forEach(function(x) {
-		p = db.tags_.findOne({_id: x._id});
-		if (!p) {
-			db.tags_.save({_id: x._id, count: x.value });
-		} else {
-			p.count += x.value;
-			db.tags_.save(p);
-		};
-	});
+['contents', 'users'].forEach(function(col) {
+	db.runCommand( { mapreduce: col, map: m, reduce: r, query: {}, out: col.slice(0,-1)+'_tags' });
 });
-db.tags.drop();
-db.tags_.renameCollection('tags')
 

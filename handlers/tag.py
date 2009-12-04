@@ -15,21 +15,21 @@
 
 from main import BaseHandler, authenticated
 import models
-from models import User, Article, Activity, Vote, ArticleTag, ActivityTag, UserTag
+from models import User, Content, Vote, Tag, UserTag
 from utils.pagination import Pagination
 from settings import MY_FLAGS
 
 class ListHandler(BaseHandler):
     def get(self):
-        t = self.get_argument('tab', 'activity')
-        doc = ArticleTag if t == 'article' else ActivityTag if t == 'activity' else UserTag
+        t = self.get_argument('tab', 'content')
+        doc = Tag if t == 'content' else UserTag
         pagination = Pagination(self, doc, {}, sort_by='_id', sort=1)
         self.render('tags', pagination=pagination, tab=t)
 
 class ViewHandler(BaseHandler):
     def get(self, tag):
-        t = self.get_argument('t', 'article')
-        doc = Article if t == 'article' else Activity if t == 'activity' else User
+        t = self.get_argument('t', 'content')
+        doc = Content if t == 'content' else User
         pagination = Pagination(self, doc, {'tags': tag})
         self.render('tag-view', tab=t, tag=tag, pagination=pagination)
         

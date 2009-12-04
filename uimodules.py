@@ -2,7 +2,7 @@ import os
 import tornado.web
 import pymongo
 
-from models import Article, Activity, ActivityTag, User, Vote
+from models import Article, Activity, User, Vote, Tag
 from settings import MY_FLAGS
 
 class BaseUIModule(tornado.web.UIModule):
@@ -228,9 +228,9 @@ class TagCloud(BaseUIModule):
     def render(self, **kwargs):
         from utils.utils import calculate_cloud
         import random
-        tags = ActivityTag.all().sort('value', -1).limit(15)
+        tags = Tag.all().sort('value', -1).limit(15)
         tags = [tag for tag in tags]
-        tags = calculate_cloud(tags, 5, 2)
+        tags = calculate_cloud(tags, 10, 2)
         random.shuffle(tags)
         return self.render_string('modules/tag-cloud', tags=tags[0:10], min=min)
 

@@ -219,8 +219,14 @@ class User(BaseDocument):
         return "/profile/" + self['username']
 
 class Content(BaseDocument):
-    base_url = '/'
-    enable_whoosh = True
+    collection_name = 'contents'
+    structure = {
+        'author': User
+    }
+    type = ''
+    required_fields = ['author', 'title', 'content']
+    sanitized_fields = ['excerpt', 'content']
+    indexed_fields = ['content']
 
     def authored_by(self, user):
         return self['author'] is user
@@ -229,19 +235,21 @@ class Content(BaseDocument):
     def set_slug(self, doc, s):
         if s.strip() in ['new', 'edit']:
             raise Exception("Title cant be '%s'" % s.strip())
-        _s, s = s, slugify(s)
-        spec = {'slug': s}
+        s = slugify(s)
+        spec = {'type': self.type, 'slug': s}
         if '_id' in doc:
             spec.update({'_id': {'$ne': doc['_id']}})
-
+        
+        _s = s
         i = 1
         while True:
             i += 1
             if not self.__class__.one(spec):
                 break
-            s = "%s-%d" % (_s, i)
-
-        doc['slug'] = s
+            _s = "%s-%d" % (s, i)
+            spec.update({'slug': _s})
+        
+        doc['slug'] = _s
         #self.__class__.collection.update({'_id': self._id}, {'$set': {'slug': unicode(s)}})
 
     def process_inline(self, field, src):
@@ -272,7 +280,8 @@ class Content(BaseDocument):
         else:
             self['author'] = user
             new_doc = True
-
+        
+        self['type'] = self.type
         self.pre_save(data, new_doc)
         self.set_slug(self, self['title'])
         super(Content, self).save()
@@ -287,28 +296,30 @@ class Content(BaseDocument):
             self.save()
         self.post_remove()
 
-    def pre_save(self, data, new_doc):
-        if self.has_key('tags') and data.has_key('tags'):
-            from utils.string import sanitize_tags
-            self['tags'] = sanitize_tags(self['tags'])
-
+    def pre_save(self, data, new_doc): pass
     def post_save(self, data, new_doc): pass
     def pre_remove(self): pass
     def post_remove(self): pass
-
+    
+    @property
+    def base_url(self):
+        TYPE = {'ART':'article', 'ACT':'activity', 'PAG': 'page'}
+        return "/" + TYPE[self['type']]
+     
     def get_url(self):
-        return self.base_url + self.slug
+        return "%s/%s" % (self.base_url, self.slug)
 
     def get_edit_url(self):
-        return self.base_url + 'edit/' + self.slug
+        return self.base_url + '/edit/' + self.slug
 
     def get_remove_url(self):
-        return self.base_url + 'remove/' + self.slug
+        return self.base_url + '/remove/' + self.slug
 
 class Article(Content):
-    collection_name = 'articles'
-    base_url = '/article/'
+    collection_name = 'contents'
+    type = 'ART'
     structure = {
+        'type': unicode,
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'),
         'featured': bool,
@@ -326,15 +337,14 @@ class Article(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    required_fields = ['author', 'title', 'content']
-    sanitized_fields = ['excerpt', 'content']
+    
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
                       'created_at':datetime.datetime.utcnow,
                       'updated_at':datetime.datetime.utcnow
                       }
-    indexes = [ { 'fields': 'slug', 'unique': True}]
+    indexes = [ { 'fields': ['type', 'slug'], 'unique': True}]
 
     def post_save(self, data, new_doc):
         if new_doc:
@@ -344,9 +354,10 @@ class Article(Content):
         User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
 
 class Activity(Content):
-    collection_name = 'activities'
-    base_url = '/activity/'
+    collection_name = 'contents'
+    type = 'ACT'
     structure = {
+        'type': unicode,
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'),
         'featured': bool,
@@ -376,8 +387,7 @@ class Activity(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    required_fields = ['author', 'status', 'title', 'content']
-    sanitized_fields = ['excerpt', 'content', 'deliverable']
+    
     default_values = {'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
@@ -385,9 +395,6 @@ class Activity(Content):
                       'updated_at':datetime.datetime.utcnow
                       }
     indexes = [ { 'fields': 'slug', 'unique': True}]
-
-    def pre_save(self, data, new_doc):
-        pass
 
     def post_save(self, data, new_doc):
         if new_doc:
@@ -397,9 +404,11 @@ class Activity(Content):
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
 
 class Page(Content):
-    collection_name = 'pages'
+    collection_name = 'contents'
+    type = 'PAG'
     structure = {
         'author': User,
+        'type': unicode,
         'title': unicode,
         'slug': unicode,
         'content': unicode,
@@ -408,13 +417,9 @@ class Page(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    required_fields = ['title', 'content']
-    sanitized_fields = ['content']
-    default_values = {'created_at':datetime.datetime.utcnow, 'updated_at':datetime.datetime.utcnow}
-
-    def get_url(self):
-        return "/page/" + self['slug']
-
+    default_values = {'created_at':datetime.datetime.utcnow, 
+                      'updated_at':datetime.datetime.utcnow
+                      }
 
 class Vote(BaseDocument):
     collection_name = 'votes'
@@ -515,20 +520,14 @@ class Tag(MongoDocument):
     db_host, db_port, db_name = DB
     use_dot_notation = True
     skip_validation = True
-    collection_name = 'tags'
+    collection_name = 'content_tags'
     structure = {
         'value': int
     }
     required_fileds = ['value']
 
-class ArticleTag(Tag):
-    collection_name = 'articles_tags'
-
-class ActivityTag(Tag):
-    collection_name = 'activities_tags'
-
 class UserTag(Tag):
-    collection_name = 'users_tags'
+    collection_name = 'user_tags'
 
 def get_or_404(cls, query=None):
     query = query if query else {}

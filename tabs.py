@@ -56,7 +56,6 @@ users = ('Users', [
 
 
 tags = ('Tags', [
-    ('/tags?tab=article', _('article')),
-    ('/tags?tab=activity', _('activity')),
+    ('/tags?tab=content', _('content')),
     ('/tags?tab=user', _('user'))
 ])

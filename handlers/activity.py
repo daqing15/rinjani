@@ -23,18 +23,19 @@ from web.utils import Storage
 from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
 import tornado.web
-from utils.time import striso_to_date
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Activity, {'status':u'published'})
+        spec = {'type': 'ACT', 'status':'published'}
+        pagination = Pagination(self, Activity, spec)
         self.render('activities', pagination=pagination)
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
-        activity = Activity.one({'status':'published', 'slug': slug})
+        spec = {'type': 'ACT', 'status':'published', 'slug': slug}
+        activity = Activity.one(spec)
         if not activity:
             raise tornado.web.HTTPError(404)
         Activity.collection.update({'slug': slug}, {'$inc': { 'view_count': 1}})
