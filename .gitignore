@@ -4,6 +4,7 @@
 *.swp
 *.mo
 *.pyc
+*.pypo
 .settings/*
 lib/*
 settings.py

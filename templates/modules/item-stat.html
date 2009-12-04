@@ -1,15 +1,15 @@
 <div class="mod stat">
     <div class="inner">
         <div class="bd">
-            <div class="line"><span class="ultrabig grey">{{item.view_count}}</span> hits</div>
-            
+            <div class="line"><span class="ultrabig grey">{{int(item.view_count)}}</span> hits</div>
+
             {{ modules.Tags(item.tags) }}
-            
+
             {% if item.has_key('need_volunteer') %}
                 {{ modules.Tags(item.volunteer_tags) }}
             {% end %}
-            
-            
+
+
             <form action="/flag" class="line">
                 <h3 style="margin-bottom:5px">{% if current_user %}{{ _('What do you think?')}} {% else %} {{ _('User Vote') }} {% end %}</h3>
                 <div class="flag">
@@ -18,10 +18,10 @@
                     <label class="tag t1{{c}}"> <input type="radio" class="ut" name="myflag" value="{{flag}}"/>{{FLAGS[flag]}} {% if count %} <span>{{count}}</span>{% else %}<span></span>{% end %}</label>
                     {% end %}
                     <label class="tag hidden"> <input type="radio" class="ut" name="myflag" value="" />Sampah <span>0</span></label>
-                </div>  
+                </div>
             </form>
             {% if not current_user %}<p class="small grey">{{ _('Log in to be able to vote') }}</p>{% end %}
-            
+
             {% if not vote and current_user and current_user != item.author %}
 <script type="text/javascript">
 var has_vote = {{ "true" if vote else "false"}};
@@ -29,8 +29,8 @@ $('.flag .tag').mouseup(function() {
     if (has_vote) return false;
         $tag = $(this)
         $flag = $tag.find('input');
-        R.request('/flag', 
-                { type: '{{ item.__class__.__name__ }}', 
+        R.request('/flag',
+                { type: '{{ item.__class__.__name__ }}',
                   slug:'{{item.slug}}', flag: $flag.val() },
                 'POST', function(resp) {
                     if (resp.status == 'OK') {

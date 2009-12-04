@@ -10,6 +10,7 @@ url_handlers = [
 
     (r"/account", 'handlers.profile.AccountHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
+    (r"/profile/verify", 'handlers.profile.VerifyHandler'),
     (r"/profile/follow/([A-Za-z0-9]+)", 'handlers.profile.FollowHandler'),
     (r"/profile/followers/([A-Za-z0-9]+)", 'handlers.profile.FollowersHandler'),
     (r"/profile/donations", 'handlers.donation.ListHandler'),

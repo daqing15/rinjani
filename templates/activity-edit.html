@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% set title = 'edit activity' if activity.slug else 'new activity' %}
+{% set title = _('edit activity') if activity.slug else _('new activity') %}
 {{ title.title() }}{% end %}
 
 {% block body %}
@@ -15,7 +15,7 @@
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
 
 {% set title = 'edit activity' if activity.slug else 'new activity' %}
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title) }}
+{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title, dashboard=True) }}
 
 
 <div class="line tabWrapper">
@@ -83,7 +83,7 @@
                     <div class="lastUnit size2of3">
                         <div class="deps">
                             <div class="depsrc">
-                                {{ modules.Formfield(f.need_donation) }} <span class="grey small">If checked, your <a target="_blank" href="/profile/edit#fb">Bank Account</a> will be displayed.</span>
+                                {{ modules.Formfield(f.need_donation) }} <span class="grey small">{{_('If checked, your <a target=_blank href=/profile/edit#fb>Bank Account</a> will be displayed.')}}</span>
                             </div>
                             <div class="deptarget">
                             {{ modules.Formfield(f.donation_amount_needed) }}

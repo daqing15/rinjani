@@ -7,19 +7,29 @@
 <h1>{{ _('Hmmm, we’re having trouble finding that one.') }}</h1>
 <div class="line">
     <div class="unit size1of2">
-        <h3>{{ _('We hate to say it, but we couldn’t find that page or file you’re looking for') }}</h3>
-        <ul>
-            <li>{{_('If you typed in the address, try double-checking the spelling')}}</li>
-            <li>{{_('If you followed link from somewhere, please let us know where you come from. Contact Us at admin__AT__peduli.com')}}</li>
-        </ul>
-        
+                <ul>
+                    <li>{{_('If you typed in the address, try double-checking the spelling')}}</li>
+                    <li>{{_('If you followed link from somewhere, please let us know where you come from. Contact Us at admin__AT__peduli.com')}}</li>
+                </ul> 
+                
+                <div class="buttons">
+                    <p><a class="button"><span><span>Back</span></span></a></p>
+                </div>   
     </div>
     <div class="lastUnit size1of2">
-        <h3>{{ _('If you are really stuck, try these pages:') }}</h3>
-        <ul>
-            <li>{{_('Our Blog')}}</li>
-            <li><a href="http://fizdoonk.multiply.com/">{{_('Multiply si apit')}}</a></li>
-        </ul>    
+        <b class="top"><b class="tl"></b><b class="tr"></b></b>
+        <div class="mod notes" style="width: 200px">
+            <div class="inner">
+                <div class="hd"><h4>{{ _('See these') }}:</h4></div>
+                <div class="bd">
+                <ul>
+                    <li><a href="{{BP}}/">{{_('Home')}}</a></li>
+                    <li><a href="/blog">{{_('Peduli Blog')}}</a></li>
+                    <li><a href="http://fizdoonk.multiply.com/">{{_('Peduli Facebook')}}</a></li>
+                </ul>    
+                </div>
+            </div>
+        </div>
     </div>
 </div>   
 {% end %}

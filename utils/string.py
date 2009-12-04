@@ -2,6 +2,12 @@ import re
 from BeautifulSoup import BeautifulSoup, Comment
 import markdown2
 
+def dummy_translate(str):
+    """ Dummy _. used to catch gettext. 
+        actual translation is done in tabs.html template.
+    """
+    return str
+
 def markdown(s):
     return s and markdown2.markdown(s)
 

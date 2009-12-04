@@ -2,28 +2,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2009-11-27 19:12+0700\n"
 "Last-Translator: hafizhuddin amin <hafizhuddin.amin@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team:  <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:7
-#: /rinjani/app/templates/200.html:3
-#: /rinjani/app/templates/200.html:7
+#: /rinjani/app/templates/200.html:3 /rinjani/app/templates/200.html:7
 #: /rinjani/app/templates/403.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/403.html:3
 msgid "Forbidden"
 msgstr "Dilarang"
 
 #: /media/disk/gryffindor/projects/rinjani/app/templates/200.html:8
-#: /rinjani/app/templates/200.html:8
-#: /rinjani/app/templates/403.html:7
+#: /rinjani/app/templates/200.html:8 /rinjani/app/templates/403.html:7
 #: /media/disk/gryffindor/projects/rinjani/app/templates/403.html:7
 msgid "Naah. You are not allowed to view this page. Please log in."
 msgstr ""
+"Naah. Anda tidak diperkenankan melihat halaman ini tanpa login terlebih "
+"dahulu."
 
 #: /rinjani/app/templates/404.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:3
@@ -33,12 +33,13 @@ msgstr "Tidak Ketemu"
 #: /rinjani/app/templates/404.html:7
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:7
 msgid "Hmmm, were having trouble finding that one."
-msgstr ""
+msgstr "Hmm.. kami kesuitan cari yang dimaksud."
 
 #: /rinjani/app/templates/404.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:10
-msgid "We hate to say it, but we couldnt find that page or file youre looking for"
-msgstr ""
+msgid ""
+"We hate to say it, but we couldnt find that page or file youre looking for"
+msgstr "Doh. Halaman yang Anda maksud tidak ada."
 
 #: /rinjani/app/templates/404.html:12
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:12
@@ -47,26 +48,27 @@ msgstr ""
 
 #: /rinjani/app/templates/404.html:13
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:13
-msgid "If you followed link from somewhere, please let us know where you come from. Contact Us at admin__AT__peduli.com"
+msgid ""
+"If you followed link from somewhere, please let us know where you come from. "
+"Contact Us at admin__AT__peduli.com"
 msgstr ""
 
 #: /rinjani/app/templates/404.html:18
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:18
 msgid "If you are really stuck, try these pages:"
-msgstr ""
+msgstr "Kalau Anda benar-bener stuck, coba halaman-halaman ini:"
 
 #: /rinjani/app/templates/404.html:20
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:20
 msgid "Our Blog"
-msgstr ""
+msgstr "Blog Kami"
 
 #: /rinjani/app/templates/404.html:21
 #: /media/disk/gryffindor/projects/rinjani/app/templates/404.html:21
 msgid "Multiply si apit"
 msgstr ""
 
-#: /rinjani/app/templates/405.html:3
-#: /rinjani/app/templates/405.html:7
+#: /rinjani/app/templates/405.html:3 /rinjani/app/templates/405.html:7
 #: /media/disk/gryffindor/projects/rinjani/app/templates/405.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/405.html:7
 msgid "Method Not Allowed"
@@ -89,37 +91,44 @@ msgstr "Oh Tidaak"
 
 #: /rinjani/app/templates/500.html:8
 #: /media/disk/gryffindor/projects/rinjani/app/templates/500.html:8
-msgid "Something unexpected happened. Please smash head against keyboard. When done, you may run around in circles, wave your hands, and scream."
+msgid ""
+"Something unexpected happened. Please smash head against keyboard. When "
+"done, you may run around in circles, wave your hands, and scream."
 msgstr ""
+"Adu duh adu duh error sekali. Ingin lempar diri (throw exception) tapi takut "
+"zombie... "
 
 #: /rinjani/app/templates/account.html:3
 #: /rinjani/app/templates/account.html:12
 #: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:12
+#: /media/disk/gryffindor/projects/rinjani/app/templates/verify.html:3
 msgid "Account"
-msgstr ""
+msgstr "Akun"
 
 #: /rinjani/app/templates/account.html:14
 #: /rinjani/app/templates/agent/profile-edit.html:17
 #: /rinjani/app/templates/public/profile-edit.html:17
 #: /rinjani/app/templates/sponsor/profile-edit.html:17
 #: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/verify.html:14
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:17
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:17
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:17
 msgid "profile"
-msgstr ""
+msgstr "profil"
 
 #: /rinjani/app/templates/account.html:15
 #: /rinjani/app/templates/agent/profile-edit.html:18
 #: /rinjani/app/templates/public/profile-edit.html:18
 #: /rinjani/app/templates/sponsor/profile-edit.html:18
 #: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/verify.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:18
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:18
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:18
 msgid "account"
-msgstr ""
+msgstr "akun"
 
 #: /rinjani/app/templates/account.html:34
 #: /rinjani/app/templates/activity-edit.html:113
@@ -138,29 +147,41 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:113
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:142
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: /rinjani/app/templates/account.html:35
 #: /media/disk/gryffindor/projects/rinjani/app/templates/account.html:35
 msgid "Change"
-msgstr ""
+msgstr "Ubah"
 
 #: /rinjani/app/templates/activities.html:3
 #: /rinjani/app/templates/modules/menu.html:5
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activities.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:5
 msgid "Activities"
-msgstr ""
+msgstr "Aktivitas"
+
+#: /rinjani/app/templates/activity-edit.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:4
+msgid "edit activity"
+msgstr "edit aktivitas"
+
+#: /rinjani/app/templates/activity-edit.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:4
+msgid "new activity"
+msgstr "tulis aktivitas"
 
 #: /rinjani/app/templates/activity-edit.html:25
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:25
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: /rinjani/app/templates/activity-edit.html:26
 #: /rinjani/app/templates/article-edit.html:25
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:26
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:25
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:166
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:191
 msgid "Content"
 msgstr "Isi"
 
@@ -180,7 +201,7 @@ msgstr "Macam-macam"
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:68
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:68
 msgid "Add Attachment..."
-msgstr ""
+msgstr "Tambahkan Lampiran..."
 
 #: /rinjani/app/templates/activity-edit.html:69
 #: /rinjani/app/templates/article-edit.html:46
@@ -190,6 +211,15 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:23
 msgid "uploading..."
 msgstr "mengaplot"
+
+#: /rinjani/app/templates/activity-edit.html:86
+#: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:86
+msgid ""
+"If checked, your <a target=_blank href=/profile/edit#fb>Bank Account</a> "
+"will be displayed."
+msgstr ""
+"Kalau dicentang, <a target=_blank\" href=/profile/edit#fb>Akun bank</a> anda "
+"akan ditampilkan."
 
 #: /rinjani/app/templates/activity-edit.html:116
 #: /rinjani/app/templates/activity-edit.html:119
@@ -215,14 +245,14 @@ msgstr "Simpan"
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:117
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:59
 msgid "Publish"
-msgstr ""
+msgstr "Publikasikan"
 
 #: /rinjani/app/templates/activity-edit.html:120
 #: /rinjani/app/templates/article-edit.html:62
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity-edit.html:120
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:62
 msgid "Unpublish"
-msgstr ""
+msgstr "Tarik dari Publikasi"
 
 #: /rinjani/app/templates/activity-edit.html:124
 #: /rinjani/app/templates/agent/profile-edit.html:112
@@ -254,46 +284,44 @@ msgstr "Hapus"
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:3
 msgid "Activity"
-msgstr ""
+msgstr "Aktivitas"
 
 #: /rinjani/app/templates/activity.html:30
 #: /rinjani/app/templates/mobile/activity.html:41
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:30
 #: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:41
 msgid "Plea for donation!"
-msgstr ""
+msgstr "Perlu donasi"
 
 #: /rinjani/app/templates/activity.html:38
 #: /rinjani/app/templates/mobile/activity.html:48
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:38
 #: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:48
 msgid "Confirm My Donation"
-msgstr ""
+msgstr "Konfirmasi Donasi"
 
 #: /rinjani/app/templates/activity.html:48
 #: /rinjani/app/templates/mobile/activity.html:62
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:48
 #: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:62
 msgid "Bank accounts of "
-msgstr ""
+msgstr "Akun bank dari"
 
 #: /rinjani/app/templates/activity.html:67
-#: /rinjani/app/templates/article.html:15
-#: /rinjani/app/templates/page.html:15
+#: /rinjani/app/templates/article.html:15 /rinjani/app/templates/page.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:67
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:15
 msgid "prev"
-msgstr ""
+msgstr "sebelumnya"
 
 #: /rinjani/app/templates/activity.html:68
-#: /rinjani/app/templates/article.html:16
-#: /rinjani/app/templates/page.html:16
+#: /rinjani/app/templates/article.html:16 /rinjani/app/templates/page.html:16
 #: /media/disk/gryffindor/projects/rinjani/app/templates/activity.html:68
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:16
 #: /media/disk/gryffindor/projects/rinjani/app/templates/page.html:16
 msgid "next"
-msgstr ""
+msgstr "selanjutnya"
 
 #: /rinjani/app/templates/agent/_dashboard.html:8
 #: /rinjani/app/templates/public/_dashboard.html:8
@@ -302,14 +330,14 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:8
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:8
 msgid "New Article"
-msgstr ""
+msgstr "Tulis Artikel"
 
 #: /rinjani/app/templates/agent/_dashboard.html:9
 #: /rinjani/app/templates/sponsor/_dashboard.html:9
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/_dashboard.html:9
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:9
 msgid "New Activity"
-msgstr ""
+msgstr "Tulis Aktivitas"
 
 #: /rinjani/app/templates/agent/_dashboard.html:10
 #: /rinjani/app/templates/agent/profile-edit.html:3
@@ -328,7 +356,7 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:3
 msgid "Edit Profile"
-msgstr ""
+msgstr "Edit Profil"
 
 #: /rinjani/app/templates/agent/_dashboard.html:11
 #: /rinjani/app/templates/base.html:33
@@ -339,14 +367,14 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:11
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/_dashboard.html:11
 msgid "Change Password"
-msgstr ""
+msgstr "Ubah Katasandi"
 
 #: /rinjani/app/templates/agent/dashboard.html:15
 #: /rinjani/app/templates/sponsor/dashboard.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/dashboard.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/dashboard.html:15
 msgid "Draft Items"
-msgstr ""
+msgstr "Item Draf"
 
 #: /rinjani/app/templates/agent/dashboard.html:30
 #: /rinjani/app/templates/sponsor/dashboard.html:30
@@ -355,7 +383,7 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/dashboard.html:30
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/dashboard.html:30
 msgid "None"
-msgstr ""
+msgstr "Tidak ada"
 
 #: /rinjani/app/templates/agent/profile-edit.html:15
 #: /rinjani/app/templates/agent/profile-edit.html:27
@@ -372,16 +400,17 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:27
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: /rinjani/app/templates/agent/profile-edit.html:26
 #: /rinjani/app/templates/public/profile-edit.html:26
 #: /rinjani/app/templates/sponsor/profile-edit.html:26
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:203
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:26
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:26
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:26
 msgid "About You"
-msgstr ""
+msgstr "Perihal Kamu"
 
 #: /rinjani/app/templates/agent/profile-edit.html:28
 #: /rinjani/app/templates/public/profile-edit.html:27
@@ -390,14 +419,14 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:27
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:28
 msgid "Contact"
-msgstr ""
+msgstr "Kontak"
 
 #: /rinjani/app/templates/agent/profile-edit.html:29
 #: /rinjani/app/templates/sponsor/profile-edit.html:29
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile-edit.html:29
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:29
 msgid "Bank Account"
-msgstr ""
+msgstr "Akun Bank"
 
 #: /rinjani/app/templates/agent/profile-edit.html:94
 #: /rinjani/app/templates/public/profile-edit.html:57
@@ -406,7 +435,7 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:57
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:94
 msgid "Bank Accounts"
-msgstr ""
+msgstr "Akun Bank"
 
 #: /rinjani/app/templates/agent/profile-edit.html:135
 #: /rinjani/app/templates/public/profile-edit.html:99
@@ -415,35 +444,48 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:99
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile-edit.html:135
 msgid "Add"
-msgstr ""
+msgstr "Tambahkan"
 
 #: /rinjani/app/templates/agent/profile.html:8
 #: /rinjani/app/templates/sponsor/profile.html:8
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:8
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:8
 msgid "Profile of "
-msgstr ""
+msgstr "Profil dari"
 
 #: /rinjani/app/templates/agent/profile.html:10
 #: /rinjani/app/templates/sponsor/profile.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:10
 msgid "general info"
-msgstr ""
+msgstr "info umum"
 
 #: /rinjani/app/templates/agent/profile.html:11
 #: /rinjani/app/templates/public/donations.html:10
 #: /rinjani/app/templates/sponsor/profile.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:7
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:27
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:35
 #: /media/disk/gryffindor/projects/rinjani/app/templates/agent/profile.html:11
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/sponsor/profile.html:11
 msgid "comments"
-msgstr ""
+msgstr "komentar"
+
+#: /rinjani/app/templates/article-edit.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:4
+msgid "edit article"
+msgstr "edit artikel"
+
+#: /rinjani/app/templates/article-edit.html:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:4
+msgid "new article"
+msgstr "bikin artikel baru"
 
 #: /rinjani/app/templates/article-edit.html:24
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article-edit.html:24
 msgid "Information"
-msgstr ""
+msgstr "Informasi"
 
 #: /rinjani/app/templates/article.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/article.html:3
@@ -478,16 +520,15 @@ msgstr "Tulis Artikel"
 #: /rinjani/app/templates/base.html:30
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:30
 msgid "Write Activity"
-msgstr ""
+msgstr "Tulis Aktivitas"
 
-#: /rinjani/app/templates/base.html:31
-#: /rinjani/app/templates/page-edit.html:3
+#: /rinjani/app/templates/base.html:31 /rinjani/app/templates/page-edit.html:3
 #: /rinjani/app/templates/public/_dashboard.html:9
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:31
 #: /media/disk/gryffindor/projects/rinjani/app/templates/page-edit.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/_dashboard.html:9
 msgid "New Page"
-msgstr ""
+msgstr "Tulis Halaman"
 
 #: /rinjani/app/templates/base.html:38
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:38
@@ -497,7 +538,7 @@ msgstr "keluar"
 #: /rinjani/app/templates/base.html:40
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:40
 msgid "hello, guest"
-msgstr ""
+msgstr "halo, tamu"
 
 #: /rinjani/app/templates/base.html:40
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:40
@@ -506,13 +547,14 @@ msgstr "login/daftar"
 
 #: /rinjani/app/templates/base.html:43
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:43
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:32
 msgid "about"
 msgstr "perihal"
 
 #: /rinjani/app/templates/base.html:45
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:45
 msgid "faq"
-msgstr "tilil"
+msgstr "tanya-jawab"
 
 #: /rinjani/app/templates/base.html:77
 #: /media/disk/gryffindor/projects/rinjani/app/templates/base.html:77
@@ -542,7 +584,7 @@ msgstr "Kontak Kami"
 #: /rinjani/app/templates/donation-confirm.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/donation-confirm.html:3
 msgid "Confirm Donation"
-msgstr ""
+msgstr "Konfirmasi Donasi"
 
 #: /rinjani/app/templates/donation-confirm.html:17
 #: /media/disk/gryffindor/projects/rinjani/app/templates/donation-confirm.html:17
@@ -552,7 +594,7 @@ msgstr "Konfirmasi"
 #: /rinjani/app/templates/error.html:5
 #: /media/disk/gryffindor/projects/rinjani/app/templates/error.html:5
 msgid "Peduli"
-msgstr ""
+msgstr "Peduli"
 
 #: /rinjani/app/templates/home.html:3
 #: /rinjani/app/templates/mobile/home.html:3
@@ -562,15 +604,14 @@ msgid "Home"
 msgstr "Depan"
 
 #: /rinjani/app/templates/login-form.html:3
-#: /rinjani/app/templates/login-form.html:10
-#: /rinjani/app/templates/login-form.html:33
-#: /rinjani/app/templates/login.html:3
-#: /rinjani/app/templates/login.html:10
+#: /rinjani/app/templates/login-form.html:14
+#: /rinjani/app/templates/login-form.html:38
+#: /rinjani/app/templates/login.html:3 /rinjani/app/templates/login.html:10
 #: /rinjani/app/templates/new-user.html:14
 #: /rinjani/app/templates/register.html:14
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:3
-#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:10
-#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:33
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:14
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:38
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:14
@@ -578,42 +619,44 @@ msgstr "Depan"
 msgid "Login"
 msgstr "Masuk"
 
-#: /rinjani/app/templates/login-form.html:8
+#: /rinjani/app/templates/login-form.html:12
 #: /rinjani/app/templates/login.html:8
-#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:12
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:8
 msgid "Come on in!"
-msgstr ""
+msgstr "Ayo masuk!"
 
-#: /rinjani/app/templates/login-form.html:11
+#: /rinjani/app/templates/login-form.html:15
 #: /rinjani/app/templates/login.html:11
 #: /rinjani/app/templates/new-user.html:15
 #: /rinjani/app/templates/register.html:15
-#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:11
 #: /media/disk/gryffindor/projects/rinjani/app/templates/new-user.html:15
 #: /media/disk/gryffindor/projects/rinjani/app/templates/register.html:15
 msgid "register"
-msgstr ""
+msgstr "daftar"
 
-#: /rinjani/app/templates/login-form.html:17
-#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:17
+#: /rinjani/app/templates/login-form.html:21
+#: /media/disk/gryffindor/projects/rinjani/app/templates/login-form.html:21
 msgid "Login with Your Existing Account"
-msgstr ""
+msgstr "Login dengan akun lain"
 
 #: /rinjani/app/templates/login.html:17
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:17
 msgid "Authentication Provider"
-msgstr ""
+msgstr "Penyedia Otentikasi"
 
 #: /rinjani/app/templates/login.html:29
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:29
 msgid "Just click the button, buddy."
-msgstr ""
+msgstr "Klik aja tombolnya, bro"
 
 #: /rinjani/app/templates/login.html:31
 #: /media/disk/gryffindor/projects/rinjani/app/templates/login.html:31
-msgid "Login via one of the provider in the left. <br />After successfully logged in, we will ask some questions."
+msgid ""
+"Login via one of the provider in the left. <br />After successfully logged "
+"in, we will ask some questions."
 msgstr ""
 
 #: /rinjani/app/templates/mobile/activity.html:32
@@ -623,7 +666,7 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/mobile/activity.html:32
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-action.html:11
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: /rinjani/app/templates/mobile/modules/item.html:10
 #: /rinjani/app/templates/modules/item-user.html:6
@@ -634,42 +677,44 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item.html:10
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/user-block.html:13
 msgid "member since"
-msgstr ""
+msgstr "anggota sejak"
 
 #: /rinjani/app/templates/modules/activities-latest.html:7
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activities-latest.html:7
 msgid "Latest Activities"
-msgstr ""
+msgstr "Aktivitas Terakhir"
 
 #: /rinjani/app/templates/modules/activity-supporters.html:5
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activity-supporters.html:5
 msgid "Supporters"
-msgstr ""
+msgstr "Pendukung"
 
 #: /rinjani/app/templates/modules/activity-supporters.html:9
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/activity-supporters.html:9
-msgid "These are people/org who donate or has been approved to participate in the activity"
+msgid ""
+"These are people/org who donate or has been approved to participate in the "
+"activity"
 msgstr ""
 
 #: /rinjani/app/templates/modules/agents-featured.html:5
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/agents-featured.html:5
 msgid "Featured Org"
-msgstr ""
+msgstr "Org Pilihan"
 
 #: /rinjani/app/templates/modules/articles-latest.html:8
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/articles-latest.html:8
 msgid "Latest Articles"
-msgstr ""
+msgstr "Artikel Terbaru"
 
 #: /rinjani/app/templates/modules/comment-box.html:14
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/comment-box.html:14
 msgid "Give Comment"
-msgstr ""
+msgstr "Beri Komentar"
 
 #: /rinjani/app/templates/modules/comment-box.html:27
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/comment-box.html:27
 msgid "Login to give comment to this user"
-msgstr ""
+msgstr "Login dulu supaya bisa beri komentar"
 
 #: /rinjani/app/templates/modules/item-comment.html:19
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-comment.html:19
@@ -684,7 +729,7 @@ msgstr ""
 #: /rinjani/app/templates/modules/item-stat.html:14
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-stat.html:14
 msgid "What do you think?"
-msgstr ""
+msgstr "Menurut Anda bagaimana?"
 
 #: /rinjani/app/templates/modules/item-stat.html:23
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/item-stat.html:23
@@ -696,7 +741,7 @@ msgstr ""
 #: /media/disk/gryffindor/projects/rinjani/app/templates/tags.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/menu.html:6
 msgid "Tags"
-msgstr "Penanda"
+msgstr "Tandaan"
 
 #: /rinjani/app/templates/modules/menu.html:7
 #: /rinjani/app/templates/users.html:3
@@ -708,7 +753,7 @@ msgstr "Anggota"
 #: /rinjani/app/templates/modules/report-box.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/report-box.html:3
 msgid "Report This"
-msgstr ""
+msgstr "Laporkan"
 
 #: /rinjani/app/templates/modules/statics/intro.html:3
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/statics/intro.html:3
@@ -728,7 +773,7 @@ msgstr "Tips"
 #: /rinjani/app/templates/modules/streams.html:5
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/streams.html:5
 msgid "From the Fields"
-msgstr ""
+msgstr "Dari Lapangan"
 
 #: /rinjani/app/templates/modules/tags-suggestion.html:4
 #: /media/disk/gryffindor/projects/rinjani/app/templates/modules/tags-suggestion.html:4
@@ -755,12 +800,12 @@ msgstr ""
 #: /rinjani/app/templates/profile.html:20
 #: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:20
 msgid "Followers"
-msgstr ""
+msgstr "Pengikut"
 
 #: /rinjani/app/templates/profile.html:21
 #: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:21
 msgid "Following"
-msgstr ""
+msgstr "Ngikut"
 
 #: /rinjani/app/templates/profile.html:27
 #: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:27
@@ -773,9 +818,10 @@ msgid "Fax"
 msgstr ""
 
 #: /rinjani/app/templates/profile.html:34
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:211
 #: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:34
 msgid "Website"
-msgstr ""
+msgstr "Laman"
 
 #: /rinjani/app/templates/profile.html:50
 #: /media/disk/gryffindor/projects/rinjani/app/templates/profile.html:50
@@ -783,16 +829,20 @@ msgid "About"
 msgstr "Perihal"
 
 #: /rinjani/app/templates/public/donations.html:6
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:4
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:25
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:6
 msgid "Dashboard"
-msgstr ""
+msgstr "Dasbor"
 
 #: /rinjani/app/templates/public/donations.html:8
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:26
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:8
 msgid "messages"
 msgstr "pesan"
 
 #: /rinjani/app/templates/public/donations.html:9
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:6
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/donations.html:9
 msgid "donations"
 msgstr "donasi"
@@ -823,7 +873,9 @@ msgstr "Donasi"
 
 #: /rinjani/app/templates/public/profile-edit.html:103
 #: /media/disk/gryffindor/projects/rinjani/app/templates/public/profile-edit.html:103
-msgid "If you want to donate certain activity or organization in Peduli and would like to be blah blah blah, list your bank account here. "
+msgid ""
+"If you want to donate certain activity or organization in Peduli and would "
+"like to be blah blah blah, list your bank account here. "
 msgstr ""
 
 #: /rinjani/app/templates/register.html:3
@@ -845,3 +897,255 @@ msgstr ""
 msgid "%s tagged with <span>%s</span>"
 msgstr ""
 
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:105
+#, python-format
+msgid "Maximum %d chars"
+msgstr "Maksimal %d karakter"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:130
+msgid "Password length must be between 6-20"
+msgstr "Panjang katasandi harus antara 6-20 karakter"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:133
+msgid "Password didn't match"
+msgstr "Katasandi tidak sama"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:136
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:142
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:151
+msgid "4-9 characters of alphabets and numbers, without space"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:137
+msgid "Must be between 6 and 20 characters"
+msgstr "Harus antara 6-20 karakter"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:138
+msgid "Must be a valid email address"
+msgstr "Harus alamat email yang valid"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:142
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:151
+msgid "User Name"
+msgstr "Nama pengguna"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:143
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:158
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:195
+msgid "Password"
+msgstr "Katasandi"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:144
+msgid "Repeat password"
+msgstr "Ulangi Katasandi"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:144
+#, fuzzy
+msgid "Retype password"
+msgstr "Ulangi Katasandi"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:145
+msgid "I am a"
+msgstr "Saya itu"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:146
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:153
+msgid ""
+"I agree to <a target='_blank' href='/page/tos'>Terms of Service</a> of Peduli"
+msgstr ""
+"Saya setuju  <a target='_blank' href='/page/tos'>Syarat Layanan</a> Peduli"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:147
+msgid "Passwords didn't match"
+msgstr "Katasandi tidak cocok"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:152
+msgid "Corporate Representative"
+msgstr "Wakil Perusahaan"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:152
+msgid "Staff of Social Organization"
+msgstr "Staf Organisasi Sosial"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:157
+#, fuzzy
+msgid "Username"
+msgstr "Anggota"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:162
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:178
+msgid "Title"
+msgstr "Judul"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:163
+msgid "Start"
+msgstr "Mulai"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:164
+msgid "End"
+msgstr "Selesai"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:165
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:179
+msgid "Excerpt/Lead"
+msgstr "Ringkasan/Lead"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:167
+msgid "Amount of donation needed (Rp)"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:168
+msgid "Needs donations"
+msgstr "Butuh donasi"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:169
+msgid "Needs volunteers"
+msgstr "Butuh Relawan"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:170
+msgid "Volunteer skills needed"
+msgstr "Keahlian relawan yang diperlukan"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:171
+msgid "Enable comments"
+msgstr "Bolehkan komentar"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:172
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:181
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:212
+msgid "Must be at most six tags"
+msgstr "Maksimal enam penanda"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:190
+msgid "Slug - use alphabet, numbers, and dash (-)"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:195
+msgid "Combine alphabet with numbers"
+msgstr "Gabungkan alfabet dengan angka"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:196
+msgid "Repeat Password"
+msgstr "Ulangi Katasandi"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:202
+msgid "Full Name"
+msgstr "Nama Lengkap"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:202
+msgid "Your organization/ corporate full name, eg. ACT Dompet Dhuafa"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:203
+msgid "Describe your entity in short paragraph"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:204
+msgid "Tulis yang panjang"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:204
+msgid "Your Organization in Lengthy Words"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:205
+#, fuzzy
+msgid "Contact Person Name"
+msgstr "Kontak Kami"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:206
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:207
+msgid "Separate numbers with comma"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:208
+#, fuzzy
+msgid "Address"
+msgstr "Tambahkan"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:209
+msgid "Timezone"
+msgstr "Zona waktu"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/forms.pypo:210
+msgid "E-Mail"
+msgstr ""
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:11
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:15
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:20
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:58
+#, fuzzy
+msgid "article"
+msgstr "Artikel"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:16
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:21
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:59
+#, fuzzy
+msgid "activity"
+msgstr "Aktivitas"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:19
+msgid "New"
+msgstr "Baru"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:22
+msgid "page"
+msgstr "halaman"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:28
+#, fuzzy
+msgid "supports"
+msgstr "Pendukung"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:33
+#, fuzzy
+msgid "articles"
+msgstr "Artikel"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:34
+#, fuzzy
+msgid "activities"
+msgstr "Aktivitas"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:39
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:45
+msgid "latest"
+msgstr "terbaru"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:40
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:46
+msgid "featured"
+msgstr "Pilihan"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:41
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:47
+msgid "popular"
+msgstr "populer"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:51
+msgid "social org"
+msgstr "organisasi sosial"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:52
+msgid "sponsor"
+msgstr "pendukung"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:53
+msgid "public"
+msgstr "Publik"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/tabs.pypo:60
+#, fuzzy
+msgid "user"
+msgstr "Anggota"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/verify.html:12
+#, fuzzy
+msgid "Verify Account"
+msgstr "Akun"
+
+#: /media/disk/gryffindor/projects/rinjani/app/templates/verify.html:33
+msgid "Upload"
+msgstr ""

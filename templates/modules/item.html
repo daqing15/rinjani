@@ -5,23 +5,23 @@
             <div class="media attribution" title="{{ escape(get(user.about,""))}}">
               {{ modules.Avatar(user) }}
               <div class="bd">
-                <a href="{{user.get_url()}}">{{ user.username }}</a><br />{{ modules.UserItems(user) }} 
+                <a href="{{user.get_url()}}">{{ user.username }}</a><br />{{ modules.UserItems(user) }}
                 <span class="detail">
-                {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+                {{_('member since')}} {{ h.timesince(user.created_at)}}
                 </span>
               </div>
-          </div>        
+          </div>
       </div>
       <div class="lastUnit size5of7">
-          <div class="mod bubble bubbleLeft lol"> 
-              <b class="top"><b class="tl"></b><b class="tr"></b></b> 
+          <div class="mod bubble bubbleLeft lol">
+              <b class="top"><b class="tl"></b><b class="tr"></b></b>
               <div class="inner">
-                  <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a></h3></div>
+                  <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{h.timesince(item.created_at)}}</h3></div>
                   <div class="bd">
                     <p>{{ get(s.truncate_words(item.excerpt, 20), s.truncate_words(item.content, 15)) }}</p>
                   </div>
               </div>
-              <b class="bottom"><b class="bl"></b><b class="br"></b></b> 
+              <b class="bottom"><b class="bl"></b><b class="br"></b></b>
           </div>
       </div>
 </div>

@@ -5,7 +5,7 @@ version: 0.2
 */
 /*==== BLOCK STRUCTURES ====*/
 /* mod */
-.mod{margin:10px;}
+.mod{margin:10px; position:relative;}
 .mod .inner{/*background: url(skin/transparent.png) repeat left top;*/}
 .hd,.bd,.ft{overflow:hidden;_overflow:visible; _zoom:1;}
 .inner{position:relative;}
@@ -22,12 +22,6 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .bottom{background-position:center bottom;_zoom:1;}/* this zoom required for IE5.5 only*/
 
 .mod h3 { font-size: 125%; text-transform: lowercase; }
-.roundedX {
-	padding-left: 7px; 
-    -moz-border-radius: 7px 16px 0 7px;
-    -webkit-border-radius: 7px;
-    border-radius: 7px;
-}
 .rounded .inner { 
 -moz-border-radius: 9px 16px 0 13px;
  -webkit-border-radius: 9px 16px 0 13px;
@@ -37,9 +31,10 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 
 /*==== BLOCK SKINS ====*/
 /* ----- simple extends the mod ----- */
-
-.simple .inner { background: #ECF1D5;}
-.simple h3 { color: #777; }
+.notes { border: 1px solid #BFC423; }
+.notes .top { display: block; position: absolute; background: red;}
+.notes .inner { background: #E9ED5B;}
+.notes h3 { color: #777; }
 
 .highlight .inner { background: #FFE741;}
 .highlight h3 { color: #A39427; }

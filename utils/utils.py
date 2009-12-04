@@ -3,7 +3,6 @@ import logging
 import os
 import shutil
 import math
-from facebook import Facebook
 
 ATTACHMENT_SEPARATOR = '$'
 ATTACHMENT_FIELD_SEPARATOR = '#'
@@ -132,22 +131,6 @@ def save_user_upload(path, file_content):
     except: pass
     return False
 
-def fill_fb_data(api_key, secret_key, uid, fields, data):
-    facebook = Facebook(api_key, secret_key)
-    infos = facebook.users.getInfo(uid, fields)[0]
-    logging.warning(infos)
-    
-    for k, nk in infos.iteritems():
-        data[k] = infos[k]
-        
-    table = {'pic_square': 'avatar'}
-    for k,nk in table.iteritems():
-        if data.get(k, None):
-            data[nk] = data[k] 
-            del(data[k])
-    
-    return data
-
 def extract_input_array(d, prefix):
     input = []
     extracted = []
@@ -196,13 +179,13 @@ def calculate_cloud(tags, steps=4, distribution=LOGARITHMIC):
     one of ``tagging.utils.LOGARITHMIC`` or ``tagging.utils.LINEAR``.
     """
     if len(tags) > 0:
-        counts = [tag.count for tag in tags]
+        counts = [tag.value for tag in tags]
         min_weight = float(min(counts))
         max_weight = float(max(counts))
         thresholds = _calculate_thresholds(min_weight, max_weight, steps)
         for tag in tags:
             font_set = False
-            tag_weight = _calculate_tag_weight(tag.count, max_weight, distribution)
+            tag_weight = _calculate_tag_weight(tag.value, max_weight, distribution)
             for i in range(steps):
                 if not font_set and tag_weight <= thresholds[i]:
                     tag.font_size = i + 1

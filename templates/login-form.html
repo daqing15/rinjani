@@ -4,6 +4,10 @@
 
 {% block body %}
 
+{{ f.rendernote(f.note) }}
+
+<form method="post">
+
 <div id="subheader">
     <h2>{{ _('Come on in!') }}</h2>
     <div id="tabs">
@@ -27,21 +31,21 @@
 	</div>
 	<div class="size2of3 lastUnit">
 	   <div class="sep-left leftpadded10">
-	        <form method="post">
-	        {{ f.render_css() }}
+	        
+            {{ modules.Formfield(f.username) }}
+            {{ modules.Formfield(f.password) }}
 	        <div class="buttons">
 	            <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
 	            <input type="hidden" name="next" value="{{ next }}" />
 	        </div>
-	          {{ xsrf_form_html() }}
-	        </form>
 	        <script type="text/javascript">
 	            $('input[name=username]').focus();
 	        </script>
             <p class="small">try apitoh/hermione or phajero/hermione</p>
 	    </div>
     </div>
-    
 </div>
 
+{{ xsrf_form_html() }}
+            </form>
 {% end %}

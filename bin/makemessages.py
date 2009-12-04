@@ -1,7 +1,7 @@
 #!/usr/bin/python -W ignore::DeprecationWarning
 
 import re, os, sys
-from tornado.options import define, options, parse_command_line, print_help
+from tornado.options import define, options, parse_command_line
 
 def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
     
@@ -9,7 +9,7 @@ def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
     match = re.search(r'(?P<major>\d+)\.(?P<minor>\d+)', stdout.read())
     
     if match:
-        extensions = ['.html'] if not extensions else extensions
+        extensions = ['.html', '.py', '.pypo'] if not extensions else extensions
         
         outdir = os.path.join(basedir, outdir)
         srcdir = os.path.join(basedir, srcdir)
@@ -24,10 +24,11 @@ def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
             all_files.extend([(dirpath, f) for f in filenames])
         all_files.sort()
         
+        sys.stdout.write("Updating translation string...\n")
         for dirpath, file in all_files:
             _file_base, file_ext = os.path.splitext(file)
             
-            if file_ext == '.py' or file_ext in extensions:
+            if file_ext in extensions:
                 cmd = 'xgettext  -L Python -F  -w=20 --omit-header --from-code UTF-8 -f /tmp/list --debug -o - "%s"' %  os.path.join(dirpath, file)
                 if verbose:
                     sys.stdout.write('processing %s\n' % os.path.join(dirpath, file))
@@ -62,6 +63,7 @@ def convert_to_csv(pofile):
     lines = open(pofile).readlines()
     clines, msgid, in_msg = [], [], False
     
+    sys.stdout.write("Converting .po to .csv...\n")
     for line in lines:
         if line.startswith("#: "):
             continue
@@ -85,17 +87,17 @@ def convert_to_csv(pofile):
     open(output, "wb").write("".join(clines))
     
 
-define("locale", default='id_ID')
-define("basedir", default='')
-define("srcdir", default='templates')
-define("outdir", default='translations')
-define("verbose", default=False, type=bool)
-define("ext", default='.html',help="Extensions of file to process (eg. html,js)",multiple=True)
-args = parse_command_line()
-                          
 if __name__ == "__main__":
-    basedir = os.path.abspath(os.path.curdir) if not options.basedir else options.basedir
+    define("locale", default='id_ID')
+    define("basedir", default='')
+    define("srcdir", default='templates')
+    define("outdir", default='translations')
+    define("verbose", default=False, type=bool)
+    define("ext", default=[],help="Extensions of file to process (eg. .html,.js)",multiple=True)
+    args = parse_command_line()
     
+    basedir = os.path.curdir if not options.basedir else options.basedir
+    basedir = os.path.abspath(basedir)
     cmd = set(args).pop() if args else 'makemessage'
     if cmd == 'makemessage':
         make_messages(options.locale, basedir, options.srcdir, options.outdir, options.ext, options.verbose)

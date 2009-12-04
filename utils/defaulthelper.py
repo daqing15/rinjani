@@ -14,6 +14,7 @@
 # under the License.
 
 from settings import IMAGE_CONTENT_TYPES
+import itertools
 
 _base_js_escapes = (
     ('\\', r'\x5C'),
@@ -55,7 +56,7 @@ def time(dt, format=""):
     return dt.strftime("")
 
 def alternate(items):
-    return items[0]
+    return itertools.cycle(items)
 
 def get(val, default):
     return val or default
@@ -64,7 +65,7 @@ def groups(seq, size):
     if not hasattr(seq, 'next'):  
             seq = iter(seq)
     while True: 
-        yield [seq.next() for i in range(size)]
+        yield [seq.next() for _i in range(size)]
         
 def group(seq, size): 
     """
@@ -76,7 +77,7 @@ def group(seq, size):
         seq = iter(seq)
     while True: 
         x = []
-        for i in range(size):
+        for _i in range(size):
             try:
                 x.append(seq.next())
             except: pass 

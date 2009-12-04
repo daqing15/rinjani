@@ -4,16 +4,28 @@
 
 {% block body %}
 
-{{ modules.Tabs('tags', tab) }}
+{{ modules.Tabs('tags', tab, _('%s tagged with <span>%s</span>' % (tab.title(), tag))) }}
 
-<div class="items line">
-{% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% for article in pagination.get_objects() %}
-    <div class="unit size1of2 {{h.alternate(c)}}">
-        {{ modules.ItemSummary(article) }}
-    </div>
+{% if pagination.get_objects().count() %}
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
+    {% set col = 3 if tab == 'user' else 2 %}
+    {% for group in h.group(pagination.get_objects(), col) %}
+        <div class="items line">
+        {% for i, item in enumerate(group) %}
+            {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
+            <div class="{{ unit }} size1of{{col}} {{c.next()}}">
+                {% if tab == 'user' %}
+                    {{ modules.ItemSummary(item, 'modules/item-user') }}
+                {% else %}
+                    {{ modules.ItemSummary(item) }}
+                {% end %}
+            </div>
+        {% end %}
+        </div>
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
 {% end %}
-</div>
 
 <p class="clear"></p>
 

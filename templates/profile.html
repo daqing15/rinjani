@@ -12,8 +12,9 @@
     <div class="unit size1of3">
         <div id="userblock">{{ modules.UserBlock(user) }}</div>
         
-         <div class="mod"><div class="inner"><div class="bd">
-            {% if need_infotab or user.followers or user.following %}
+        {% if need_infotab or user.followers or user.following %}
+         <div class="mod simple">
+            <div class="inner"><div class="bd">
             
             <ul class="vtabs"> 
                 {% if need_infotab %}<li><a href="#">{{_('Info')}}</a></li>{% end %} 
@@ -42,8 +43,9 @@
                     {{ modules.UsersThumbs(user.following, 'Following') }}
                 </div>
             </div>
-            {% end %}
-         </div></div></div>
+         </div></div>
+         </div>
+         {% end %}
     </div>
     <div class="lastUnit size2of3">
         <div class="cb">

@@ -6,19 +6,35 @@
 
 {{ modules.Tabs('profile_public', type, fullname=get(user.fullname, user.username), username=user.username) }}
 
-<div class="items line">
-{% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% for item in pagination.get_objects() %}
-    <div class="unit size1of2 {{h.alternate(c)}}">
-        {{ modules.ItemSummary(item) }}
-    </div>
+{% if pagination.get_objects().count() %}
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
+    {% for group in h.group(pagination.get_objects(), 3) %}
+        <div class="items line">
+        {% for i, item in enumerate(group) %}
+            {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
+            <div class="{{ unit }} size1of3 {{c.next()}}">
+                  <div class="mod bubble bubbleLeft lol">
+                      <b class="top"><b class="tl"></b><b class="tr"></b></b>
+                      <div class="inner">
+                          <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{h.timesince(item.created_at)}}</h3></div>
+                          <div class="bd">
+                            <p>{{ get(s.truncate_words(item.excerpt, 20), s.truncate_words(item.content, 15)) }}</p>
+                          </div>
+                      </div>
+                      <b class="bottom"><b class="bl"></b><b class="br"></b></b>
+                  </div>
+            </div>
+        {% end %}
+        </div>
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
 {% end %}
-</div>
 
 <p class="clear"></p>
 
 {{ pagination }}
-    
+
 
 {% end %}
 

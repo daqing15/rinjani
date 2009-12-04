@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% set title = 'edit article' if article.slug else 'new article' %}
+{% set title = _('edit article') if article.slug else _('new article') %}
 {{ title.title() }}{% end %}
 
 {% block body %}

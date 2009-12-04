@@ -2,7 +2,7 @@
 
 SUPERVISORD=/usr/local/bin/supervisord
 PIDFILE=/var/run/supervisord.pid
-OPTS="-c /etc/supervisord.conf"
+OPTS="-c /rinjani/app/conf/supervisord.conf"
 
 test -x $SUPERVISORD || exit 0
 

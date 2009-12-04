@@ -13,16 +13,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import re
 import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
-from pymongo.errors import ConnectionFailure, AutoReconnect
 from utils.mod import get_mod_handler, import_module
+
+import uimodules
+from urls import url_handlers
+
+def get_settings():
+    import settings
+    return dict([(varname,getattr(settings,varname))
+         for varname in dir(settings)
+         if not varname.startswith("_") ])
+
+app_settings = get_settings()
 
 class ErrorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, status_code, message=""):
         self.message = message
-        self.status_code = self.set_status(status_code)
+        self.status_code = status_code
         super(ErrorHandler, self).__init__(application, request)
     
     def get_error_html(self, status_code):
@@ -42,12 +52,17 @@ class MissingHandler(ErrorHandler):
     def __init__(self, application, request, transforms=None):
         super(MissingHandler, self).__init__(application, request, 404)
     
-class BaseApplication(tornado.web.Application):
+class Application(tornado.web.Application):
+    def __init__(self, options):
+        app_settings['ui_modules'] = uimodules
+        app_settings['is_mobile_site'] = bool(options.mobile)
+        super(Application, self).__init__(url_handlers, **app_settings)
+        self.handlers[0][1].append((re.compile(r'/(.+)$'), MissingHandler, {}))
+        
     def __call__(self, request):
         """
         Called by HTTPServer to execute the request.
         monkey-patched to allow handler to be string, not class
-        plus handle MongoDB connection error
         """
         transforms = [t(request) for t in self.transforms]
         handler = None
@@ -63,17 +78,13 @@ class BaseApplication(tornado.web.Application):
                 match = pattern.match(request.path)
                 if match:
                     if not callable(handler_class):
-                        try:
-                            mod_name, handler_classname = get_mod_handler(handler_class)
-                            handler_class = import_module(mod_name, handler_classname)
-                            handler = handler_class(self, request, **kwargs)
-                        except (AutoReconnect, ConnectionFailure):
-                            handler = ErrorHandler(self, request, 500, "Database Connection Error")
-                            
+                        mod_name, handler_classname = get_mod_handler(handler_class)
+                        handler_class = import_module(mod_name, handler_classname)
+                        handler = handler_class(self, request, **kwargs)
                     args = match.groups()
                     break
             if not handler:
-                handler = ErrorHandler(self, request, 404)
+                handler = MissingHandler(self, request)
         
         # force debug if ip in registered remote debugger ips
         if self.settings.get("debug_ip", None):
@@ -90,3 +101,4 @@ class BaseApplication(tornado.web.Application):
             
         return handler
     
+

@@ -62,6 +62,29 @@ class AccountHandler(BaseHandler):
         except: pass
         self.render('account', f=f)
 
+class VerifyHandler(BaseHandler):
+    @authenticated(['agent', 'sponsor'])
+    def get(self):
+        f = account_form()
+        self.render('verify', f=f)
+
+    @authenticated(['agent', 'sponsor'])
+    def post(self):
+        f = account_form()
+        data = self.get_arguments()
+        user = self.current_user
+        try:
+            if f.validates(Storage(data)):
+                if data.get('password', None):
+                    data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
+                    user.save(data)
+                    self.set_flash("Your password has been changed.")
+                    self.redirect("/account")
+                    return
+            raise InvalidFormDataError("Form still have errors.")
+        except: pass
+        self.render('verify', f=f)
+        
 class EditHandler(BaseHandler):
     @authenticated()
     def get(self):

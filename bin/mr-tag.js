@@ -15,7 +15,7 @@ r = function(key, values) {
 };
 
 
-var tagCols = ['articles', 'activities'];
+var tagCols = ['articles', 'activities', 'users'];
 output = []
 db.tags_.drop();
 tagCols.forEach(function(col) {

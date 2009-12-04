@@ -7,10 +7,11 @@
 {{ modules.Tabs('tags', tab) }}
 
 <div class="cb">
-{% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% set items = pagination.get_objects(sort_by='_id', sort_order=1) %}
+
+{% set items = pagination.get_objects() %}
 
 {% if items.count() %}
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
     <div class="line">
         <ul class="tags">
             {% for tag in items %}
@@ -20,8 +21,9 @@
     </div>
     <p class="clear"></p>
     {{ pagination }}
-
-{% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
+{% end %}  
 
 </div>
 

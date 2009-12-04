@@ -29,7 +29,7 @@ PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
 
 class ListHandler(BaseHandler):
     def get(self):
-        pagination = Pagination(self, Activity, {'status':u'published'}, 2)
+        pagination = Pagination(self, Activity, {'status':u'published'})
         self.render('activities', pagination=pagination)
 
 class ViewHandler(BaseHandler):
@@ -41,7 +41,7 @@ class ViewHandler(BaseHandler):
         self.render("activity", activity=activity)
 
 class EditHandler(BaseHandler):
-    @authenticated(['agent', 'sponsor'])
+    @authenticated(['agent', 'sponsor'], False, True)
     def get(self, slug=None):
         f = activity_form()
         if slug:
@@ -62,27 +62,27 @@ class EditHandler(BaseHandler):
         else:
             activity = Activity()
         self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
-    
-    @authenticated(['agent', 'sponsor'])
+
+    @authenticated(['agent', 'sponsor'], False, True)
     def post(self):
         f = activity_form()
         data = self.get_arguments()
         is_edit = data.has_key('is_edit')
-        
+
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
-                data['attachments'] = parse_attachments(data['attachments'], is_edit)   
-                
+                data['attachments'] = parse_attachments(data['attachments'], is_edit)
+
             if f.validates(Storage(data)):
                 activity = Activity.one({'slug': data['slug']}) if is_edit else Activity()
                 activity.save(data, user=self.get_current_user())
-                
+
                 if attachments and not is_edit:
                     activity['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     activity.update_html()
                     activity.save()
-                    
+
                 self.set_flash("Activity has been saved.")
                 url =  activity.get_url() if activity.status == 'published' else '/dashboard'
                 self.redirect(url)
@@ -98,16 +98,16 @@ class EditHandler(BaseHandler):
                 activity['attachments'] = data['attachments']
             f.note = f.note if f.note else e
             self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
-        
+
 
 class RemoveHandler(BaseHandler):
     def post(self, slug):
         activity = Activity.one({"slug": slug})
         if not activity:
             raise tornado.web.HTTPError(404)
-        
+
         #activity.delete()
         activity.status = u'deleted'
         activity.save()
         self.set_flash("That activity has been removed")
-        self.redirect("/activities")        
+        self.redirect("/activities")

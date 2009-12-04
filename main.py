@@ -1,49 +1,31 @@
 #!/usr/bin/python
-
 import os.path
 import sys
-
 DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path = [ DIR, os.path.join(DIR, "lib") ] + sys.path
 
-import re
 import tornado.httpserver
 import tornado.ioloop
 import tornado.locale
-import tornado.options
+from tornado.options import define, options, parse_command_line
 
-from application import BaseApplication, MissingHandler
-import uimodules
-from urls import url_handlers
+from application import Application
 
-def get_settings():
-    import settings
-    return dict([(varname,getattr(settings,varname))
-         for varname in dir(settings)
-         if not varname.startswith("_") ])
+define("host", default='127.0.0.1', help="run on the given host (default 127.0.0.1)", type=str)
+define("port", default=9999, help="run on the given port", type=int)
+define("mobile", default=False, help="is this a mobile-site frontend?", type=bool)
+args = parse_command_line()
 
-app_settings = get_settings()
-
-# we'll run one app per core
-from tornado.options import define, options
-define("port", default=app_settings.get('PORT', 8888), help="run on the given port", type=int)
-define("mobile", default=app_settings.get('MOBILE', False), help="is this a mobile-site frontend?", type=int)
-tornado.options.parse_command_line()
-
-class Application(BaseApplication):
-    def __init__(self):
-        app_settings['ui_modules'] = uimodules
-        app_settings['is_mobile_site'] = bool(options.mobile)
-        super(Application, self).__init__(url_handlers, **app_settings)
-
-app = Application()
-tornado.locale.load_translations(os.path.join(os.path.dirname(__file__), "translations"))
-
-def main():
-    app.handlers[0][1].append((re.compile(r'/(.+)$'), MissingHandler, {}))
+def runserver():
+    tornado.locale.load_translations(\
+        os.path.join(os.path.dirname(__file__), "translations"))
+    
+    app = Application(options)
     http_server = tornado.httpserver.HTTPServer(app)
-    http_server.listen(options.port)
+    http_server.listen(options.port, options.host)
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":
-    main()
+    runserver()
+    
+    

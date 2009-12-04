@@ -6,14 +6,21 @@
 
 {{ modules.Tabs('articles', 'latest') }}
 
-<div class="items line">
-{% set c = ['rodd','rodd', 'reven', 'reven'] %}
-{% for article in pagination.get_objects() %}
-    <div class="unit size1of2 {{h.alternate(c)}}">
-        {{ modules.ItemSummary(article) }}
-    </div>
+{% if pagination.get_objects().count() %}
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
+    {% for group in h.group(pagination.get_objects(),2) %}
+        <div class="items line">
+        {% for i, item in enumerate(group) %}
+            {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
+            <div class="{{ unit }} size1of2 {{c.next()}}">
+                {{ modules.ItemSummary(item) }}
+            </div>
+        {% end %}
+        </div>
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
 {% end %}
-</div>
 
 <p class="clear"></p>
 

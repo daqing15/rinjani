@@ -50,9 +50,11 @@ class LoginFormHandler(BaseHandler):
     def post(self):
         username = self.get_argument('username', '')
         password_hashed = hashlib.sha1(self.get_argument('password', '')).hexdigest()
+
         f = login_form()
         user = User.one({'username': username, 'password_hashed': password_hashed})
-        f.validators = [web.form.Validator("The username or password you entered is incorrect", lambda x: bool(user))]
+        f.add_notnull_validator(user, "The username or password you entered is incorrect")
+
         next = self.get_argument('next', '/dashboard')
         if f.validates(Storage(self.get_arguments())):
             self.set_secure_cookie("username", username)
@@ -63,6 +65,14 @@ class LoginFormHandler(BaseHandler):
         else:
             self.render("login-form", f=f, next=next)
 
+class LogoutHandler(BaseHandler, tornado.auth.FacebookMixin):
+    def get(self):
+        loc = self.get_cookie('loc')
+        self.clear_all_cookies()
+        if loc:
+            self.set_cookie('loc', loc)
+        self.set_flash("You are logged out now")
+        self.redirect("/")
 
 class RegisterHandler(BaseHandler):
     def get(self):
@@ -73,24 +83,23 @@ class RegisterHandler(BaseHandler):
         f = register_form()
         data = self.get_arguments()
 
-        if data.has_key('username'):
-            user = User.one({'username': data['username']})
-            f.validators.append(web.form.Validator("The username you wanted is already taken",
-                                lambda x: not bool(user)) )
+        if False and data.has_key('username'):
+            existing_user = User.one({'username': data['username']})
+            f.add_notnull_validator(not existing_user, "The username you wanted is already taken.")
 
         try:
             if f.validates(Storage(data)):
-                logging.error(data)
                 new_user = User()
                 data['is_admin'] = False
                 data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
                 data['auth_provider'] = u'form'
                 new_user.save(data)
-                self.set_flash("You have been successfully registered. You can log in now.")
-                self.redirect("/login-form")
+                self.set_flash("You have been successfully registered. ")
+                self.redirect("/")
                 return
             raise InvalidFormDataError("Form still have errors.")
         except Exception, e:
+            raise
             f.note = f.note if f.note else e
             self.render("register", f=f)
 
@@ -104,10 +113,10 @@ class NewUserHandler(BaseHandler):
     def post(self):
         f = new_user_form()
         user_cookie = self.get_secure_cookie("user")
-        
+
         if not user_cookie:
             raise tornado.web.HTTPError(403, "Authentication cookie does not exists. Please enable Cookie in your browser.")
-        
+
         data = self.get_arguments()
         user = tornado.escape.json_decode(user_cookie)
         if data.has_key('username'):
@@ -146,7 +155,7 @@ class AuthMixin(object):
 
         self.set_secure_cookie("username", peduli_user['username'])
         self.redirect(self.get_argument("next", "/"))
-    
+
 class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
     @tornado.web.asynchronous
     def get(self):
@@ -154,7 +163,7 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
         self.authorize_redirect(['email', 'offline_access'])
-    
+
     def get_authenticated_user(self, callback):
         self.require_setting("facebook_api_key", "Facebook Connect")
         session = tornado.escape.json_decode(self.get_argument("session"))
@@ -166,15 +175,15 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
             uids=session["uid"],
             fields="uid,name,locale,pic_square," \
                    "profile_url,username,website,proxied_email,birthday_date,timezone")
-    
+
     def _on_get_user_info(self, callback, session, users):
         if not users:
             raise tornado.web.HTTPError(500, "Authentication failed")
-        
+
         if users is None:
             callback(None)
             return
-        
+
         logging.warning(users)
         callback({
             "auth_provider": "facebook",
@@ -186,7 +195,7 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
             "website": users[0]["website"],
             "birthday_date": users[0]["birthday_date"],
         })
-        
+
 class GoogleLoginHandler(BaseHandler, AuthMixin, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
     def get(self):
@@ -194,11 +203,11 @@ class GoogleLoginHandler(BaseHandler, AuthMixin, tornado.auth.GoogleMixin):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
         self.authenticate_redirect()
-    
+
     def _on_auth(self, user):
         if not user:
             raise tornado.web.HTTPError(500, "Authentication failed")
-        
+
         logging.warning(user)
         super(GoogleLoginHandler, self)._on_auth(
             {
@@ -207,13 +216,38 @@ class GoogleLoginHandler(BaseHandler, AuthMixin, tornado.auth.GoogleMixin):
                 'fullname': user['name']
             }
         )
-        
+
+class TwitterLoginHandler(BaseHandler, AuthMixin, tornado.auth.TwitterMixin):
+    @tornado.web.asynchronous
+    def get(self):
+        if self.get_argument("oauth_token", None):
+            self.get_authenticated_user(self.async_callback(self._on_auth))
+            return
+        self.authorize_redirect()
+
+    def _on_auth(self, user):
+        if not user:
+            raise tornado.web.HTTPError(500, "Authentication failed")
+        logging.warning(user)
+        super(TwitterLoginHandler, self)._on_auth(
+            {
+                'auth_provider': 'twitter',
+                'uid': user['username'],
+                'access_token': user['access_token'],
+                'about': user['description'],
+                'timezone': user['time_zone'],
+                'avatar': user['profile_image_url'],
+                'website': user['url']
+            }
+        )
+
+
 class YahooMixin(tornado.auth.OAuthMixin):
     _OAUTH_REQUEST_TOKEN_URL = "https://api.login.yahoo.com/oauth/v2/get_request_token"
     _OAUTH_ACCESS_TOKEN_URL = "https://api.login.yahoo.com/oauth/v2/get_token"
     _OAUTH_AUTHORIZE_URL = "https://api.login.yahoo.com/oauth/v2/request_auth"
     OAUTH_NO_CALLBACKS = True
-    
+
     def _oauth_request_token_urlX(self):
         consumer_token = self._oauth_consumer_token()
         url = self._OAUTH_REQUEST_TOKEN_URL
@@ -228,7 +262,7 @@ class YahooMixin(tornado.auth.OAuthMixin):
         signature = tornado.auth._oauth_signature(consumer_token, "GET", url, args)
         args["oauth_signature"] = signature
         return url + "?" + urllib.urlencode(args)
-    
+
     def _oauth_access_token_url(self, request_token):
         consumer_token = self._oauth_consumer_token()
         url = self._OAUTH_ACCESS_TOKEN_URL
@@ -245,14 +279,14 @@ class YahooMixin(tornado.auth.OAuthMixin):
                                      request_token)
         args["oauth_signature"] = signature
         return url + "?" + urllib.urlencode(args)
-    
+
     def _oauth_consumer_token(self):
         self.require_setting("YAHOO_API_KEY", "Yahoo OAuth")
         self.require_setting("YAHOO_SECRET", "Yahoo OAuth")
         return dict(
             key=self.settings["YAHOO_API_KEY"],
             secret=self.settings["YAHOO_SECRET"])
-    
+
     def yahoo_request(self, url, callback, access_token=None,
                            post_args=None, **args):
         # Add the OAuth resource request signature if we have credentials
@@ -264,7 +298,7 @@ class YahooMixin(tornado.auth.OAuthMixin):
             oauth = self._oauth_request_parameters(
                 url, access_token, all_args, method=method)
             args.update(oauth)
-        
+
         args = args if args else {}
         args.update({'format': 'json'})
         url += "?" + urllib.urlencode(args)
@@ -275,7 +309,7 @@ class YahooMixin(tornado.auth.OAuthMixin):
                        callback=callback)
         else:
             http.fetch(url, callback=callback)
-    
+
     def _on_yahoo_request(self, callback, response):
         if response.error:
             logging.warning("Error response %s fetching %s", response.error,
@@ -283,7 +317,7 @@ class YahooMixin(tornado.auth.OAuthMixin):
             callback(None)
             return
         callback(tornado.escape.json_decode(response.body))
-        
+
     def _oauth_get_user(self, access_token, callback):
         callback = self.async_callback(self._parse_user_response, callback)
         logging.error(access_token)
@@ -295,7 +329,7 @@ class YahooMixin(tornado.auth.OAuthMixin):
         if user:
             user["username"] = user["nickname"]
         callback(user)
-        
+
 class YahooLoginHandler(BaseHandler, AuthMixin, YahooMixin):
     @tornado.web.asynchronous
     def get(self):
@@ -308,7 +342,7 @@ class YahooLoginHandler(BaseHandler, AuthMixin, YahooMixin):
         if not user:
             logging.error(self.get_arguments())
             raise tornado.web.HTTPError(500, "Authentication failed")
-        
+
         logging.warning(user)
         super(GoogleLoginHandler, self)._on_auth(
             {
@@ -317,36 +351,5 @@ class YahooLoginHandler(BaseHandler, AuthMixin, YahooMixin):
                 'fullname': user['nickname']
             }
         )
-        
-class TwitterLoginHandler(BaseHandler, AuthMixin, tornado.auth.TwitterMixin):
-    @tornado.web.asynchronous
-    def get(self):
-        if self.get_argument("oauth_token", None):
-            self.get_authenticated_user(self.async_callback(self._on_auth))
-            return
-        self.authorize_redirect()
-    
-    def _on_auth(self, user):
-        if not user:
-            raise tornado.web.HTTPError(500, "Authentication failed")
-        logging.warning(user)
-        super(TwitterLoginHandler, self)._on_auth( 
-            {
-                'auth_provider': 'twitter',
-                'uid': user['username'],
-                'access_token': user['access_token'],
-                'about': user['description'],
-                'timezone': user['time_zone'],
-                'avatar': user['profile_image_url'],
-                'website': user['url']
-            }
-        )
-    
-class LogoutHandler(BaseHandler, tornado.auth.FacebookMixin):
-    def get(self):
-        loc = self.get_cookie('loc')
-        self.clear_all_cookies()
-        if loc:
-            self.set_cookie('loc', loc)
-        self.redirect(self.get_argument("next", "/"))
+
 

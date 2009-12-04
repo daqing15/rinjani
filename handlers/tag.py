@@ -13,8 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from itertools import islice
-
 from main import BaseHandler, authenticated
 import models
 from models import User, Article, Activity, Vote, ArticleTag, ActivityTag, UserTag
@@ -23,9 +21,9 @@ from settings import MY_FLAGS
 
 class ListHandler(BaseHandler):
     def get(self):
-        t = self.get_argument('tab', 'article')
+        t = self.get_argument('tab', 'activity')
         doc = ArticleTag if t == 'article' else ActivityTag if t == 'activity' else UserTag
-        pagination = Pagination(self, doc, {})
+        pagination = Pagination(self, doc, {}, sort_by='_id', sort=1)
         self.render('tags', pagination=pagination, tab=t)
 
 class ViewHandler(BaseHandler):
@@ -33,7 +31,7 @@ class ViewHandler(BaseHandler):
         t = self.get_argument('t', 'article')
         doc = Article if t == 'article' else Activity if t == 'activity' else User
         pagination = Pagination(self, doc, {'tags': tag})
-        self.render('tag-view', tab=t, pagination=pagination)
+        self.render('tag-view', tab=t, tag=tag, pagination=pagination)
         
 class FlagHandler(BaseHandler):
     @authenticated()

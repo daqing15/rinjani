@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Account')}}{% end %}
+
+{% block body %}
+
+<form method="post" class="withtips">
+
+{{ f.rendernote(f.note) }}
+
+<div id="subheader">
+    <h2>{{ _('Verify Account') }}</h2>
+    <div id="tabs">
+        <a href="{{BP}}/profile/edit">{{ _('profile') }}</a>
+        <a href="{{BP}}/account">{{ _('account') }}</a>
+    </div>
+</div>
+
+<div class="leftpadded10">
+
+<div class="line" style="width: 70%">
+    <div class="unit size1of2">
+        <p>We need you to blah blah so that blah blah</p>
+    </div>
+    <div class="lastUnit size1of2">
+    </div>
+</div>    
+
+<script type="text/javascript">
+    $('input[name=password]').focus();
+</script>
+<div class="buttons">
+<button class="submit" name="action" value="change"><span><span>{{_('Upload')}}</span></span></button>
+</div>
+</div>
+
+
+{{ xsrf_form_html() }}
+
+</form>
+
+{% end %}
+
+
+

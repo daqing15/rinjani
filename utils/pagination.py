@@ -1,53 +1,54 @@
 """
 Adapted from solace.utils.pagination
 """
-
+import urllib
 import math
 from tornado.web import HTTPError
-from werkzeug import url_encode
 
 class Pagination(object):
     """Pagination helper."""
 
-    threshold = 3
-    left_threshold = 3
-    right_threshold = 1
+    threshold = 6
+    left_threshold = 4
+    right_threshold = 3
     normal = u'<a href="%(url)s">%(page)d</a>'
     active = u'<strong>%(page)d</strong>'
     commata = u'<span class="commata">,\n</span>'
     ellipsis = u'<span class="ellipsis">...\n</span>'
 
-    def __init__(self, req, doc_class, query, per_page=15, link_func=None):
+    def __init__(self, req, doc_class, query=None, per_page=16, link_func=None, sort_by='created_at', sort=-1):
+        self.query = {} if query is None else query
         self.page = int(req.get_argument('page', 1))
         self.doc_class = doc_class
-        self.query = query
         self.per_page = per_page
-        
+        self.sort_by = sort_by
+        self.sort = sort
+
         self.translate = req.locale.translate
         self.pages = int(math.ceil(self.total / float(per_page)))
         self.necessary = self.pages > 1
-        
+
         if link_func is None:
             link_func = lambda x: '?page=%d' % self.page
             url_args = req.get_arguments()
             def link_func(page):
                 url_args['page'] = page
-                return u'?' + url_encode(url_args)
+                return u'?' + urllib.urlencode(url_args)
         self.link_func = link_func
-    
+
     @property
     def total(self):
         return self.doc_class.all(self.query).count()
-        
+
     def __str__(self):
         return str(self.__unicode__())
-    
+
     def __unicode__(self):
         if not self.necessary:
             return u''
         return u'<div class="pagination">%s</div>' % self.generate()
 
-    def get_objects(self, sort_by='created_at', sort_order=-1, raise_not_found=True):
+    def get_objects(self, raise_not_found=True):
         """Returns the objects for the page."""
         if raise_not_found and self.page < 1:
             raise HTTPError(404)
@@ -58,8 +59,8 @@ class Pagination(object):
             rv = self.doc_class.all(self.query) \
                 .skip(self.offset)\
                 .limit(self.per_page) \
-                .sort(sort_by, sort_order)
-                
+                .sort(self.sort_by, self.sort)
+
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()
         return rv
@@ -101,22 +102,22 @@ class Pagination(object):
                           (self.link_func(next), _(u'Next &gt;')))
 
         return u''.join(result)
-    
+
 class ListPagination(Pagination):
-    def __init__(self, req, objects, per_page=15, link_func=None):
+    def __init__(self, req, objects, per_page=16, link_func=None):
         self.objects = objects
         super(ListPagination, self).__init__( \
                 req, object, {}, per_page, link_func)
-    
+
     @property
     def total(self):
         return len(self.objects)
-    
+
     def get_objects(self):
         from itertools import islice
         return islice(
-                iter(self.objects), 
-                self.offset, 
+                iter(self.objects),
+                self.offset,
                 self.offset + self.per_page
             )
-            
+

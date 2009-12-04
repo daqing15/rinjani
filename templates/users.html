@@ -7,21 +7,12 @@
 {{ modules.Tabs('users', tab) }}
 
 <div class="line">
-{% set c = ['rodd','rodd', 'reven', 'reven'] %}
 
 {% if pagination.get_objects().count() %}
-
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
     {% for user in pagination.get_objects() %}
-    <div class="unit size1of3 {{h.alternate(c)}}">
-           <div class="media attribution" title="{{ escape(get(user.about, '')) }}">
-              {{ modules.Avatar(user) }}
-              <div class="bd">
-                <a href="{{user.get_url()}}">{% if user.fullname %}{{ user.fullname}} ({{user.username}}) {% else %} {{ get(user.fullname, user.username) }}{% end %}</a> {{ modules.UserItems(user) }} 
-                <span class="detail">
-                {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
-                </span>
-              </div>
-          </div>      
+    <div class="unit size1of3 {{c.next()}}">
+           {{ modules.ItemSummary(user, 'modules/item-user') }}
     </div>
     {% end %}
 {% else %}
