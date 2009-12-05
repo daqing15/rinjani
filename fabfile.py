@@ -1,6 +1,6 @@
-from fabric.api import *
+from fabric.api import env, local, run
 
-def setup():
+def _setup():
     env.hosts = ['user@obscurite.ind.ws']
     env.mongo = '/opt/devel/mongodb/bin/mongo'
 
@@ -11,8 +11,11 @@ def setup():
     env.envi = 'production'
     env.db = 'peduli'
 
-setup()
+_setup()
 
+def stat():
+    run("uptime; free; supervisorctl status")
+    
 def tag():
     run("%s %s %s/bin/mr-tag.js" % (env.mongo, env.db, env.remotedir))
 
@@ -24,18 +27,23 @@ def rebuilddb():
 def restart_supervisor():
     run("killall supervisord && supervisord")
 
+def restart_app():
+    run("supervisorctl restart 'app:*'")
 
 def backup():
     run("tar -czf /rinjani/var/backup/%s_`date +%%y_%%m_%%d_%%H`.tar.gz %s" % (env.envi, env.remotedir))
 
-def sync(path):
+def mergecss():
+    local("cd %s/static/css && cat app.css mod.css uicomponents.css > /tmp/peduli.css && yuic /tmp/peduli.css > %s/static/css/peduli.css" %(env.localdir, env.localdir) )
+
+def _sync(path):
     local("rsync -rzvh %s/%s %s:%s/%s" % (env.localdir, path, env.hosts[0], env.remotedir, path))
 
 def synctemplates():
-    sync('templates/')
+    _sync('templates/')
 
 def synclib():
-    sync('lib/')
+    _sync('lib/')
 
-def stat():
-    run("uptime; free; supervisorctl status")
+def syncapp():
+    _sync('')
