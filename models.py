@@ -5,11 +5,12 @@ import markdown2
 
 import tornado.web
 from mongokit import DBRef, MongoDocument, IS, OR, SchemaTypeError
-from settings import DB, USERTYPE as _USERTYPE
+from settings import DB, USERTYPE as _USER_TYPE
 from utils.string import force_unicode, listify, sanitize, slugify
 from utils.inline import processor, AttachmentInline, SlideshowInline
 
-USERTYPE = dict(_USERTYPE).keys()
+USER_TYPE = dict(_USER_TYPE).keys()
+CONTENT_TYPE = {'ART':'article', 'ACT':'activity', 'PAG': 'page'}
 
 class EditDisallowedError(Exception): pass
 
@@ -21,8 +22,6 @@ class BaseDocument(MongoDocument):
     structure = {}
     sanitized_fields = []
 
-    #def save(self, uuid=True, validate=True, safe=True, *args, **kwargs):
-    #    super(BaseDocument, self).save(uuid, validate, safe, *args, **kwargs)
     def check_edit_permission(self, user):
         if user['_id'] == self['author']['_id'] or user['is_admin']:
             return True
@@ -36,10 +35,10 @@ class BaseDocument(MongoDocument):
             elif t is list and self[k]:
                 self[k] = ', '.join(self[k])
             elif t is datetime.datetime:
-                if self[k] and type(self[k]) is datetime.datetime:
+                if self.has_key(k) and type(self[k]) is datetime.datetime:
                     self[k] = self[k].strftime('%d/%m/%Y')
 
-            if self[k] is None:
+            if self.has_key(k) and self[k] is None:
                 self[k] = ""
 
     def populate(self, data):
@@ -103,7 +102,7 @@ class User(BaseDocument):
         'access_token': unicode, #fb=session_key
         'auth_provider': IS(u'facebook', u'google', u'twitter', u'form'),
         'status': IS(u'active', u'disabled', u'deleted'),
-        'type': IS(*USERTYPE),
+        'type': IS(*USER_TYPE),
         'is_admin': bool,
         'is_verified': bool,
         'last_login': datetime.datetime,
@@ -137,10 +136,10 @@ class User(BaseDocument):
         'followers': list,
         'preferences': list,
         'badges': list,
-        'points': OR(int, float),
-        'article_count': OR(int, float),
-        'activity_count': OR(int, float),
-        'donation_count': OR(int, float),
+        'points': int,
+        'article_count': int,
+        'activity_count': int,
+        'donation_count': int,
 
     }
     required_fields = ['username']
@@ -218,6 +217,13 @@ class User(BaseDocument):
     def get_url(self):
         return "/profile/" + self['username']
 
+class Group(BaseDocument):
+    collection_name = 'groups'
+    structure = {
+        'admin': User,
+        'description': unicode,
+        'members': list 
+    }
 class Content(BaseDocument):
     collection_name = 'contents'
     structure = {
@@ -303,8 +309,7 @@ class Content(BaseDocument):
     
     @property
     def base_url(self):
-        TYPE = {'ART':'article', 'ACT':'activity', 'PAG': 'page'}
-        return "/" + TYPE[self['type']]
+        return "/" + CONTENT_TYPE[self['type']]
      
     def get_url(self):
         return "%s/%s" % (self.base_url, self.slug)
@@ -316,7 +321,6 @@ class Content(BaseDocument):
         return self.base_url + '/remove/' + self.slug
 
 class Article(Content):
-    collection_name = 'contents'
     type = 'ART'
     structure = {
         'type': unicode,
@@ -354,7 +358,6 @@ class Article(Content):
         User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
 
 class Activity(Content):
-    collection_name = 'contents'
     type = 'ACT'
     structure = {
         'type': unicode,
@@ -404,7 +407,6 @@ class Activity(Content):
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
 
 class Page(Content):
-    collection_name = 'contents'
     type = 'PAG'
     structure = {
         'author': User,
@@ -421,6 +423,9 @@ class Page(Content):
                       'updated_at':datetime.datetime.utcnow
                       }
 
+class Blog(Page):
+    type = 'BLO'
+    
 class Vote(BaseDocument):
     collection_name = 'votes'
     structure = {
@@ -475,7 +480,6 @@ class BankAccount(BaseDocument):
         data = dict([(field, acc[idx]) for idx, field in enumerate(cls.fields)])
         account.populate(data)
         account['owner'] = user
-        logging.warning("saving new account")
         account.save()
 
     @classmethod
@@ -516,10 +520,22 @@ class Donation(BaseDocument):
     default_values = {'is_validated': False, 'created_at':datetime.datetime.utcnow}
     validators = { "amount": lambda x: x > 0}
 
-class Tag(MongoDocument):
+class Stream(BaseDocument):
+    collection_name = 'streams'
+    structure = {
+        'user': User,
+        'object': IS(Activity, Article, Comment),
+        'created_at': datetime.datetime
+    }
+    default_values = {'created_at':datetime.datetime.utcnow}
+
+class Simpledoc(MongoDocument):
     db_host, db_port, db_name = DB
     use_dot_notation = True
     skip_validation = True
+    structure = {}
+
+class Tag(Simpledoc):
     collection_name = 'content_tags'
     structure = {
         'value': int
@@ -529,6 +545,15 @@ class Tag(MongoDocument):
 class UserTag(Tag):
     collection_name = 'user_tags'
 
+class Cache(Simpledoc):
+    collection_name = 'caches'
+    structure = {
+        'key': unicode,
+        'value': IS(dict, bool, unicode, list),
+        'expire': float
+    }
+    default_values = {'expire': 0.0}
+    
 def get_or_404(cls, query=None):
     query = query if query else {}
     o = cls.one(query)

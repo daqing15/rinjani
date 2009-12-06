@@ -4,24 +4,16 @@
 <div class="inner">
     <div class="hd"><h3>{{_('From the Fields')}}</h3></div>
 	<div class="bd leftpadded10">
+    {% for s in streams[:3] %}
 	<div class="line">
-	   <div class="unit size1of6">
-            <img src="{{ static_url('uploads/avatars/avatar.png') }}" />
-	   </div>
-	   <div class="lastUnit size5of6">
-	       <p>ACT: Bantuan sudah sampai di padang 15:50 WIB</p>
-	   </div>
-	</div>
-	<div class="line">
-	    <div class="unit size1of6">
-            <img src="{{ static_url('uploads/avatars/avatar.png') }}" />
+       <div class="unit size1of6">
+            <img src="{{ s['img'] }}" />
        </div>
        <div class="lastUnit size5of6">
-           <p>PKC: Alhamdulillah, acara IWIS2009 sejauh ini lancar</p>
+           <p style="padding-top:0; font-size:90%;">{{ s['text']}}</p>
        </div>
-	</div>
-	<p class="grey small">tweets/facebook status with #peduli or @peduli</p>
-	
+    </div>
+    {% end %}
 	</div>
 </div>
 
