@@ -222,7 +222,7 @@ class Group(BaseDocument):
     structure = {
         'admin': User,
         'description': unicode,
-        'members': list 
+        'members': list
     }
 class Content(BaseDocument):
     collection_name = 'contents'
@@ -246,7 +246,7 @@ class Content(BaseDocument):
         spec = {'type': self.type, 'slug': s}
         if '_id' in doc:
             spec.update({'_id': {'$ne': doc['_id']}})
-        
+
         _s = s
         i = 1
         while True:
@@ -255,7 +255,7 @@ class Content(BaseDocument):
                 break
             _s = "%s-%d" % (s, i)
             spec.update({'slug': _s})
-        
+
         doc['slug'] = _s
         #self.__class__.collection.update({'_id': self._id}, {'$set': {'slug': unicode(s)}})
 
@@ -287,7 +287,7 @@ class Content(BaseDocument):
         else:
             self['author'] = user
             new_doc = True
-        
+
         self['type'] = self.type
         self.pre_save(data, new_doc)
         self.set_slug(self, self['title'])
@@ -307,11 +307,11 @@ class Content(BaseDocument):
     def post_save(self, data, new_doc): pass
     def pre_remove(self): pass
     def post_remove(self): pass
-    
+
     @property
     def base_url(self):
         return "/" + CONTENT_TYPE[self['type']]
-     
+
     def get_url(self):
         return "%s/%s" % (self.base_url, self.slug)
 
@@ -342,7 +342,7 @@ class Article(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    
+
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
@@ -391,8 +391,8 @@ class Activity(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    
-    default_values = {'view_count': 0, 'comment_count': 0,
+
+    default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
                       'created_at':datetime.datetime.utcnow,
@@ -422,13 +422,13 @@ class Page(Content):
         'updated_at': datetime.datetime
     }
     default_values = {'enable_comment': False,
-                      'created_at':datetime.datetime.utcnow, 
+                      'created_at':datetime.datetime.utcnow,
                       'updated_at':datetime.datetime.utcnow
                       }
 
 class Blog(Page):
     type = 'BLO'
-    
+
 class Vote(BaseDocument):
     collection_name = 'votes'
     structure = {
@@ -556,7 +556,7 @@ class Cache(Simpledoc):
         'expire': float
     }
     default_values = {'expire': 0.0}
-    
+
 def get_or_404(cls, query=None):
     query = query if query else {}
     o = cls.one(query)

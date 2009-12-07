@@ -1,44 +1,42 @@
 
-import urllib2, urllib
+import urllib
 import tornado.web
 from main import BaseHandler
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.auth import TwitterMixin
 
 class SurveyHandler(BaseHandler):
-    GFORM_BASEURL = 'http://spreadsheets.google.com/embeddedform?key='
-    GFORM_ACTION = 'http://spreadsheets.google.com/formResponse'
+    GFORM_BASEURL = u'http://spreadsheets.google.com/embeddedform?key='
+    GFORM_ACTION = u'http://spreadsheets.google.com/formResponse'
     
+    def on_response(self, response):
+        if response:
+            html = self.clean_up(response.body)
+            self.finish(html)
+            
+    @tornado.web.asynchronous
     def get(self):
         form_id = self.get_argument('f','').strip()
         if not form_id:
             self.finish("")
             return
-        
         # check regex of id, only allow alpha?
-        html = self.cache.get("gform:%s" % form_id, True)
-        if html:
-            self.finish(html)
-            return
-        
         url = self.GFORM_BASEURL + form_id
-        try:
-            html = urllib2.urlopen(url).read()
-            if html:
-                html = self.clean_up(html)
-                self.cache.set("gform:%s" % form_id, html, 1800) # 10menit?
-                self.finish(html)
-        except:
-            self.finish("") 
-            
+        self.form_id = form_id
+        http = AsyncHTTPClient()
+        http.fetch(HTTPRequest(url, 'GET'), 
+                   callback=self.async_callback(self.on_response))
+    
+    @tornado.web.asynchronous        
     def post(self):
         data = urllib.urlencode(self.get_utf_arguments())
-        req = urllib2.Request(self.GFORM_ACTION, data)  
-        try:
-            html = urllib2.urlopen(req).read()
-            html = self.clean_up(html)
-            self.finish(html)
-            return
-        except: pass
-        self.finish("ERROR HAPPENED. SH*T.")
+        url = self.GFORM_ACTION + u'?' + data
+        http = tornado.httpclient.AsyncHTTPClient()
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        http.fetch(
+                   HTTPRequest(url, 'POST', headers, body=data),
+                   callback=self.async_callback(self.on_response),
+                   )
     
     def clean_up(self, html):
         html_extra = [
@@ -53,3 +51,37 @@ class SurveyHandler(BaseHandler):
         args = self.get_arguments()
         args = [(key, value.encode('utf-8')) for key,value in args.iteritems()]
         return dict(args)
+    
+class TweetsHandler(BaseHandler, TwitterMixin):
+    def tweetime_to_datetime(self, time):
+        # Sun Dec 06 17:36:25 +0000 2009
+        import time, datetime
+        d = time.strptime('Sun Dec 06 17:36:25 +0000 2009', "%a %b %d %H:%M:%S +0000 %Y")
+        return datetime.datetime(*d[0:7])
+
+    def tweets_to_streams(self, tweets):
+        import logging; logging.warn(tweets)
+        tweets = tweets[:5]
+        return [{
+                 'img': t['user']['profile_image_url'],
+                 'name': t['user']['screen_name'],
+                 'text': t['text'],
+                 'time': self.tweetime_to_datetime(t['created_at'])
+                 } for t in tweets ]
+
+    def _on_receive(self, tweets):
+        tweets_html = self.render_string('modules/streams', streams=self.tweets_to_streams(tweets))
+        self.cache.set("tweets", tweets_html, 1800)
+        self.finish(tweets_html)
+
+    @tornado.web.asynchronous
+    def get(self):
+        tweets = self.cache.get("tweets", True)
+        if tweets:
+            self.render("modules/streams", streams=tweets)
+            return
+
+        self.twitter_request(
+                '/statuses/user_timeline/%s' % self.settings.TWITTER_USER,
+                self._on_receive
+            )

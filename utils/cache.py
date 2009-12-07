@@ -11,7 +11,9 @@ class CacheManager(object):
             spec.update({'expire':{'$gt': time.time()}})
         ob = Cache.one(spec)
         if ob:
+            logging.warning("Cache HIT")
             return ob.value
+        logging.warning("Cache MISSED")
         return None
     
     def set(self, key, value, expire_offset=None):

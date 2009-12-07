@@ -13,16 +13,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 import hashlib
-
 import tornado.web
 from web.utils import Storage
-import web.form
 from pymongo.dbref import DBRef
 
 from main import BaseHandler, authenticated
-from models import User, Article, Activity, BankAccount, Comment, get_or_404
+from models import User, Content, Article, Activity, BankAccount, Comment, get_or_404
 from utils.pagination import Pagination, ListPagination
 from forms import profile_form, account_form, comment_form, InvalidFormDataError
 from utils.utils import extract_input_array, move_attachments, parse_attachments
@@ -141,15 +138,17 @@ class FollowHandler(BaseHandler):
             dbaction = '$push' if action == 'follow' else '$pull'
             try:
                 User.collection.update({'username': username}, {dbaction: {'followers': follower}})
+                User.collection.update({'username': follower}, {dbaction:{'following': username}})
                 msg = 'You are now following that user' if action == 'follow' \
                     else 'You are not following that user again'
+                msg += ". Redirecting..."
                 OK = True
             except:
-                msg = 'Error. Your admin has been notified. Please try again later'
+                msg = 'Error. Your admin has been notified. Please try again later.'
 
             if self.is_xhr():
                 return self.json_response(msg, 'OK' if OK else 'ERROR',\
-                    self.render_string('modules/user-block', user=user))
+                            {'next': self.get_argument('next')})
             else:
                 self.set_flash(msg)
         self.redirect(self.get_argument('next'))
@@ -163,9 +162,8 @@ class FollowersHandler(BaseHandler):
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
-        pg_article = Pagination(self, Article, {'status':'draft'}, 5)
-        pg_activity = Pagination(self, Activity, {'status':'draft'}, 5)
-        self.render(self.current_user.type + "/dashboard", pg_article=pg_article, pg_activity=pg_activity)
+        drafts = Pagination(self, Content, {'user': DBRef(User.collection_name, self.current_user._id), 'status':'draft'}, 5)
+        self.render(self.current_user.type + "/dashboard", drafts=drafts)
 
 class UserListHandler(BaseHandler):
     def get(self):
@@ -226,7 +224,7 @@ class ArticlesHandler(BaseHandler):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
+        spec = {'type': 'ART', 'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Article, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='articles')
 
@@ -235,7 +233,7 @@ class ActivitiesHandler(BaseHandler):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'status':'published', 'author': DBRef(User.collection_name, user._id)}
+        spec = {'type': 'ACT', 'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Activity, spec)
         self.render('public/profile-items', pagination=pagination, user=user, type='activities')
 

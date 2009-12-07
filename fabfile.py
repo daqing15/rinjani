@@ -14,7 +14,7 @@ def _setup():
 _setup()
 
 def stat():
-    run("uptime; free; supervisorctl status")
+    run("uptime; free; supervisorctl status; ps xwfv -u user")
     
 def tag():
     run("%s %s %s/bin/mr-tag.js" % (env.mongo, env.db, env.remotedir))
@@ -45,5 +45,6 @@ def synctemplates():
 def synclib():
     _sync('lib/')
 
-def syncapp():
+def sync():
     _sync('')
+

@@ -83,7 +83,7 @@ var generate_random_content = function(ctype, id) {
 }
 
 ut = { _required_namespace: [], document_scan : null, last_login: new Date(), "website" : null, "profile_content_html" : null, "uid" : null, "locale" : null, "phones" : [], "auth_provider" : "form", "sex" : null, "birthday_date" : null, "timezone" : "Asia/Jakarta", "badges" : [], "attachments" : [], "preferences" : [], "article_count" : 0, "location" : [], "followers" : [], "is_verified" : true, "email" : null, "fax" : [], "tags" : [], "activity_count" : 0, "following" : [], "password_hashed" : "a7257ef242a856304478236fe46fee00f23f8a25", "is_admin" : false, "address" : null, "profile_content" : null, "fullname" : null, "access_token" : null, "type" : "agent", "points" : 0, "status" : "active", "avatar" : null, "donation_count" : 0, "contact_person" : null }
-for(var id=1; id < 50; id++) {
+for(var id=1; id < 51; id++) {
     ut["_id"] = id;
     ut["username"] = "user" + id;
     ut["created_at"] = choose_date(id);

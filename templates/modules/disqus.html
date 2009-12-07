@@ -1,15 +1,18 @@
 <hr />
 
-{% if settings.live %}    
+{% if settings.LIVE %}    
     <div id="disqus_thread"></div>
     <noscript><a href="http://disqus.com/forums/peduli/?url=ref">View the discussion thread.</a></noscript>
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
     $(function(){
     window.disqus_no_style = true;
     window.disqus_identifier = '{{id}}';
     $.getScript("http://disqus.com/forums/peduli/embed.js");
     });
-</script>
+</script> -->
+    {% block postinlinejs %}
+        <script type="text/javascript" src="http://disqus.com/forums/peduli/embed.js"></script>
+    {% end %}
 
 {% else %}
     <p>In live server, disqus comment displayed here</p>

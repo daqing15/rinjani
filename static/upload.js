@@ -77,6 +77,7 @@ $(function() {
             }
             settings.data.attachments = $attachments.val();
             settings.data.attachment_counter = $counter.val();
+            $('#loading').show();
             this.disable();       
         },
         onComplete: function(file, res) {
@@ -88,6 +89,7 @@ $(function() {
                 //R.flash("Uploading failed. Please contact administrator");
             	R.flash(res.message);
             }
+            $('#loading').hide();
             this.enable();
         }
     };

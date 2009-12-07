@@ -182,6 +182,7 @@ article_form = MyForm(
     Textbox("title", form.notnull, size=50, description=_("Title")),
     Textarea("excerpt", form.notnull, rows=3, cols=60, description=_("Excerpt/Lead"), title="Write it short and sweet. "),
     Textarea("content", form.notnull, rows=12, cols=60, _class="rte", rel="#contentPreview", description="Article Content"),
+    Checkbox("enable_comment", value="1", description=_("Enable comments")),
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=50, description="Tags", title="Separate with comma")
  )
 
@@ -191,7 +192,6 @@ comment_form = MyForm(
 
 page_form = MyForm(
     Textbox("title", form.notnull, size=45, description="Title"),
-    Textbox("slug", form.notnull, size=45, description=_("Slug - use alphabet, numbers, and dash (-)")),
     Textarea("content", form.notnull, rows=15, cols=50, _class="rte", rel="#contentPreview", description=_("Content")),
 )
 

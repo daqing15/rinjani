@@ -13,8 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import datetime
-
 from main import BaseHandler, authenticated
 from forms import activity_form
 from settings import CONTENT_TAGS, USER_TAGS

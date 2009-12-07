@@ -15,7 +15,15 @@
     {% end %}
 
     {% block head %}{% end %}
-    <script type="text/javascript">window.BP = "{{BP}}";</script>
+    <script type="text/javascript">window.BP = "{{BP}}";
+    var frameOnload = function(e) {
+        if (e.contentDocument) {
+            $(e).css('height', e.contentDocument.body.offsetHeight + 35);
+        } else {
+            $(e).css('height', e.contentWindow.document.body.scrollHeight)
+        }
+    }
+    </script>
 </head>
 
 <body><div class="page">

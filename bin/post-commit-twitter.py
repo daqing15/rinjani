@@ -1,4 +1,4 @@
-#!/usr/bin/python -u 
+#!/usr/bin/python -W ignore::DeprecationWarning
 
 #
 # Copyright 2009 rinjani team

@@ -12,7 +12,7 @@
 
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'page', title) }}
 
-    {{ modules.FormfieldInColumns(f.title, f.slug) }}
+    {{ modules.Formfield(f.title) }}
     {{ modules.Formfield(f.content) }}
     
     <div id="contentPreview" class="cb"></div>

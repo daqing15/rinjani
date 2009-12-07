@@ -4,22 +4,22 @@
 
 {% block body %}
 
-<div class="post">	
-	<h2>{{ escape(article.title) }}</h2>
-	<div class="cb">
-	   {{ article.content_html }}
-	</div>
+<div class="post">
+    <h2>{{ escape(article.title) }}</h2>
+    <div class="cb">
+       {{ article.content_html }}
+    </div>
 </div>
 
-<div class="ovl" id="slideshow"> 
-    <a class="prev">{{_('prev')}}</a> 
-    <a class="next">{{_('next')}}</a> 
-    <div class="info"></div> 
-    <img class="progress" src="/static/css/img/ajax-loader2.gif" /> 
+<div class="ovl" id="slideshow">
+    <a class="prev">{{_('prev')}}</a>
+    <a class="next">{{_('next')}}</a>
+    <div class="info"></div>
+    <img class="progress" src="/static/css/img/ajax-loader2.gif" />
 </div>
 
 
-{{ modules.Disqus(article._id) }}  
+{{ modules.Disqus(article) }}
 
 {% end %}
 

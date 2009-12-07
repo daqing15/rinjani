@@ -18,37 +18,40 @@
 {{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'article', title) }}
 
 <div class="line tabWrapper">
-	<div class="unit size1of5">
-		<!-- the tabs --> 
-		<ul class="tabs"> 
-		    <li><a href="#fi">{{_('Information')}}</a></li> 
-		    <li><a href="#fc">{{_('Content')}}</a></li>
-		</ul> 
-	</div>
-	<div class="lastUnit size4of5">
-		<div class="panes">
-			<div class="pane">
-				{{ modules.Formfield(f.title) }}
-				{{ modules.Formfield(f.excerpt) }}
-				
+    <div class="unit size1of5">
+        <!-- the tabs -->
+        <ul class="tabs">
+            <li><a href="#fi">{{_('Information')}}</a></li>
+            <li><a href="#fc">{{_('Content')}}</a></li>
+        </ul>
+    </div>
+    <div class="lastUnit size4of5">
+        <div class="panes">
+            <div class="pane">
+                {{ modules.Formfield(f.title) }}
+                {{ modules.Formfield(f.excerpt) }}
+
+                <hr class="hrthin" />
+                {{ modules.Formfield(f.enable_comment) }}
+
                 {{ modules.Formfield(f.tags) }}
                 <div class="tags suggestedtags">
                     {{ modules.TagSuggestion(content_tags)}}
                 </div>
-			</div>
-			<div class="pane">
-				{{ modules.Formfield(f.content) }}
+            </div>
+            <div class="pane">
+                {{ modules.Formfield(f.content) }}
                 <div id="contentPreview" class="cb"></div>
-                
+
                 <div class="line attachments"></div>
                 <div class="line uploader">
-                    <a href="#" class="button" id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></a> 
+                    <a href="#" class="button" id="upload-button"><span><span>{{_('Add Attachment...')}}...</span></span></a>
                     <div id="loading" style="display:none">{{_('uploading...')}}</div>
                 </div>
-                    
-			</div>
-		</div>
-	</div>
+
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="buttons line">
@@ -62,7 +65,7 @@
     <button class="positive" name="status" value="draft"><span><span>{{_('Unpublish')}}</span></span></button>
 {% end %}
 
-{% if article.slug %}   
+{% if article.slug %}
     {{ h.link_button_if_editor(current_user, article.author, BP + '/article/remove/' + article.slug, _('Remove'), handler.xsrf_token) }}
 {% end %}
 
@@ -75,7 +78,7 @@
 
 {% if article.slug %}
 <input type="hidden" name="is_edit" value="1" />
-<input type="hidden" name="slug" value="{{article.slug}}" />				
+<input type="hidden" name="slug" value="{{article.slug}}" />
 {% end %}
 
 </form>

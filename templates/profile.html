@@ -18,9 +18,10 @@
             
             <ul class="vtabs"> 
                 {% if need_infotab %}<li><a href="#">{{_('Info')}}</a></li>{% end %} 
-                <li><a href="#">{{_('Followers')}}</a></li> 
-                <li><a href="#">{{_('Following')}}</a></li>  
+                {% if user.followers %}<li><a href="#">{{_('Followers')}}</a></li>{% end %}
+                {% if user.following %}<li><a href="#">{{_('Following')}}</a></li>{% end %} 
             </ul> 
+            
             <div class="vpanes">
                 {% if need_infotab %}
                 <div class="vpane">
@@ -36,12 +37,18 @@
                         {% end %}
                 </div>
                 {% end %}
+                
+                {% if user.followers %}
                 <div class="vpane">
                     {{ modules.UsersThumbs(user.followers, 'Followers') }}
                 </div>
+                {% end %}
+                
+                {% if user.following %}
                 <div class="vpane">
                     {{ modules.UsersThumbs(user.following, 'Following') }}
                 </div>
+                {% end %}
             </div>
          </div></div>
          </div>

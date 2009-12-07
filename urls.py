@@ -1,7 +1,7 @@
 
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
-    (r"/tweets", 'handlers.home.TweetsHandler'),
+    (r"/tweets", 'handlers.misc.TweetsHandler'),
     (r"/l/(\w+)", 'handlers.locale.SetHandler'),
     (r"/survey", 'handlers.misc.SurveyHandler'),
 

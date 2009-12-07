@@ -14,13 +14,11 @@
 # under the License.
 
 import tornado.web
-import datetime
-
 from web.utils import Storage
 
 from main import BaseHandler, authenticated
 from forms import article_form
-from settings import CONTENT_TAGS, MY_FLAGS
+from settings import CONTENT_TAGS
 from models import EditDisallowedError, Article
 from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
@@ -51,6 +49,7 @@ class EditHandler(BaseHandler):
                 spec = {'type': 'ART', 'slug':slug}
                 article = Article.one(spec)
                 article.check_edit_permission(self.get_current_user())
+                f['enable_comment'].checked = bool(article['enable_comment'])
                 article.formify()
                 f.fill(article)
             except EditDisallowedError:
@@ -58,6 +57,7 @@ class EditHandler(BaseHandler):
                 self.redirect(article.get_url())
                 return
             except:
+                raise
                 raise tornado.web.HTTPError(404)
         else:
             article = Article()
@@ -95,6 +95,7 @@ class EditHandler(BaseHandler):
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(article.get_url())
         except Exception, e:
+            raise
             if attachments:
                 article['attachments'] = data['attachments']
             f.note = f.note if f.note else e

@@ -2,13 +2,15 @@
 
 import sys
 import os
-sys.path = ['/rinjani/app', '/rinjani/app/bin'] + sys.path
+DIR = os.path.abspath(os.path.dirname(__file__))
+PARENT_DIR = os.path.dirname(DIR)
+sys.path = [DIR, PARENT_DIR] + sys.path
 
 from datetime import datetime
 from supervisor.childutils import listener, get_headers, eventdata, getRPCInterface
 import twitter
 
-from settings import BASE_PATH, TWITTER_USER, TWITTER_PASSWORD
+from settings import TWITTER_USER, TWITTER_PASSWORD
 
 def send_twitter(tw):
     api = twitter.Api(username=TWITTER_USER, password=TWITTER_PASSWORD)
@@ -23,7 +25,7 @@ def main():
             listener.ok()
             continue
 
-        ph, pd = eventdata(p + '\n')
+        ph, _pd = eventdata(p + '\n')
         if ph['processname'] == 'mongodb':
             if int(ph['expected']):
                 listener.ok()

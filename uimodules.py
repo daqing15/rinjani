@@ -51,7 +51,9 @@ class CommentBox(BaseUIModule):
         return self.render_string('modules/comment-box', f=f)
 
 class Disqus(BaseUIModule):
-    def render(self, id):
+    def render(self, item):
+        if not item.enable_comment:
+            return ""
         return self.render_string('modules/disqus', id=id)
 
 class FansOf(BaseUIModule):
