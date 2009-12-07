@@ -7,7 +7,7 @@
     {{ modules.Splash() }}
     {{ modules.ArticleLatest(limit=5) }}
     {{ modules.TagCloud() }}
- 
+
 {% end %}
 
 
@@ -15,9 +15,14 @@
     {% if not was_here %}
         {{ modules.Static('welcome') }}
     {% end %}
-    
-    {{ modules.Streams() }}
+
+    <div id="tweets">{{ h.get(tweets,'')}}</div>
+    {% if not tweets %}
+    <script type="text/javascript">$(function() {$('#tweets').load('/tweets');})</script>
+    {% end %}
+
     {{ modules.AgentFeatured() }}
+
 {% end %}
 
 

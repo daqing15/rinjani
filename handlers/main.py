@@ -20,6 +20,7 @@ import tornado.web
 from forms import MyForm
 import logging
 from models import User
+from utils import cache
 
 class authenticated(object):
     """Decorate methods with this to require authenticated access"""
@@ -74,7 +75,7 @@ class BaseHandler(tornado.web.RequestHandler):
             if not self.get_cookie('is_mobile', None):
                 from utils.utils import is_mobile_agent
                 is_mobile = is_mobile_agent(request)
-                self.set_cookie('is_mobile', int(is_mobile))
+                self.set_cookie('is_mobile', str(int(is_mobile)))
             else:
                 is_mobile = bool(self.get_cookie('is_mobile'))
         self.is_mobile = is_mobile
@@ -92,7 +93,7 @@ class BaseHandler(tornado.web.RequestHandler):
     
     @property
     def cache(self):
-        return self.application.cache
+        return cache.CacheManager()
     
     @property 
     def settings(self): 

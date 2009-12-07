@@ -3,6 +3,7 @@ url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
     (r"/tweets", 'handlers.home.TweetsHandler'),
     (r"/l/(\w+)", 'handlers.locale.SetHandler'),
+    (r"/survey", 'handlers.misc.SurveyHandler'),
 
     (r"/attachment/add", 'handlers.attachment.AddHandler'),
     (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),

@@ -15,7 +15,6 @@
 
 import re
 import settings
-import sys
 
 """
 Code taken from django_inlines and slighly modified to be working 
@@ -109,7 +108,20 @@ class TemplateInline(object):
     def __init__(self, value, **kwargs):
         self.value = value
         self.kwargs = kwargs
+
+class SurveyInline(TemplateInline):
+    """
+    {{ survey 0AjmOzM5WaEGddENteVBPMmFiZGFxbm5ZUHFrNFBsRnc height=500 }}
+    """
+    code = """<iframe src="/survey?%s" class="embedded" onload="frameOnload(this)">&nbsp;</iframe>"""
     
+    def render(self):
+        import urllib
+        if self.value:
+            return self.code % (urllib.urlencode({'f':self.value}))
+        return ""
+        
+        
 class YoutubeInline(TemplateInline):
     """
         {{ youtube 4R-7ZO4I1pI width=850 height=500 }}
@@ -195,14 +207,5 @@ class AttachmentInline(TemplateInline):
 # The default registry.
 processor = InlineProcessor()
 processor.register('youtube', YoutubeInline)
-#processor.register('attachment', AttachmentInline(["xx.jpg"])) # call from model
-
-content = """
-Isinya
-
-{{ photo 1 title="saya laper"}}
-
-"""
-
-#print processor.process(content)
+processor.register('survey', SurveyInline)
 

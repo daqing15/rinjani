@@ -42,11 +42,11 @@ def attrs_to_str(attrs):
     return ' '.join(attrs)
 
 def timesince(time=False, now=False):
-    from .time import timesince
+    from timeutil import timesince
     return timesince(time, now)
 
 def timeuntil(dt):
-    from .time import timeuntil
+    from timeutil import timeuntil
     return timeuntil(dt)
 
 def utc_to_local(dt):

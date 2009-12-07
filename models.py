@@ -233,6 +233,7 @@ class Content(BaseDocument):
     required_fields = ['author', 'title', 'content']
     sanitized_fields = ['excerpt', 'content']
     indexed_fields = ['content']
+    inline_fields = ['content']
 
     def authored_by(self, user):
         return self['author'] is user
@@ -259,7 +260,7 @@ class Content(BaseDocument):
         #self.__class__.collection.update({'_id': self._id}, {'$set': {'slug': unicode(s)}})
 
     def process_inline(self, field, src):
-        if field not in ['content']:
+        if field not in self.inline_fields:
             return src
 
         if self.attachments:
@@ -415,11 +416,13 @@ class Page(Content):
         'slug': unicode,
         'content': unicode,
         'content_html': unicode,
+        'enable_comment': bool,
         'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-    default_values = {'created_at':datetime.datetime.utcnow, 
+    default_values = {'enable_comment': False,
+                      'created_at':datetime.datetime.utcnow, 
                       'updated_at':datetime.datetime.utcnow
                       }
 

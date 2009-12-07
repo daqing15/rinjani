@@ -110,19 +110,22 @@ def listify(value, separator=','):
     if value and value.strip():
         return [item.strip() for item in value.split(separator) if item.strip()]
 
-def sanitize(value):
+def sanitize(value, extra_valid_tags=[], extra_valid_attrs=[]):
     """ 
     Filter value from unwanted html tags/attrs
     """
     r = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript:')))
     validTags = 'p i strong b u a h2 h3 h4 pre br img ul ol li'.split()
-    validAttrs = 'href src alt title'.split()
+    validTags += extra_valid_tags
+    validAttrs = 'href src alt title height'.split()
     soup = BeautifulSoup(value)
+    
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
         comment.extract()
     for tag in soup.findAll(True):
         if tag.name not in validTags:
             tag.hidden = True
+        
         tag.attrs = [(attr, r.sub('', val)) for attr, val in tag.attrs
                      if attr in validAttrs]
     return soup.renderContents().decode('utf8')

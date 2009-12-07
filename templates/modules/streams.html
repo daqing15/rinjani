@@ -3,18 +3,18 @@
 
 <div class="inner">
     <div class="hd"><h3>{{_('From the Fields')}}</h3></div>
-	<div class="bd leftpadded10">
+    <div class="bd leftpadded10">
     {% for s in streams[:3] %}
-	<div class="line">
+    <div class="line">
        <div class="unit size1of6">
-            <img src="{{ s['img'] }}" />
+            <a href="http://twitter.com/{{s['name']}}"><img src="{{ s['img'] }}" /></a>
        </div>
        <div class="lastUnit size5of6">
-           <p style="padding-top:0; font-size:90%;">{{ s['text']}}</p>
+           <p style="padding-top:0; font-size:90%;">{{ s['text']}} -- <strong>{{s['name']}}</strong> {{h.timesince(s['time'])}}</p>
        </div>
     </div>
     {% end %}
-	</div>
+    </div>
 </div>
 
 <b class="bottom"><b class="bl"></b><b class="br"></b></b>

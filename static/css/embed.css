@@ -1,0 +1,6 @@
+body{background:#fff; font:14px/1.431 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small; color: #333;}
+.ss-base-body { padding:0; background: #fff !important; }
+.ss-form-container  { width: 90% !important; border:0; padding: 10px; background: #EDFAEE;}
+.ss-form-entry { margin-bottom: 0; }
+.ss-container { width: 100%; }
+.ss-powered-by, .ss-terms { display: none; }

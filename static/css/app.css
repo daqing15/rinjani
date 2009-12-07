@@ -292,6 +292,7 @@ text-decoration:none;
 .err a { color: #C5932B; text-decoration: underline;}
 
 /* ====== special formatting classes ====== */
+.embedded { border:0; overflow: auto; padding-left:10px; height:auto; width:100%; margin:2em 0 0;}
 .np { padding: 0; }
 .ntp { padding-top: 0;}
 .detail{color: #777; font-size:11px;display:block;}

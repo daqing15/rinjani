@@ -16,9 +16,13 @@ var Rinjani = {
         if (func) { func(resp); }
       }
       if (resp.message) { Rinjani.flash(resp.message); }
+      if (resp.data && resp.data.next) {
+    	  var go = function() { document.location.href=resp.data.next; } 
+    	  setTimeout(go, 1000); 
+      }
       if (resp.data && resp.data.html) { 
     	  $(resp.data.html_target).html(resp.data.html);
-      }
+      } 
     };
   },
   
@@ -286,4 +290,13 @@ $(function() {
 	  b.text('').css({cursor:'pointer'}). prepend('<i></i>').append($('<span>').
 	  text(tt).append('<i></i><span></span>'));
    });
+  
 });
+
+var frameOnload = function(e) {
+	if (e.contentDocument) {
+		$(e).css('height', e.contentDocument.body.offsetHeight + 35);
+	} else {
+		$(e).css('height', e.contentWindow.document.body.scrollHeight)
+	}
+}
