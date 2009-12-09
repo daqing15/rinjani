@@ -1,21 +1,21 @@
 {% if not items.count() %}
     {{ modules.Static('intro') }}
-{% else %}    
+{% else %}
 <div class="wrSplash">
-    <div id="splash" class="ha"> 
+    <div id="splash" class="ha">
         {% set i = items.next() %}
         <img src="{{static_url('uploads/' + h.medium_size(i.attachments)) }}" />
         <div style='display:block;width:190px'>
             <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
-            <p>{{ s.truncate_words(i.excerpt, 10) }} -- <span class="small">{{ h.timesince(i.created_at) }}</span></p>
-        </div> 
-        
-        
+            <p>{{ s.truncate_words(i.excerpt, 10) }} -- <span class="small">{{ fd(i.created_at) }}</span></p>
+        </div>
+
+
         {% for i in items %}
         <img src="{{static_url('uploads/' + h.medium_size(i.attachments))}}" />
         <div>
             <h3><a href="{{ i.get_url() }}">{{ escape(i.title) }}</a></h3>
-            <p>{{ s.truncate_words(i.excerpt, 15) }} -- <span class="small">{{ h.timesince(i.created_at) }}</span></p>
+            <p>{{ s.truncate_words(i.excerpt, 15) }} -- <span class="small">{{ fd(i.created_at) }}</span></p>
         </div>
         {% end %}
     </div>

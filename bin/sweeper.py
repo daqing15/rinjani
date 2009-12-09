@@ -28,7 +28,9 @@ def remove_old_caches(*args, **kw):
     
 def update_tags(*args, **kw):
     logging.warn("[%s] Updating tag count..." % time.ctime(time.time()))
-    subprocess.Popen("%s %s %s/mr-tag.js" % (MONGO, DB, DIR), shell=True, 
+    subprocess.Popen("%s %s %s/tag-count.js" % (MONGO, DB, DIR), shell=True, 
+                     stdout=subprocess.PIPE).communicate()[0]
+    subprocess.Popen("%s %s %s/tag-combination-count.js" % (MONGO, DB, DIR), shell=True, 
                      stdout=subprocess.PIPE).communicate()[0]
 
 def main():

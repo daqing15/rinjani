@@ -37,15 +37,15 @@ profile_public = ('%(fullname)s', [
 ])
 
 articles = ('Articles', [
-    ('/articles?tab=latest', _('latest')),
-    ('/articles?tab=featured', _('featured')),
-    ('/articles?tab=popular', _('popular')),
+    ('/articles/latest', _('latest')),
+    ('/articles/featured', _('featured')),
+    ('/articles/popular', _('popular')),
 ])
 
 activities = ('Activities', [
-    ('/activities?tab=latest', _('latest')),
-    ('/activities?tab=featured', _('featured')),
-    ('/activities?tab=popular', _('popular')),
+    ('/activities/latest', _('latest')),
+    ('/activities/featured', _('featured')),
+    ('/activities/popular', _('popular')),
 ])
 
 users = ('Users', [
@@ -56,6 +56,6 @@ users = ('Users', [
 
 
 tags = ('Tags', [
-    ('/tags?tab=content', _('content')),
-    ('/tags?tab=user', _('user'))
+    ('/tags/content', _('content')),
+    ('/tags/user', _('user'))
 ])

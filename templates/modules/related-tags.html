@@ -1,0 +1,21 @@
+{% if tags.count() %}
+
+<div class="mod rounded simple rel-tags">
+    <b class="top"><b class="tl"></b><b class="tr"></b></b>
+    <div class="inner">
+        <div class="hd"><h2>{{ _('Related Tags') }}</h2></div>
+        <div class="bd leftpadded10">
+            <ul class="tags">
+            {% for _tag in tags %}
+                {% set tag = list(set(_tag['tags']).difference(set(_tags))).pop() %} 
+                <li><a class="tag" href="/{{type}}/tagged/{{'+'.join(_tags)}}+{{tag}}">{{tag}}</a> x{{int(_tag['value'])}}</li>
+            {% end %}
+            </ul>
+        </div>
+    </div>
+    <b class="bottom"><b class="bl"></b><b class="br"></b></b>
+</div>
+
+{% end %}
+
+

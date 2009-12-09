@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs('activities', 'latest') }}
+{{ modules.Tabs('activities', tab) }}
 
 {% if pagination.get_objects().count() %}
     {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}

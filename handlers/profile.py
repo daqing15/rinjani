@@ -100,6 +100,9 @@ class EditHandler(BaseHandler):
         user = self.current_user
         accounts = extract_input_array(self.request.arguments, 'acc_')
         accounts = User.filter_valid_accounts(accounts)
+        
+        _ = self._
+        
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
@@ -115,11 +118,11 @@ class EditHandler(BaseHandler):
                     user['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     user.update_html()
                     user.save()
-
-                self.set_flash("Profile saved.")
+                
+                self.set_flash(_("Profile saved."))
                 self.redirect("/dashboard")
                 return
-            raise InvalidFormDataError("Form still have errors. Please correct them before saving.")
+            raise InvalidFormDataError(_("Form still have errors. Please correct them before saving."))
         except Exception, e:
             if not isinstance(e, InvalidFormDataError): raise
             f.note = f.note if f.note else e
@@ -129,9 +132,9 @@ class FollowHandler(BaseHandler):
     @authenticated()
     def post(self, username):
         user = User.one({'username': username})
-
         action = self.get_argument('action', 'follow')
-
+        _ = self._
+        
         OK = False
         if user:
             follower = self.current_user['username']
@@ -139,16 +142,17 @@ class FollowHandler(BaseHandler):
             try:
                 User.collection.update({'username': username}, {dbaction: {'followers': follower}})
                 User.collection.update({'username': follower}, {dbaction:{'following': username}})
-                msg = 'You are now following that user' if action == 'follow' \
-                    else 'You are not following that user again'
-                msg += ". Redirecting..."
+                msg = _('You are now following that user') if action == 'follow' \
+                        else _('You are not following that user again.')
                 OK = True
             except:
-                msg = 'Error. Your admin has been notified. Please try again later.'
+                msg = _('Error. Your admin has been notified. Please try again later.')
 
             if self.is_xhr():
+                user = User.one({'username': username}) # reload user
+                html = self.render_string('modules/follow-button', user=user)
                 return self.json_response(msg, 'OK' if OK else 'ERROR',\
-                            {'next': self.get_argument('next')})
+                            {'html_target':'#followButton', 'html': html})
             else:
                 self.set_flash(msg)
         self.redirect(self.get_argument('next'))
@@ -211,7 +215,7 @@ class ProfileCommentsHandler(BaseHandler):
                 comment['for'] = user
                 comment['comment'] = data['comment']
                 comment.save()
-                self.set_flash("Comment has been saved")
+                self.set_flash(self._("Comment has been saved."))
                 self.redirect("/profile/comments/" + username)
                 return
             raise Exception()

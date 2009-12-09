@@ -6,8 +6,8 @@
       {{ modules.Avatar(item['from']) }}
       </div>
       <div class="lastUnit">
-         <p><a href="{{BP}}/profile/{{item['from'].username}}">{{ item['from'].username}}</a> {{ s.truncate_words(item.comment, 100) }} 
-         <span class="detail">{{ h.timesince(h.utc_to_local(item.created_at))}}</span>
+         <p><a href="{{BP}}/profile/{{item['from'].username}}">{{ item['from'].username}}</a> {{ s.truncate_words(item.comment, 100) }}
+         <span class="detail">{{ fd(h.utc_to_local(item.created_at))}}</span>
          </p>
          {% if current_user %}
          <div class="cReplies">
@@ -29,5 +29,4 @@
 {{ xsrf_form_html() }}
  </form>
  <!-- /.comment -->
- 
- 
+

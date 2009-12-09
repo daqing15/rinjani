@@ -43,9 +43,23 @@ b{display:block;background-repeat:no-repeat;font-size:1%;position:relative;z-ind
 .lumut h3 { color: #769328;}
 .lumut .inner { background: #C4E079;}
 
-/* ----- basic extends the mod ----- */
-.basic .inner {/*-moz-border-radius: 7px;-webkit-border-radius: 7px;border-radius: 7px;*/}
-.basic b{background-image:url(skin/mod/round.png);}
+/* ----- round extends the mod ----- */
+.round .inner {border:1px solid #D7D7D7;/*-moz-border-radius: 7px;-webkit-border-radius: 7px;border-radius: 7px;*/}
+.round b{background-image:url(skin/mod/simple_corners.png);}
+
+/* complex */
+.complex{overflow:hidden;*position:relative;*zoom:1;}/* position/zoom required for IE7, 6, 5.5 */
+.complex .tl, .complex .tr{height:32000px; margin-bottom:-32000px;width:10px;}
+.complex .bl, .complex .br{/*margin-top:0;*/}
+.complex .top{height:5px;}
+.complex .bottom{height:5px;/*margin-top:-10px;*/}
+/* ----- photo (extends complex) ----- */
+.photo .inner{border:solid 10px #fff;margin:0 4px;}/* muck with margins to change how the block will align with other blocks, any value between 0-10px */
+.photo b{background-image:url(skin/mod/photo.png);}
+.photo .tr, .photo .tl{width:20px;}
+.photo .top, .photo .bottom{height:4px;margin-top:0px;} 
+.photo .bl, .photo .br{height:16px;margin-top: -12px;}
+.photo .bd { background: #efefef; }
 
 /*==== TALK BUBBLE ====*/
 .bubble{overflow:hidden;_overflow:visible;_zoom:1;margin:10px;

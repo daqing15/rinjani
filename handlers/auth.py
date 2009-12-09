@@ -14,7 +14,6 @@
 # under the License.
 import binascii
 import urllib
-import logging
 import hashlib
 import time
 import uuid
@@ -126,7 +125,7 @@ class NewUserHandler(BaseHandler):
         try:
             if f.validates(Storage(data)):
                 user.update(data)
-                logging.info("\n=====\nNEW USER via %s: %s======\n" \
+                self.log("\n=====\nNEW USER via %s: %s======\n" \
                                  % (user['auth_provider'], user['uid']))
 
                 new_user = User()
@@ -184,7 +183,7 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
             callback(None)
             return
 
-        logging.warning(users)
+        self.log(users)
         callback({
             "auth_provider": "facebook",
             "fullname": users[0]["name"],
@@ -208,7 +207,7 @@ class GoogleLoginHandler(BaseHandler, AuthMixin, tornado.auth.GoogleMixin):
         if not user:
             raise tornado.web.HTTPError(500, "Authentication failed")
 
-        logging.warning(user)
+        self.log(user)
         super(GoogleLoginHandler, self)._on_auth(
             {
                 'auth_provider': 'google',
@@ -228,7 +227,7 @@ class TwitterLoginHandler(BaseHandler, AuthMixin, tornado.auth.TwitterMixin):
     def _on_auth(self, user):
         if not user:
             raise tornado.web.HTTPError(500, "Authentication failed")
-        logging.warning(user)
+        self.log(user)
         super(TwitterLoginHandler, self)._on_auth(
             {
                 'auth_provider': 'twitter',

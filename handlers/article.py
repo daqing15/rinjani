@@ -26,10 +26,18 @@ from utils.utils import move_attachments, parse_attachments
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
 class ListHandler(BaseHandler):
-    def get(self):
+    def get(self, tab):
         spec = {'type': 'ART', 'status':'published'}
-        pagination = Pagination(self, Article, spec)
-        self.render('articles', pagination=pagination)
+        tab = tab or 'latest'
+        if tab == 'featured':
+            spec.update({'featured':True})
+        
+        if tab == 'popular':
+            pagination = Pagination(self, Article, spec, sort_by='view_count')
+        else:
+            pagination = Pagination(self, Article, spec)
+            
+        self.render('articles', pagination=pagination, tab=tab)
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
@@ -69,7 +77,9 @@ class EditHandler(BaseHandler):
         f = article_form()
         data = self.get_arguments()
         is_edit = data.has_key('is_edit')
-
+        
+        _ = self._
+        
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
@@ -85,12 +95,12 @@ class EditHandler(BaseHandler):
                     article.update_html()
                     article.save()
 
-                self.set_flash("Article has been saved.")
+                self.set_flash(_("Article has been saved."))
                 url =  article.get_url() if article.status == 'published' else '/dashboard'
                 self.redirect(url)
                 return
             article = Article()
-            raise Exception("Form still have errors.")
+            raise Exception(_("Form still have errors."))
         except EditDisallowedError:
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(article.get_url())
@@ -109,5 +119,5 @@ class RemoveHandler(BaseHandler):
             raise tornado.web.HTTPError(404)
 
         article.remove()
-        self.set_flash("That article has been removed")
+        self.set_flash(self._("That article has been removed."))
         self.redirect("/articles")

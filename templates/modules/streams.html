@@ -10,7 +10,7 @@
             <a href="http://twitter.com/{{s['name']}}"><img src="{{ s['img'] }}" /></a>
        </div>
        <div class="lastUnit size5of6">
-           <p style="padding-top:0; font-size:90%;">{{ s['text']}} -- <strong>{{s['name']}}</strong> {{h.timesince(s['time'])}}</p>
+           <p style="padding-top:0; font-size:90%;">{{ s['text']}} -- <strong>{{s['name']}}</strong> {{fd(s['time'])}}</p>
        </div>
     </div>
     {% end %}

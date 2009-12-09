@@ -1,8 +1,10 @@
 import os
+import re
 import tornado.web
 import pymongo
+import urllib2
 
-from models import Article, Activity, User, Vote, Tag
+from models import Article, Activity, User, TagCombination, UserTagCombination, Vote, Tag
 from settings import MY_FLAGS
 
 class BaseUIModule(tornado.web.UIModule):
@@ -68,13 +70,17 @@ class Fans(BaseUIModule):
 
 class Flash(BaseUIModule):
     def render(self):
-        message = self.handler.get_secure_cookie('f')
+        message = self.handler.get_cookie('f')
         if message:
+            message = urllib2.unquote(message)
             self.handler.clear_cookie('f')
             return self.render_string('modules/flash', message=message)
         else:
             return ''
-
+class FollowButton(BaseUIModule):
+    def render(self, user):
+        return self.render_string('modules/follow-button', user=user)
+    
 def is_required(input):
     for v in input.validators:
         if getattr(v, 'test', None):
@@ -170,6 +176,18 @@ class Rating(BaseUIModule):
     def render(self, o):
         return self.render_string('modules/rating')
 
+class RelatedTags(BaseUIModule):
+    def render(self, _tags, type):
+        doc = TagCombination if type == 'content' else UserTagCombination
+        print doc
+        size = len(_tags) + 1
+        print {'tags': {'$size': size, '$all': _tags}}
+        tags = doc.collection.find(
+                    {'tags': {'$size': size, '$all': _tags}}
+                ).sort('value',-1)
+        print tags.count()
+        return self.render_string('modules/related-tags', tags=tags, _tags=_tags,type=type)
+    
 class ReportBox(BaseUIModule):
     def render(self, uri):
         return self.render_string('modules/report-box')

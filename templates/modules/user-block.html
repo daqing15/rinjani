@@ -3,24 +3,19 @@
     <div class="inner">
         <div class="bd">
             <div class="line">
-		       
+
                <div class="unit media">
                     {{ modules.Avatar(user) }}
-		       </div>
-               
-		       <div class="lastUnit">
+               </div>
+
+               <div class="lastUnit">
                     <p class=""><a href="{{BP}}/profile/{{ user.username }}">{{ user.username }}</a> {{ modules.UserItems(user) }}</p>
                     <p class="ntp detail">
-                    {{_('member since')}} {{ h.timesince(h.utc_to_local(user.created_at))}}
+                    {{_('member since')}} {{ fd(h.utc_to_local(user.created_at))}}
                     </p>
-                    
-                    {% if current_user and current_user != user %}
-                    {% set action = 'unfollow' if current_user.username in user.followers else 'follow' %}
-                    <form method="post" action="/profile/follow/{{user.username}}?action={{action}}&next={{ current_path }}">
-                        <button class="ajax"><span><span>{{_(action.title())}}</span></span></button>
-                    </form>
-                    {% end %}
-                        
+
+                    <div id="followButton">{{ modules.FollowButton(user) }}</div>
+
                </div>
             </div>
         </div>

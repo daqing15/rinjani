@@ -2,22 +2,33 @@ import time
 import logging
 
 from models import Cache
+import redis
 
-class CacheManager(object):
-    def get(self, key, check_expire=False):
-        logging.warning("Getting cache: %s" % key)
-        spec = {'key': key}
-        if check_expire:
-            spec.update({'expire':{'$gt': time.time()}})
+default_ttl = 600
+
+class MongoCacheManager(object):
+    def get(self, key):
+        spec = {'_id': key, 'expire':{'$gt': time.time()}}
         ob = Cache.one(spec)
         if ob:
-            logging.warning("Cache HIT")
             return ob.value
-        logging.warning("Cache MISSED")
         return None
     
-    def set(self, key, value, expire_offset=None):
-        logging.warning("Setting cache: %s" % key)
-        expire = expire_offset + time.time() if expire_offset else None
-        ob = Cache({'key': key, 'value': value, 'expire': expire})
+    def set(self, key, value, ttl=None):
+        expire = time.time()
+        expire += ttl if ttl else default_ttl 
+        ob = Cache({'_id': key, 'value': value, 'expire': expire})
         ob.save() 
+
+class RedisCacheManager(object):
+    def __init__(self):
+        self.redis = redis.Redis()
+    
+    def get(self, key):
+        return self.redis.get(key)
+    
+    def set(self, key, value, ttl=None):
+        ttl = ttl if ttl else default_ttl
+        self.redis.set(key, value, ttl)
+                
+cachemanager = RedisCacheManager()

@@ -1,0 +1,6 @@
+{% if current_user and current_user != user %}
+    {% set action = 'unfollow' if current_user.username in user.followers else 'follow' %}
+    <form method="post" action="/profile/follow/{{user.username}}?action={{action}}&next={{current_path}}">
+        <button class="ajax"><span><span>{{_(action.title())}}</span></span></button>
+    </form>
+{% end %}

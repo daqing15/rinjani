@@ -12,7 +12,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import urllib2
 from main import BaseHandler, authenticated
 import models
 from models import User, Content, Vote, Tag, UserTag
@@ -20,18 +20,19 @@ from utils.pagination import Pagination
 from settings import MY_FLAGS
 
 class ListHandler(BaseHandler):
-    def get(self):
-        t = self.get_argument('tab', 'content')
-        doc = Tag if t == 'content' else UserTag
+    def get(self, tab):
+        tab = tab or 'content'
+        doc = Tag if tab == 'content' else UserTag
         pagination = Pagination(self, doc, {}, sort_by='_id', sort=1)
-        self.render('tags', pagination=pagination, tab=t)
+        self.render('tags', tab=tab, pagination=pagination)
 
 class ViewHandler(BaseHandler):
-    def get(self, tag):
-        t = self.get_argument('t', 'content')
-        doc = Content if t == 'content' else User
-        pagination = Pagination(self, doc, {'tags': tag})
-        self.render('tag-view', tab=t, tag=tag, pagination=pagination)
+    def get(self, tab, tags):
+        tab = tab or 'content'
+        tags = urllib2.unquote(tags).split('+')
+        doc = Content if tab == 'content' else User
+        pagination = Pagination(self, doc, {'tags': {'$all':tags}}, 10)
+        self.render('tag-view', tab=tab, tags=tags, pagination=pagination)
         
 class FlagHandler(BaseHandler):
     @authenticated()
@@ -43,7 +44,7 @@ class FlagHandler(BaseHandler):
             slug = self.get_argument('slug')
             cid = cls.one({'slug': slug})['_id']
             uid = self.current_user['_id']
-            if int(flag) in [x for x,y in MY_FLAGS]:
+            if int(flag) in [x for x,_y in MY_FLAGS]:
                 has_vote = Vote.one({'uid': uid ,'cid': cid})
                 if not has_vote:
                     cls.collection.update(

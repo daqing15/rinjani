@@ -112,19 +112,30 @@ input[type=file] {
 }
 
 /*===== FLASH MESSAGE ====*/
-#flash_message { padding: 10px; color: #776D23; background: #FFFAD4; width: 100%; margin-bottom: 10px;}
-#flash_message .close { float:right;padding:5px 10px; margin-right: 10px;}
-#flash_message .close a {
-display:block;
-font-size:10px;
-height:14px;
-padding:0;
-background:transparent url(/static/img/flashtick.png) no-repeat scroll 0 0;
-text-decoration:none;
-width:14px;
+#flashbar .close { float:right;padding:5px 10px; margin-right: 10px;}
+#flashbar .close a {
+	display:block;
+	font-size:10px;
+	height:14px;
+	padding:0;
+	background:transparent url(/static/img/flashtick.png) no-repeat scroll 0 0;
+	text-decoration:none;
+	width:14px;
 }
-#flash_message a span { display: none; }
+#flashbar a span { display: none; }
 
+#flashbar {
+    width:100%;
+    position:fixed;
+    top:0;left:0;margin:0; padding:10px;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=95); 
+    opacity: 0.95;
+    -moz-opacity: 0.95;
+    text-align:center;
+    z-index:9999999;
+    color: #776D23; background: #FFFAD4; 
+    border-bottom: 1px solid #F3EAA6;
+}
 /*===== PAGINATION =====*/
 .pagination {
     margin: 20px 0 10px 0;
@@ -193,7 +204,8 @@ margin-bottom:0px;
 padding: 0 0 0 10px;
 text-transform: inherit;
 }
-#subheader h2 span { color: #999; }
+#subheader span { color: #999; }
+#subheader em { font-size: 80%; font-style:normal; }
 
 #tabs {
 float:right;
@@ -259,6 +271,8 @@ display: block; float: left; color: #999; margin: 10px 0; padding: 0 20px; font-
 .cb ul.tags { padding-left: 0; }
 .cb .tag { font-size: 1.4em; }
 .tags li { display: block; float: left; padding: 5px;}
+.rel-tags .tags li { float:none; }
+.rel-tags .tags { padding-left:0; }	
 .tag {
 -moz-border-radius: 5px 0 5px 0;
 -webkit-border-radius: 5px 0 5px 0;
@@ -295,7 +309,7 @@ text-decoration:none;
 .embedded { border:0; overflow: auto; padding-left:10px; height:auto; width:100%; margin:2em 0 0;}
 .np { padding: 0; }
 .ntp { padding-top: 0;}
-.detail{color: #777; font-size:11px;display:block;}
+.detail{color: #777; font-size:11px;display:block; text-transform:lowercase;}
 .detail span a { color: #6F9157;}
 .logo { width: 78px; height: 51px;
 display: inline-table; float: left;

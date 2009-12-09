@@ -38,7 +38,7 @@ class EditHandler(BaseHandler):
                 page.formify()
                 f.fill(page)
             except EditDisallowedError:
-                self.set_flash("You are not allowed to edit that page")
+                self.set_flash(self._("You are not allowed to edit that page."))
                 self.redirect(page.get_url())
                 return
             except:
@@ -54,6 +54,8 @@ class EditHandler(BaseHandler):
         data = self.get_arguments()
         is_edit = data.has_key('ori_slug')
         
+        _ = self._
+        
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
@@ -68,11 +70,11 @@ class EditHandler(BaseHandler):
                     page.update_html()
                     page.save()
                     
-                self.set_flash(u"Page has been saved.")
+                self.set_flash(_("Page has been saved."))
                 self.redirect(page.get_url())
                 return
             page = Page()
-            raise Exception("Invalid form data")
+            raise Exception(_("Invalid form data."))
         except Exception, e:
             raise
             if attachments:
@@ -87,5 +89,5 @@ class RemoveHandler(BaseHandler):
             raise tornado.web.HTTPError(404)
         
         page.remove()
-        self.set_flash("That page has been removed")
+        self.set_flash(self._("That page has been removed."))
         self.redirect("/")                 

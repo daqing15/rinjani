@@ -62,9 +62,9 @@ $(function() {
         action: '/attachment/add',
         name: 'doc',
         responseType: 'json',
-        errorInvalidType: "Please select only photo or PDF file",
+        errorInvalidType: "Please upload only photo or PDF file",
         data: {
-            _xsrf: getCookie('_xsrf'),
+            _xsrf: $.cookie('_xsrf'),
             type: content_type,
             is_new_doc: is_new_doc,
             slug: slug,

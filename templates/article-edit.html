@@ -95,6 +95,7 @@ slug = '{{ article.slug if article.slug else '' }}';
 {% end %}
 
 {% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
 <script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
 <link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>

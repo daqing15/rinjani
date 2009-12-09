@@ -57,6 +57,7 @@
     <div class="lastUnit size2of3">
         <div class="cb">
             {% if user.profile_content_html %}<br /><h1>{{_('About') }} {{get(user.fullname, user.username)}}</h1>{% end %}
+            {% if user == current_user %}<div class="buttons"><a class="button" href="{{BP}}/profile/edit#fp"><span><span>{{ _('Edit Profile Description') }}</span></span></a></div>{% end %}
             {{ user.profile_content_html if user.profile_content_html else "" }}
         </div>
     </div>
@@ -66,3 +67,6 @@
 
 {% end %}
 
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
+{% end %}

@@ -3,10 +3,17 @@ import logging
 import os
 import shutil
 import math
+import curses
 
 ATTACHMENT_SEPARATOR = '$'
 ATTACHMENT_FIELD_SEPARATOR = '#'
 
+def log(msg, type=None):
+    _fg = curses.tigetstr("setaf") or curses.tigetstr("setf") or ""
+    _color = curses.tparm(_fg, 1)
+    _normal = curses.tigetstr("sgr0")
+    logging.debug("\n\n%s%s%s%s\n" % (_normal, _color, msg, _normal))
+        
 def is_mobile_agent(request):
     """Adds a "mobile" attribute to the request which is True or False
        depending on whether the request should be considered to come from a

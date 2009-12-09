@@ -1,29 +1,22 @@
-function getCookie(name) {
-    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return r ? r[1] : undefined;
-}
-
 var Rinjani = {
   /* Solace. helper for dynamicSubmit and request */
   _standardRemoteCallback : function(func) {
-    return function(resp) {
-      if (resp.status != 'OK') {
-        if (resp.try_login) {
-           document.location.href = '/login-form?next='
-            + encodeURIComponent(document.location.href);
+      return function(resp) {
+          if (typeof resp.try_login != 'undefined') {
+              document.location.href = '/login-form?next='
+                + encodeURIComponent(document.location.href);
+               return;
+          }
+          if (func) func(resp);
+          if (resp.message) { Rinjani.flash(resp.message); $.cookie('f', null); };
+          if (resp.data && resp.data.next) {
+              $.cookie('f', resp.data.msg);
+              document.location=resp.data.next;
+          }
+          if (resp.data && resp.data.html_target) {
+              $(resp.data.html_target).html(resp.data.html);
+          }
         }
-      } else {
-        if (func) { func(resp); }
-      }
-      if (resp.message) { Rinjani.flash(resp.message); }
-      if (resp.data && resp.data.next) {
-          var go = function() { document.location.href=resp.data.next; }
-          setTimeout(go, 1000);
-      }
-      if (resp.data && resp.data.html) {
-          $(resp.data.html_target).html(resp.data.html);
-      }
-    };
   },
 
   /* Solace. sends a request to a URL with optional data and
@@ -31,7 +24,7 @@ var Rinjani = {
   to the own server that way and the endpoint has to
   return a valid json_response(). */
   request: function(url, data, method, callback) {
-    data = $.extend({_xsrf:getCookie('_xsrf')}, data);
+    data = $.extend({_xsrf:$.cookie('_xsrf')}, data);
     $.ajax({
       url:      url,
       type:     method || 'GET',
@@ -50,11 +43,11 @@ var Rinjani = {
 
     /* return the flash container */
   getFlashContainer : function(nocreate) {
-    var container = $('#flash_message');
+    var container = $('#flashbar');
     if (container.length == 0) {
       if (nocreate)
         return null;
-      container = $('<div id="flash_message"></div>').prependTo('div.main').hide();
+      container = $('<div id="flashbar"></div>').prependTo('div.main').hide();
     }
     if (!Rinjani._flash_container_enhanced) {
       Rinjani._flash_container_enhanced = true;
@@ -72,17 +65,25 @@ var Rinjani = {
   /* fade in the flash message */
   fadeInFlashMessages : function() {
     var container = Rinjani.getFlashContainer(true);
-    if (container && !container.is(':visible'))
+    if (container && !container.is(':visible')) {
       container.animate({
         height:   'show',
         opacity:  'show'
       }, 'fast');
+    }
+    timeout = setTimeout("Rinjani.getFlashContainer(false).slideUp();", 4000);
   },
 
   /* flashes a message from javascript */
-  flash : function(text) {
+  flash : function(text,type) {
+    clearTimeout(timeout);
+    if (!type) type = 'I';
     var container = Rinjani.getFlashContainer();
-    $('<p>').text(text).appendTo(container);
+    if (container.find('p').length) {
+        container.find('p').text(text);
+    } else {
+        $('<p class="' + type + '">').text(text).appendTo(container);
+    }
     Rinjani.fadeInFlashMessages();
   },
 
@@ -191,67 +192,75 @@ var Rinjani = {
 
 
 var R = Rinjani;
+var timeout;
 
 $(function() {
-    // the ajax setup
-    $.ajaxSetup({
-        error: function() {
-            Rinjani.flash('Could not contact server. Connection problems?');
-        }
-    });
-    $('#loading').ajaxStart(function() {
-        $(this).show();
-    });
-    $('#loading').ajaxStop(function() {
-        $(this).hide();
-    });
-
-    R.fadeInFlashMessages();
-    R.setupDropdownMenu();
-
-    $('#hsearch input[type=text]').each(function() {
-        var hint = $(this).val();
-        $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
-  });
-
-  var dialog = $(".dialog[rel]").overlay({
-      expose: '#000',
-      top: '25%',
-      closeOnClick: false,
-      onBeforeLoad: function() {
-          var wrap = this.getContent().find(".wDialog");
-          url = this.getTrigger().attr("href");
-          if (url != '#') {
-              wrap.load(url);
-          }
+  // the ajax setup
+  $.ajaxSetup({
+      error: function() {
+          Rinjani.flash('Could not contact server. Connection problems?');
       }
   });
+  $('#loading').ajaxStart(function() {
+        $(this).show();
+  });
+  $('#loading').ajaxStop(function() {
+        $(this).hide();
+  });
 
-  var slideshow = $(".slideshow a").overlay({
-    target: '#slideshow',
-    expose: '#000',
-    top: '25%',
-    closeOnClick: false,
-  })
+  R.fadeInFlashMessages();
+  R.setupDropdownMenu();
 
-  if (slideshow.size()) { slideshow.gallery({
-    speed: 800,
-    opacity:.6,
-    template: '<span>${index} of ${total}</span>'
-  }) }
+  $('#hsearch input[type=text]').each(function() {
+      var hint = $(this).val();
+      $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
+  });
 
-  $('button.ajax').click(function() {
+  if ($.fn.overlay) {
+      var dialog = $(".dialog[rel]").overlay({
+          expose: '#000',
+          top: '25%',
+          closeOnClick: false,
+          onBeforeLoad: function() {
+              var wrap = this.getContent().find(".wDialog");
+              url = this.getTrigger().attr("href");
+              if (url != '#') {
+                  wrap.load(url);
+              }
+          }
+      });
+
+      var slideshow = $(".slideshow a").overlay({
+        target: '#slideshow',
+        expose: '#000',
+        top: '25%',
+        closeOnClick: false,
+      })
+
+      if (slideshow.size()) { slideshow.gallery({
+        speed: 800,
+        opacity:.6,
+        template: '<span>${index} of ${total}</span>'
+      }) }
+
+       // select all desired input fields and attach tooltips to them
+      $("form.withtips :input[title], .tt").tooltip({
+          position: "center right",
+          offset: [-10,-5],
+          effect: "fade",
+          tip: '.tooltip'
+      });
+
+      $("ul.tabs").tabs("div.panes > div");
+      $("ul.vtabs").tabs("div.vpanes > div");
+  }
+
+  $('button.ajax').live('click', function() {
         var action=$(this).parent('form').attr('action');
         R.request(action, {}, 'POST');
         return false;
      });
-    // select all desired input fields and attach tooltips to them
-  $("form.withtips :input[title], .tt").tooltip({
-      position: "center right",
-      offset: [-10,-5],
-      effect: "fade",
-      tip: '.tooltip'
-  });
+
 
   // setup rich text editor
   if ($.markItUp) {
@@ -266,9 +275,6 @@ $(function() {
     });
     scroll(0,0);
   }
-
-  $("ul.tabs").tabs("div.panes > div");
-  $("ul.vtabs").tabs("div.vpanes > div");
 
   $('.deps').each(function() {
         $src = $(this).find('.depsrc input[type=checkbox]');

@@ -195,7 +195,9 @@ def truncate_words(s, num):
         words = words[:length]
         if not words[-1].endswith('...'):
             words.append('...')
-    return u' '.join(words)
+    s = u' '.join(words)
+    s = s.replace(' ...', '...')
+    return s
     
 # django.template.defaultfilters
 def truncate_html_words(s, num):

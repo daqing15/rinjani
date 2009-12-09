@@ -6,19 +6,19 @@
 
 <div class="inner">
     <div class="hd"><h3>{{ _('Latest Articles') }}</h3></div>
-	<div class="bd leftpadded10">
-	{% for article in articles %}
-	<div class="line">
-	   <div class="unit size1of7">
+    <div class="bd leftpadded10">
+    {% for article in articles %}
+    <div class="line">
+       <div class="unit size1of7">
         {{ modules.Avatar(article.author) }}
-	   </div>
-	   <div class="lastUnit size6of7">
-	       <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>
-	       <p>{{ article.excerpt }}  -- <span class="small">{{ h.timesince(article.created_at) }}</span></p>
-	   </div>
-	</div>
-	{% end %}
-	</div>
+       </div>
+       <div class="lastUnit size6of7">
+           <p><a href="{{ article.get_url() }}">{{ escape(article.title) }}</a></p>
+           <p>{{ article.excerpt }}  -- <span class="small">{{ fd(article.created_at) }}</span></p>
+       </div>
+    </div>
+    {% end %}
+    </div>
 </div>
 
 <b class="bottom"><b class="bl"></b><b class="br"></b></b>

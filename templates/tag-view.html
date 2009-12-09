@@ -4,24 +4,25 @@
 
 {% block body %}
 
-{{ modules.Tabs('tags', tab, _('%s tagged with <span>%s</span>' % (tab.title(), tag))) }}
+{{ modules.Tabs('tags', tab, _('Tagged %s') % tab.title()) }}
 
 {% if pagination.get_objects().count() %}
     {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
-    {% set col = 3 if tab == 'user' else 2 %}
-    {% for group in h.group(pagination.get_objects(), col) %}
-        <div class="items line">
-        {% for i, item in enumerate(group) %}
-            {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
-            <div class="{{ unit }} size1of{{col}} {{c.next()}}">
-                {% if tab == 'user' %}
-                    {{ modules.ItemSummary(item, 'modules/item-user') }}
-                {% else %}
-                    {{ modules.ItemSummary(item) }}
-                {% end %}
+    {% if tab == 'user' %}
+        {% for group in h.group(pagination.get_objects(), 2) %}
+            <div class="items line">
+            {% for i, item in enumerate(group) %}
+                {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
+                <div class="{{ unit }} size1of2 {{c.next()}}">
+                   {{ modules.ItemSummary(item, 'modules/item-user') }}
+                </div>
+            {% end %}
             </div>
         {% end %}
-        </div>
+    {% else %}
+        {% for item in pagination.get_objects() %}
+            {{ modules.ItemSummary(item) }}
+        {% end %}
     {% end %}
 {% else %}
     <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
@@ -33,3 +34,24 @@
 
 {% end %}
 
+{% block sidebar %}
+    <div class="mod rel-tags">
+        <div class="inner">
+            <div class="bd">
+                <h2 class="ultrabig grey">{{pagination.total}}</h2>
+                {% if tab == 'content' %}
+                    <p>{{_('Articles/activities tagged with')}}</p>
+                {% else %}
+                    <p>{{_('User tagged with')}}</p>
+                {% end %}
+                <ul class="tags">
+                {% for tag in tags %}
+                    <li><a class="tag" href="{{BP}}/{{tab}}/tagged/{{tag}}">{{tag}}</a></li>
+                {% end %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {{ modules.RelatedTags(tags, tab) }}
+    <p>&nbsp;</p>
+{% end %}

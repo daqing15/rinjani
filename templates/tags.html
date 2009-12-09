@@ -15,7 +15,7 @@
     <div class="line">
         <ul class="tags">
             {% for tag in items %}
-                <li><a class="tag" href="{{BP}}/tag/{{url_escape(tag._id)}}?t={{tab}}">{{ escape(tag._id) }}</a> <span>x{{ int(tag.value) }}</span></li>
+                <li><a class="tag" href="{{BP}}/{{tab}}/tagged/{{url_escape(tag._id)}}">{{ escape(tag._id) }}</a> <span>x{{ int(tag.value) }}</span></li>
             {% end %}
         </ul>            
     </div>

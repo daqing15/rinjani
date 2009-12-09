@@ -2,8 +2,9 @@
 
 import re, os, sys
 from tornado.options import define, options, parse_command_line
+import logging
 
-def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
+def make_messages(locale, basedir, srcdirs, outdir, extensions, verbose=False):
     
     (_stdin, stdout, stderr) = os.popen3('xgettext --version', 't')
     match = re.search(r'(?P<major>\d+)\.(?P<minor>\d+)', stdout.read())
@@ -12,7 +13,6 @@ def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
         extensions = ['.html', '.py', '.pypo'] if not extensions else extensions
         
         outdir = os.path.join(basedir, outdir)
-        srcdir = os.path.join(basedir, srcdir)
         pofile = os.path.join(outdir, '%s.po' % locale)
         potfile = os.path.join(outdir, '%s.pot' % locale)
 
@@ -20,18 +20,21 @@ def make_messages(locale, basedir, srcdir, outdir, extensions, verbose=False):
             os.unlink(potfile)
 
         all_files = []
-        for (dirpath, _dirnames, filenames) in os.walk(srcdir):
-            all_files.extend([(dirpath, f) for f in filenames])
+        for srcdir in srcdirs:
+            srcdir = os.path.join(basedir, srcdir)
+            logging.info(srcdir + " ...")
+            for (dirpath, _dirnames, filenames) in os.walk(srcdir):
+                all_files.extend([(dirpath, f) for f in filenames])
         all_files.sort()
         
-        sys.stdout.write("Updating translation string...\n")
+        logging.info("Updating translation string...\n")
         for dirpath, file in all_files:
             _file_base, file_ext = os.path.splitext(file)
             
             if file_ext in extensions:
-                cmd = 'xgettext  -L Python -F  -w=20 --omit-header --from-code UTF-8 -f /tmp/list --debug -o - "%s"' %  os.path.join(dirpath, file)
+                cmd = 'xgettext  -L Python -F  -w=20 --omit-header --from-code UTF-8 --debug -o - "%s"' %  os.path.join(dirpath, file)
                 if verbose:
-                    sys.stdout.write('processing %s\n' % os.path.join(dirpath, file))
+                    logging.info('processing %s\n' % os.path.join(dirpath, file))
 
                 (_stdin, stdout, stderr) = os.popen3(cmd, 't')
                 msgs = stdout.read()
@@ -63,7 +66,7 @@ def convert_to_csv(pofile):
     lines = open(pofile).readlines()
     clines, msgid, in_msg = [], [], False
     
-    sys.stdout.write("Converting .po to .csv...\n")
+    logging.info("Converting .po to .csv...\n")
     for line in lines:
         if line.startswith("#: "):
             continue
@@ -90,7 +93,7 @@ def convert_to_csv(pofile):
 if __name__ == "__main__":
     define("locale", default='id_ID')
     define("basedir", default='')
-    define("srcdir", default='templates')
+    define("srcdir", default=['templates', 'handlers', 'translations/strings'], multiple=True)
     define("outdir", default='translations')
     define("verbose", default=False, type=bool)
     define("ext", default=[],help="Extensions of file to process (eg. .html,.js)",multiple=True)

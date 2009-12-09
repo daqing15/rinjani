@@ -304,7 +304,7 @@ div.modal div.close {
     display:none;
 }
 
-.ovl .next, .ovl .prev, .info {
+.ovl .next, .ovl .prev, .ovl .info {
     background:#333 !important;
     background:rgba(0, 0, 0, 0.6) url(img/h80.png) repeat-x;       
 }

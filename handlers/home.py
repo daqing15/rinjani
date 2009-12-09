@@ -19,7 +19,7 @@ from models import Article
 class HomeHandler(BaseHandler):
     def get(self):
         was_here = self.get_cookie('was_here', False)
-        tweets = self.cache.get("tweets", True)
+        tweets = self.cache.get("tweets")
 
         if not was_here:
             self.set_cookie('was_here', '1')

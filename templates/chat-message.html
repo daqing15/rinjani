@@ -1,0 +1,12 @@
+ <div class="line message" id="m{{ message["id"] }}">
+    <div class="av">
+        {% set avt = avatars[message['from']] %} 
+        {% if  avt and avt[0:7] == 'http://' %}
+            <a href="#" class="img"><img width="40" height="40" src="{{ avt }}" alt="{{message['from']}}" /></a>
+            {% else %}
+            <a href="#" class="img"><img width="40" height="40" src="{{ static_url('uploads/avatars/' + get(avt, settings.avatar)) }}" alt="{{message['from']}}" /></a>
+        {% end %}
+    </div>
+    <div><strong>{{ escape(message["from"]) }}: </strong>{{ escape(message["body"]) }}</div>
+    <div><span class="small grey">{{ fd(message['ts']) }}</span></div>
+</div>

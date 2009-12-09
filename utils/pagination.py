@@ -99,7 +99,7 @@ class Pagination(object):
         if next is not None:
             result.append(u'<span class="sep"> </span>'
                           u'<a href="%s" class="next">%s</a>' %
-                          (self.link_func(next), _(u'Next &gt;')))
+                          (self.link_func(next), _(u'Next') + ' &gt;'))
 
         return u''.join(result)
 

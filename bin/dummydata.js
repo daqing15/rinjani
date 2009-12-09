@@ -1,6 +1,6 @@
 
 TAGS = ['economy', 'education', 'enterpreneurship', 'training', 'inspiring', 'public-figure', 'interview', 'photo', 'failure']
-USERTAGS = ['enterpreneurship', 'social media', 'healtcare', 'ICT', 'insurance']
+USERTAGS = ['enterpreneurship', 'social-media', 'healtcare', 'ICT', 'insurance']
 
 EXCERPT = [
     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer risus velit, facilisis eget, viverra et, venenatis id.',
@@ -12,7 +12,7 @@ EXCERPT = [
 
 Article = {
     template : {
-		type: 'ART',
+        type: 'ART',
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -26,7 +26,7 @@ Article = {
 
 Activity = {
     template : {
-		type: 'ACT',
+        type: 'ACT',
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -40,12 +40,23 @@ Activity = {
     collectionName: 'contents'
 }
 
+function removeArrDuplicate(a) {
+    a.sort();
+    for (var i = 1; i < a.length; i++) {
+        if (a[i-1] == a[i]) {
+            a.splice(i, 1);
+            i--;
+        }
+    }
+}
+
 var choose_tags = function(T) {
     if (!T) { T = TAGS; }
     tags = [];
     for(var i=Math.floor(Math.random() * 5); i>=0; i--) {
         tags[i] = T[Math.floor(Math.random() * T.length)];
     }
+    removeArrDuplicate(tags);
     return tags;
 }
 
@@ -71,15 +82,15 @@ var generate_random_content = function(ctype, id) {
     t["view_count"] = 1 + Math.floor(Math.random() * 500)
     t['tags'] = choose_tags();
     db[ctype.collectionName].save(t);
-    
+
     assert( db.getPrevError().err == null , db.getPrevError().err );
-    
+
     u = db.users.findOne({_id: uid});
     if (u) {
         u[ctype.counter] += 1;
         db.users.save(u);
     }
-    
+
 }
 
 ut = { _required_namespace: [], document_scan : null, last_login: new Date(), "website" : null, "profile_content_html" : null, "uid" : null, "locale" : null, "phones" : [], "auth_provider" : "form", "sex" : null, "birthday_date" : null, "timezone" : "Asia/Jakarta", "badges" : [], "attachments" : [], "preferences" : [], "article_count" : 0, "location" : [], "followers" : [], "is_verified" : true, "email" : null, "fax" : [], "tags" : [], "activity_count" : 0, "following" : [], "password_hashed" : "a7257ef242a856304478236fe46fee00f23f8a25", "is_admin" : false, "address" : null, "profile_content" : null, "fullname" : null, "access_token" : null, "type" : "agent", "points" : 0, "status" : "active", "avatar" : null, "donation_count" : 0, "contact_person" : null }

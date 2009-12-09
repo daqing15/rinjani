@@ -551,12 +551,19 @@ class UserTag(Tag):
 class Cache(Simpledoc):
     collection_name = 'caches'
     structure = {
-        'key': unicode,
         'value': IS(dict, bool, unicode, list),
         'expire': float
     }
     default_values = {'expire': 0.0}
 
+class TagCombination(Simpledoc):
+    collection_name = 'content_tag_combinations'
+    structure = { 'value': int, 'tags': list }
+
+class UserTagCombination(Simpledoc):
+    collection_name = 'user_tag_combinations'
+    structure = { 'value': int, 'tags': list }
+        
 def get_or_404(cls, query=None):
     query = query if query else {}
     o = cls.one(query)

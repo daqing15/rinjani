@@ -22,13 +22,19 @@ from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
 import tornado.web
 
-PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this activity"
-
 class ListHandler(BaseHandler):
-    def get(self):
+    def get(self, tab):
         spec = {'type': 'ACT', 'status':'published'}
-        pagination = Pagination(self, Activity, spec)
-        self.render('activities', pagination=pagination)
+        tab = tab or 'latest'
+        if tab == 'featured':
+            spec.update({'featured':True})
+        
+        if tab == 'popular':
+            pagination = Pagination(self, Activity, spec, sort_by='view_count')
+        else:
+            pagination = Pagination(self, Activity, spec)
+            
+        self.render('activities', pagination=pagination, tab=tab)
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
@@ -53,7 +59,7 @@ class EditHandler(BaseHandler):
                 activity.formify()
                 f.fill(activity)
             except EditDisallowedError:
-                self.set_flash(PERMISSION_ERROR_MESSAGE)
+                self.set_flash(self.__("You are not allowed to edit this activity."))
                 self.redirect(activity.get_url())
                 return
             except:
@@ -67,7 +73,9 @@ class EditHandler(BaseHandler):
         f = activity_form()
         data = self.get_arguments()
         is_edit = data.has_key('is_edit')
-
+        
+        _ = self._
+        
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
@@ -82,14 +90,14 @@ class EditHandler(BaseHandler):
                     activity.update_html()
                     activity.save()
 
-                self.set_flash("Activity has been saved.")
+                self.set_flash(_("Activity has been saved."))
                 url =  activity.get_url() if activity.status == 'published' else '/dashboard'
                 self.redirect(url)
                 return
             activity = Activity()
-            raise Exception("Form still have errors.")
+            raise Exception(_("Form still have errors."))
         except EditDisallowedError:
-            self.set_flash(PERMISSION_ERROR_MESSAGE)
+            self.set_flash(_("You are not allowed to edit this activity."))
             self.redirect(activity.get_url())
         except Exception, e:
             raise
@@ -108,5 +116,5 @@ class RemoveHandler(BaseHandler):
         #activity.delete()
         activity.status = u'deleted'
         activity.save()
-        self.set_flash("That activity has been removed")
+        self.set_flash(self._("That activity has been removed."))
         self.redirect("/activities")

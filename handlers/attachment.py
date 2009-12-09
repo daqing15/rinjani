@@ -15,7 +15,6 @@
 
 import os
 import subprocess
-import logging
 import shutil
 import tempfile
 from mimetypes import guess_extension
@@ -84,7 +83,7 @@ class AddHandler(BaseHandler):
             if file_type in IMAGE_CONTENT_TYPES:
                 create_thumbnails(path, PIC_SIZES)
                 thumb_src = name + '.s' + ext
-                logging.error("thumb is " + thumb_src) 
+                self.log("thumb is " + thumb_src) 
             else:
                 thumb_src = 'attachment.png'
             
@@ -125,14 +124,14 @@ class AddHandler(BaseHandler):
 class RemoveHandler(BaseHandler):
     def remove(self, filename):
         path = os.path.join(self.settings.upload_path, filename)
-        logging.error("removing %s" % path)
+        self.log("removing %s" % path)
         try:
             os.remove(path)
         except: pass
         
     def post(self):
         try:
-            logging.warning(self.get_arguments())
+            self.log(self.get_arguments())
             
             filename = self.get_argument('filename')
             slug = self.get_argument('slug', None)
