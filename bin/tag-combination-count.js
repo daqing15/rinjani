@@ -26,16 +26,16 @@ m = function() {
 
 	c = combination(this.tags);
 	c.forEach(function(z) {
-		emit(z.join('#'), 1);
+		emit(z.join('#'), {tags: z, count: 1});
 	});
 };
 
 r = function(key, values) {
 	var total = 0;
 	for ( var i = 0; i < values.length; i++) {
-		total += values[i];
+		total += values[i]['count'];
 	}
-	return total
+	return {tags: values[0]['tags'], count: total}
 };
 
 ['contents', 'users'].forEach(function(col) {
@@ -46,12 +46,6 @@ r = function(key, values) {
 		reduce : r,
 		query : {},
 		out : collection_name
-	});
-	print(tojson(res));
-	
-	db[collection_name].find().forEach(function(c) {
-		c['tags'] = c['_id'].split('#');
-		db[collection_name].save(c);
 	});
 });
 

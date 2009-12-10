@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import curses
 from utils.utils import log
 import os.path
 import urllib
@@ -23,6 +22,17 @@ from forms import MyForm
 from models import User
 from utils import cache
 
+class api(object):
+    def __init(self): pass
+    def __call_(self, method):
+        cls = self # api class
+        
+        def render():
+            pass
+        def wrapped_method(self, *args, **kwargs):
+            pass
+        return wrapped_method
+        
 class authenticated(object):
     """Decorate methods with this to require authenticated access"""
     def __init__(self, allowed_types=None, admin_access=None, verified_access=None):

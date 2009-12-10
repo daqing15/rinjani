@@ -1,0 +1,15 @@
+{% extends 'api-base.html' %}
+
+{% block title %}Peduli API {% end %}
+
+{% block body %}
+
+<h1>Request API Key</h1>
+<form method="post">
+    {{ f.render_css()}}
+    {{ xsrf_form_html() }}
+    <button>Send</button> <button onclick="history:back(); return false">Cancel</button>
+</form>
+
+
+{% end %}

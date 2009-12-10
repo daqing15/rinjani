@@ -28,7 +28,7 @@ def rebuilddb():
     restart_app()
 
 def restart_supervisor():
-    run("killall supervisord && supervisord")
+    run("killall supervisord && sleep 2 && supervisord")
 
 def restart_app():
     run("supervisorctl restart 'app:*'")
@@ -38,9 +38,7 @@ def backup():
             % (env.envi, env.remotedir))
 
 def mergecss():
-    local("cd %s/static/css && cat app.css mod.css uicomponents.css > " 
-          + "/tmp/peduli.css && yuic /tmp/peduli.css > %s/static/css/peduli.css" \
-            %(env.localdir, env.localdir) )
+    local("cd %s/static/css && cat app.css mod.css uicomponents.css > /tmp/rinjani.css && yuic /tmp/peduli.css > %s/static/css/rinjani.css" %(env.localdir, env.localdir) )
 
 def _sync(path):
     local("rsync -rzvh %s/%s %s:%s/%s" % (env.localdir, path, env.hosts[0], env.remotedir, path))

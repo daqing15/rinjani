@@ -187,6 +187,118 @@ var Rinjani = {
             t.value += s;
             t.focus();
         }
+    },
+    
+    setupAjax: function() {
+      // the ajax setup
+	  $.ajaxSetup({
+	      error: function() {
+	          Rinjani.flash('Could not contact server. Connection problems?');
+	      }
+	  });
+	  $('#loading').ajaxStart(function() {
+	        $(this).show();
+	  });
+	  $('#loading').ajaxStop(function() {
+	        $(this).hide();
+	  });
+    },
+    
+    setupForm: function() {
+        $('#hsearch input[type=text]').each(function() {
+	        var hint = $(this).val();
+	        $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
+	    });
+      
+        $('button.ajax').live('click', function() {
+            var action=$(this).parent('form').attr('action');
+            R.request(action, {}, 'POST');
+            return false;
+        });
+
+
+        // setup rich text editor
+	    if ($.markItUp) {
+	        mySettings = $.extend(mySettings || {}, {
+	          previewAutoRefresh: true
+	        });
+	        $('.rte').markItUp(mySettings);
+	        $('li.preview a').trigger('mouseup');
+	        $('li.tPreview a').trigger('mouseup');
+	        $('.rte').each(function() {
+	        	$(this).css('height', $(this).attr('rows') + 'em');
+	        });
+	        scroll(0,0);
+	    }
+	
+	    $('.deps').each(function() {
+	          $src = $(this).find('.depsrc input[type=checkbox]');
+	          $src.click(function(i) {
+	              $(this).parents('.deps').find('.deptarget').toggle();
+	          });
+	          if ($src.attr('checked')) {
+	              $(this).find('.deptarget').show();
+	          }
+	      });
+	
+	    $('.btn').each(function(){
+	        var b = $(this);
+	        var tt = b.text() || b.val();
+	        if ($(':submit,:button',this)) {
+	            b = $('<a>').insertAfter(this). addClass(this.className).attr('id',this.id);
+	            $(this).remove();
+	        }
+	        b.text('').css({cursor:'pointer'}). prepend('<i></i>').append($('<span>').
+	        text(tt).append('<i></i><span></span>'));
+	     });
+      
+    },
+    setupUI: function() {
+    	Rinjani.setupDropdownMenu();
+    	
+    	// check if jQuery Tools exists
+    	if ($.fn.overlay) {
+    	      var dialog = $(".dialog[rel]").overlay({
+    	          expose: '#000',
+    	          top: '25%',
+    	          closeOnClick: false,
+    	          onBeforeLoad: function() {
+    	              var wrap = this.getContent().find(".wDialog");
+    	              url = this.getTrigger().attr("href");
+    	              if (url != '#') {
+    	                  wrap.load(url);
+    	              }
+    	          }
+    	      });
+    	      
+    	      if ($('#slideshow').length) {
+	    	      var slideshow = $(".slideshow a").overlay({
+	    	        target: '#slideshow',
+	    	        expose: '#000',
+	    	        top: '25%',
+	    	        closeOnClick: false,
+	    	      })
+	
+	    	      if (slideshow.size()) { 
+	    	    	  slideshow.gallery({
+		    	    	  speed: 800,
+		    	          opacity:.6,
+		    	          template: '<span>${index} of ${total}</span>'
+	    	          }); 
+	    	      }
+    	      }
+
+    	       // select all desired input fields and attach tooltips to them
+    	      $("form.withtips :input[title], .tt").tooltip({
+    	          position: "center right",
+    	          offset: [-10,-5],
+    	          effect: "fade",
+    	          tip: '.tooltip'
+    	      });
+
+    	      $("ul.tabs").tabs("div.panes > div");
+    	      $("ul.vtabs").tabs("div.vpanes > div");
+    	  }
     }
 };
 
@@ -195,107 +307,9 @@ var R = Rinjani;
 var timeout;
 
 $(function() {
-  // the ajax setup
-  $.ajaxSetup({
-      error: function() {
-          Rinjani.flash('Could not contact server. Connection problems?');
-      }
-  });
-  $('#loading').ajaxStart(function() {
-        $(this).show();
-  });
-  $('#loading').ajaxStop(function() {
-        $(this).hide();
-  });
-
-  R.fadeInFlashMessages();
-  R.setupDropdownMenu();
-
-  $('#hsearch input[type=text]').each(function() {
-      var hint = $(this).val();
-      $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
-  });
-
-  if ($.fn.overlay) {
-      var dialog = $(".dialog[rel]").overlay({
-          expose: '#000',
-          top: '25%',
-          closeOnClick: false,
-          onBeforeLoad: function() {
-              var wrap = this.getContent().find(".wDialog");
-              url = this.getTrigger().attr("href");
-              if (url != '#') {
-                  wrap.load(url);
-              }
-          }
-      });
-
-      var slideshow = $(".slideshow a").overlay({
-        target: '#slideshow',
-        expose: '#000',
-        top: '25%',
-        closeOnClick: false,
-      })
-
-      if (slideshow.size()) { slideshow.gallery({
-        speed: 800,
-        opacity:.6,
-        template: '<span>${index} of ${total}</span>'
-      }) }
-
-       // select all desired input fields and attach tooltips to them
-      $("form.withtips :input[title], .tt").tooltip({
-          position: "center right",
-          offset: [-10,-5],
-          effect: "fade",
-          tip: '.tooltip'
-      });
-
-      $("ul.tabs").tabs("div.panes > div");
-      $("ul.vtabs").tabs("div.vpanes > div");
-  }
-
-  $('button.ajax').live('click', function() {
-        var action=$(this).parent('form').attr('action');
-        R.request(action, {}, 'POST');
-        return false;
-     });
-
-
-  // setup rich text editor
-  if ($.markItUp) {
-    mySettings = $.extend(mySettings || {}, {
-        previewAutoRefresh: true
-    });
-    $('.rte').markItUp(mySettings);
-    $('li.preview a').trigger('mouseup');
-    $('li.tPreview a').trigger('mouseup');
-    $('.rte').each(function() {
-      $(this).css('height', $(this).attr('rows') + 'em');
-    });
-    scroll(0,0);
-  }
-
-  $('.deps').each(function() {
-        $src = $(this).find('.depsrc input[type=checkbox]');
-        $src.click(function(i) {
-            $(this).parents('.deps').find('.deptarget').toggle();
-        });
-        if ($src.attr('checked')) {
-            $(this).find('.deptarget').show();
-        }
-    });
-
-  $('.btn').each(function(){
-      var b = $(this);
-      var tt = b.text() || b.val();
-      if ($(':submit,:button',this)) {
-          b = $('<a>').insertAfter(this). addClass(this.className).attr('id',this.id);
-          $(this).remove();
-      }
-      b.text('').css({cursor:'pointer'}). prepend('<i></i>').append($('<span>').
-      text(tt).append('<i></i><span></span>'));
-   });
-
+	R.setupAjax();
+	R.fadeInFlashMessages();
+	R.setupForm();
+	R.setupUI();
 });
 

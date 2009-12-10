@@ -7,8 +7,8 @@
         <div class="bd leftpadded10">
             <ul class="tags">
             {% for _tag in tags %}
-                {% set tag = list(set(_tag['tags']).difference(set(_tags))).pop() %} 
-                <li><a class="tag" href="/{{type}}/tagged/{{'+'.join(_tags)}}+{{tag}}">{{tag}}</a> x{{int(_tag['value'])}}</li>
+                {% set tag = list(set(_tag.get_tags()).difference(set(_tags))).pop() %} 
+                <li><a class="tag" title="{{_('%s tagged with %s') % (type.title(), '+'.join(_tags)+'+'+tag)}}" href="/{{type}}/tagged/{{'+'.join(_tags)}}+{{tag}}">{{tag}}</a> x{{int(_tag.get_count())}}</li>
             {% end %}
             </ul>
         </div>

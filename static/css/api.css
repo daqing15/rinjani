@@ -1,0 +1,170 @@
+body {
+background-color:#FFFFFF;
+font-family:helvetica,verdana,sans-serif;
+font-size:12px;
+margin:20px 20px 40px;
+width:800px;
+}
+.GB_Window .caption {
+font-weight:bold;
+overflow:hidden;
+}
+.close span {
+height:20px !important;
+}
+h1, h2, h3 {
+color:#222222;
+}
+p {
+line-height:17px;
+margin:10px;
+}
+h1, h2 {
+background-color:#FFFFCC;
+border:1px solid #CCCCCC;
+font-size:19px;
+margin:35px 0 5px;
+padding:5px 5px 6px;
+}
+h2 {
+background-color:#E5ECF9;
+font-size:16px;
+margin:20px 0 0;
+}
+h3 {
+font-size:18px;
+margin:25px 0 8px;
+}
+small {
+font-size:13px;
+}
+ul {
+margin:0 0 0 30px;
+padding:0;
+}
+li {
+padding:2px 0;
+}
+.fns {
+padding:0 15px;
+}
+#top {
+color:#A53800;
+font-size:30px;
+overflow:auto;
+text-align:left;
+}
+#legend {
+font-size:12px;
+padding-top:10px;
+}
+.shortcut {
+background-color:#D9FFDE;
+}
+.optional {
+background-color:#DDDDDD;
+color:#555555;
+}
+dl {
+margin:0 0 0 15px;
+padding:0;
+}
+dt {
+color:#333333;
+font-size:13px;
+font-weight:bold;
+padding-top:5px;
+}
+dd {
+margin:5px 0 5px 15px;
+}
+dd ul {
+list-style:none outside none;
+margin:0;
+padding:0;
+}
+.TOC {
+list-style:none outside none;
+margin:0;
+padding:10px 0 0 18px;
+}
+.TOC li {
+padding:5px 0;
+}
+.TOC a {
+color:blue;
+}
+.top_link {
+color:#999999;
+font-size:12px;
+text-decoration:none;
+}
+.expander {
+cursor:pointer;
+text-decoration:underline;
+}
+.show {
+color:blue;
+}
+.hide {
+color:red;
+}
+.div_help {
+background-color:#EAF9FF;
+border:1px solid #CCCCCC;
+font-family:courier,sans-serif;
+line-height:16px;
+margin:5px 0;
+padding:5px;
+}
+.comment {
+color:#333333;
+}
+.vars {
+color:#DB00AF;
+}
+.run {
+color:green;
+cursor:pointer;
+margin-top:5px;
+text-decoration:underline;
+}
+.TOC .inner_li {
+padding-left:25px;
+}
+.issue_key {
+margin-left:15px;
+text-align:left;
+vertical-align:top;
+}
+.issue_key textarea {
+height:50px;
+width:300px;
+}
+.issue_key th {
+text-align:right;
+vertical-align:top;
+}
+.issue_key .help {
+color:#555555;
+margin-left:8px;
+}
+.error {
+background:none repeat scroll 0 0 #FA3140;
+border:1px solid #F24C58;
+color:#FFFFFF;
+display:none;
+margin-bottom:10px;
+padding:5px;
+}
+.ok_text {
+background:none repeat scroll 0 0 #0CAB00;
+border:1px solid #018B11;
+color:#FFFFFF;
+display:none;
+margin-bottom:10px;
+padding:5px;
+}
+th {
+padding-right:5px;
+}

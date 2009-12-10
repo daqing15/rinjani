@@ -1,0 +1,71 @@
+{% extends 'api-base.html' %}
+
+{% block title %}Peduli API {% end %}
+
+{% block head %}
+<link type="text/css" rel="stylesheet" href="{{static_url('syntaxhighlighter/styles/shCore.css')}}"/>
+<link type="text/css" rel="stylesheet" href="{{static_url('syntaxhighlighter/styles/shThemeRDark.css')}}"/>
+{% end %}
+
+{% block body %}
+
+<h1><a name="intro">Introduction</a></h1>
+<p>Peduli API provides a standard way of accessing and implementing applications on top of
+the Peduli platform. The API is a simple HTTP API that can be accessed from any language that supports creation of HTTP requests.</p>
+
+<p style="padding:10px 0"><a style="font-size:120%; border:1px solid #ccc; padding: 5px;" href="/request">Request</a></p>
+
+<h1>Table of Contents</h1>
+<ul class="TOC" id="toc_holder">
+    <li><a href="#python_example">Python example</a></li>
+    <li><a href="#contents">Contents</a></li>
+    <li class="inner_li">/articles</li>
+    <li class="inner_li">/activities</li>
+    <li class="inner_li">/article</li>
+    <li class="inner_li">/activity</li>
+</ul>
+
+<h1>
+    <a name="python_example">Python example</a> <a class="top_link" href="#toc">[top]</a>
+</h1>
+
+<div class="brush: python; code">
+<pre>
+import urllib, urllib2, cookielib
+
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+api_key = 'dKkIdUCoHo7vUDPjd3zE0bRvdm5a9sQi'
+get_api_url = lambda x: 'http://www.plurk.com/API%s' % x
+encode = urllib.urlencode
+
+
+fp = opener.open(get_api_url('/article'),
+        encode({'username': 'user_x',
+                'password': 'user_x_pw',
+                'api_key': api_key}))
+print fp.read()
+
+</pre>
+</div>
+
+<h3>Output</h3>
+<div class="brush: javascript; code">
+<pre>
+{"responses_seen": 0, "qualifier": "thinks", "plurk_id": 90812, "response_count": 0, "limited_to": null, "no_comments": 0, "is_unread": 1, "lang": "en", "content_raw": "test me out", "user_id": 1, "plurk_type": 0, "content": "test me out", "qualifier_translated": "thinks", "posted": "Fri, 05 Jun 2009 23:07:13 GMT", "owner_id": 1} 
+</pre>
+</div>
+
+<script type="text/javascript" src="{{static_url('jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{static_url('syntaxhighlighter/scripts/shCore.js')}}"></script>
+<script type="text/javascript" src="{{static_url('syntaxhighlighter/scripts/shBrushJScript.js')}}"></script>
+<script type="text/javascript" src="{{static_url('syntaxhighlighter/scripts/shBrushPython.js')}}"></script>
+<script type="text/javascript">
+$('div.code').each(function() {
+    $('pre', this).addClass($(this).attr('class'));
+});
+SyntaxHighlighter.defaults['gutter'] = false;
+SyntaxHighlighter.config.clipboardSwf = '{{static_url("syntaxhighlighter/scripts/clipboard.swf")}}';
+SyntaxHighlighter.all();
+</script>
+
+{% end %}

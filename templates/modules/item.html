@@ -1,6 +1,6 @@
 
 {% set user = item.author %}
-<div class="line item-summary">
+<div class="line item">
       <div class="unit size2of7">
             <div class="media attribution" title="{{ escape(get(user.about,""))}}">
               {{ modules.Avatar(user) }}
@@ -19,7 +19,9 @@
                   <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{fd(item.created_at)}}</h3></div>
                   <div class="bd">
                     <p>{{ get(s.truncate_words(item.excerpt, 13), s.truncate_words(item.content, 13)) }}</p>
-                    <p class="tags">{{ ", ".join(item.tags)}}</p> 
+                    <p class="tags">
+                    {% for tag in item.tags %}<a class="tag" href="/content/tagged/{{tag}}">{{tag}}</a>{%end%}
+                    </p> 
                   </div>
               </div>
               <b class="bottom"><b class="bl"></b><b class="br"></b></b>

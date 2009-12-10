@@ -166,7 +166,7 @@ class FollowersHandler(BaseHandler):
 class Dashboard(BaseHandler):
     @authenticated()
     def get(self):
-        drafts = Pagination(self, Content, {'user': DBRef(User.collection_name, self.current_user._id), 'status':'draft'}, 5)
+        drafts = Pagination(self, Content, {'author': DBRef(User.collection_name, self.current_user._id), 'status':'draft'}, 5)
         self.render(self.current_user.type + "/dashboard", drafts=drafts)
 
 class UserListHandler(BaseHandler):

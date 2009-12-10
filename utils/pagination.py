@@ -16,13 +16,16 @@ class Pagination(object):
     commata = u'<span class="commata">,\n</span>'
     ellipsis = u'<span class="ellipsis">...\n</span>'
 
-    def __init__(self, req, doc_class, query=None, per_page=16, link_func=None, sort_by='created_at', sort=-1):
+    def __init__(self, req, doc_class, query=None, per_page=16, fields=None, \
+                    wrap=None, link_func=None, sort_by='created_at', sort=-1):
         self.query = {} if query is None else query
+        self.fields = fields
         self.page = int(req.get_argument('page', 1))
         self.doc_class = doc_class
         self.per_page = per_page
         self.sort_by = sort_by
         self.sort = sort
+        self.wrap = wrap is None
 
         self.translate = req.locale.translate
         self.pages = int(math.ceil(self.total / float(per_page)))
@@ -56,10 +59,15 @@ class Pagination(object):
             rv = self.doc_class.get_objects(
                             offset=self.offset, per_page=self.per_page)
         else:
-            rv = self.doc_class.all(self.query) \
-                .skip(self.offset)\
-                .limit(self.per_page) \
-                .sort(self.sort_by, self.sort)
+            if self.fields:
+                cursor = self.doc_class.all(self.query, fields=self.fields,\
+                                            wrap=self.wrap)
+            else:
+                cursor = self.doc_class.all(self.query)
+            rv = cursor \
+                    .skip(self.offset)\
+                    .limit(self.per_page) \
+                    .sort(self.sort_by, self.sort)
 
         if raise_not_found and self.page > 1 and not rv:
             raise HTTPError()

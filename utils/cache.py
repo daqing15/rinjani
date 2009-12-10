@@ -31,4 +31,4 @@ class RedisCacheManager(object):
         ttl = ttl if ttl else default_ttl
         self.redis.set(key, value, ttl)
                 
-cachemanager = RedisCacheManager()
+cachemanager = MongoCacheManager()

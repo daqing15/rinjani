@@ -23,7 +23,7 @@ def new_timed_call(period, callback, *args, **kw):
     scheduler.enter(period, 0, reload, ())
 
 def remove_old_caches(*args, **kw):
-    logging.warn("[%s] Removing expired caches..." % time.ctime(time.time()))
+    logging.warn("[%s] Removing expired caches in mongo..." % time.ctime(time.time()))
     Cache.collection.remove({'expire':{'$lt':time.time()}})
     
 def update_tags(*args, **kw):

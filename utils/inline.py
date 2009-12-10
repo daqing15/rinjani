@@ -121,23 +121,48 @@ class SurveyInline(TemplateInline):
             return self.code % (urllib.urlencode({'f':self.value}))
         return ""
         
-        
+class VimeoInline(TemplateInline):
+    """
+        {{ vimeo 3355648 }}
+    """
+    code = """
+<object width="%(width)s" height="%(height)s">
+    <param name="allowfullscreen" value="true" />
+    <param name="allowscriptaccess" value="always" />
+    <param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=%(id)s&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" />
+    <embed src="http://vimeo.com/moogaloop.swf?clip_id=%(id)s&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="%(width)s" height="%(height)s"></embed>
+</object>
+"""       
+    def render(self):
+        args = {'width':550, 'height':331}
+        args.update(self.kwargs)
+        import logging
+        logging.error("\n=======================\n" + self.value)
+        match = re.search(r'vimeo\.com\/(\d+)', self.value)
+        if match:
+            args.update({'id': match.group()})
+            return self.code % args
+        return ""
+            
 class YoutubeInline(TemplateInline):
     """
         {{ youtube 4R-7ZO4I1pI width=850 height=500 }}
     """
     base_url = "http://www.youtube.com/v"
     code = """
-<object type="application/x-shockwave-flash" style="width:550px; height:331px;" 
+<object type="application/x-shockwave-flash" style="width:%(width)spx; height:%(height)spx;" 
     data="%(base_url)s/%(id)s">
     <param name="movie" value="http://www.youtube.com/v/%(id)s" />
 </object> 
 """       
     def render(self):
+        args = {'width':550, 'height':331}
+        args.update(self.kwargs)
+        
         match = re.search(r'(?<=v\=)[\w]+', self.value)
         if match:
-            video_id = match.group()
-            return self.code % { 'id': video_id, 'base_url': self.base_url}
+            args.update({ 'id': match.group(), 'base_url': self.base_url})
+            return self.code % args
         return ""
 
 IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/gif']
@@ -206,6 +231,7 @@ class AttachmentInline(TemplateInline):
          
 # The default registry.
 processor = InlineProcessor()
+processor.register('vimeo', VimeoInline)
 processor.register('youtube', YoutubeInline)
 processor.register('survey', SurveyInline)
 

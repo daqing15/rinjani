@@ -32,6 +32,10 @@ mySettings = {
 		{name:'Insert Slideshow', key: 'S', className:'slideshow', openWith:'{{ slideshow }}\n'},
 		{name:'Insert Youtube Video', key: 'Y', className:'youtube', openWith:'{{ youtube ', 
 			closeWith: '[![Paste the url here, eg. http://youtube.com/watch?v=_VZ1QnKSpgc:!:]!] }}', placeHolder: ''},
+		{name:'Insert Vimeo Video', key: 'V', className:'vimeo', openWith:'{{ vimeo ', 
+			closeWith: '[![Paste the url here, eg. http://vimeo.com/1299394:!:]!] }}', placeHolder: ''},
+		{name:'Insert Survey (from your Google Spreadsheet)', className:'gform', 
+			closeWith: function(markItUp) { return miu.askGForm(markItUp);}, placeHolder: ''},
 		{separator:'---------------'},
 		{name:'Show/Hide Preview', openWith:function(m) { togglePreview(m); }, className:"tPreview"},
 		{name:'Preview', call:'preview', className:"preview"}
@@ -47,6 +51,18 @@ miu = {
 			heading += char;
 		}
 		return '\n'+heading;
+	},
+	askGForm: function(markItUp) {
+		//'[![Paste the google form ID here, eg. c45420VZ1QnKSpgc:!:]!] }}'
+		var code = prompt("Paste the code you get from Google, eg. <iframe src=...");
+		if (code != null) {
+			result = code.match(/\?key\=(\w+)\"/);
+			if (result != null) {
+				return "{{ survey " + result[1] + " }}";
+			} else {
+				alert("Please check your code. ")
+			}
+		}
 	}
 };
 

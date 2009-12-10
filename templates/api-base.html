@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{% block title %}{% end %}</title>
+    <link rel="stylesheet" href="{{ static_url('css/api.css') }}" type="text/css" media="screen, projection" />
+<style type="text/css">
+
+form { padding: 0;}
+input, textarea { border: 1px solid #ccc; padding: 1px 2px; }
+input:focus, textarea:focus { background: #FFFFCC; border: 1px solid #DEDE63; }
+button { margin: 5px 0; }
+form label { display: block; padding-top: 10px; margin-bottom: 3px; font-size: 120%; color: #555; cursor: pointer;}
+.invalid { padding: 10px; font-size:85%;background: #FFBBBF; text-transform: lowercase; margin-bottom: 10px;}
+.i .invalid { background: none; padding: 0; color: #DB4729; font-size: 80%;}
+.i { clear: both; }
+pre { white-space: pre;  }
+</style>
+
+{% block head %}{% end %}
+</head>
+
+<body>
+
+<div id="top"><div style="float: right;"><img src="/static/img/logo.png" /></div>
+    Peduli API
+</div>
+
+{% block body %}{% end %}
+
+</body>
+</html>

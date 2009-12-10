@@ -4,7 +4,7 @@ import re
 import markdown2
 
 import tornado.web
-from mongokit import DBRef, MongoDocument, IS, OR, SchemaTypeError
+from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import DB, USERTYPE as _USER_TYPE
 from utils.string import force_unicode, listify, sanitize, slugify
 from utils.inline import processor, AttachmentInline, SlideshowInline
@@ -14,14 +14,16 @@ CONTENT_TYPE = {'ART':'article', 'ACT':'activity', 'PAG': 'page'}
 
 class EditDisallowedError(Exception): pass
 
-class BaseDocument(MongoDocument):
+class Simpledoc(MongoDocument):
     db_host, db_port, db_name = DB
-    skip_validation = True
     use_dot_notation = True
-    use_autorefs = True
+    skip_validation = True
     structure = {}
+    
+class BaseDocument(Simpledoc):
+    use_autorefs = True
     sanitized_fields = []
-
+    
     def check_edit_permission(self, user):
         if user['_id'] == self['author']['_id'] or user['is_admin']:
             return True
@@ -342,7 +344,9 @@ class Article(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-
+    api_fields = ['title', 'slug', 'excerpt', 'content', 
+                    'view_count', 'tags', 'created_at', 'updated_at'] 
+    
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
@@ -391,7 +395,10 @@ class Activity(Content):
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
-
+    api_fields = ['title', 'slug', 'excerpt', 'content', 
+                    'location', 'date_start', 'date_end', 
+                    'view_count', 'tags', 'created_at', 'updated_at']
+    
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
                       'featured': False,
@@ -532,11 +539,6 @@ class Stream(BaseDocument):
     }
     default_values = {'created_at':datetime.datetime.utcnow}
 
-class Simpledoc(MongoDocument):
-    db_host, db_port, db_name = DB
-    use_dot_notation = True
-    skip_validation = True
-    structure = {}
 
 class Tag(Simpledoc):
     collection_name = 'content_tags'
@@ -558,11 +560,16 @@ class Cache(Simpledoc):
 
 class TagCombination(Simpledoc):
     collection_name = 'content_tag_combinations'
-    structure = { 'value': int, 'tags': list }
+    structure = { 'value': { 'tags': list, 'count': int}}
+    
+    def get_tags(self):
+        return self.value['tags']
+    
+    def get_count(self):
+        return self.value['count']
 
-class UserTagCombination(Simpledoc):
+class UserTagCombination(TagCombination):
     collection_name = 'user_tag_combinations'
-    structure = { 'value': int, 'tags': list }
         
 def get_or_404(cls, query=None):
     query = query if query else {}

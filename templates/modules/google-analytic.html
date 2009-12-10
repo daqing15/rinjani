@@ -1,4 +1,4 @@
-{% if code %}
+{% if settings.LIVE and code %}
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '{{code}}']);

@@ -131,6 +131,8 @@
 .markItUp .markItUpButton9 a { background-position: -315px 0; } 
 .markItUp .markItUpButton10 a { background-position: -350px 0; } 
 .markItUp .slideshow a { background-position: -385px 0; }
-.markItUp .tPreview a { background-position: -480px 0; width: 70px;}
-.markItUp .youtube a { background-position: -555px 0; }
+.markItUp .youtube a { background-position: -415px 0; }
+.markItUp .vimeo a { background-position: -450px 0; }
+.markItUp .gform a { background-position: -485px 0; }
+.markItUp .tPreview a { background-position: -520px 0; width: 70px;}
 .markItUp .preview a { visibility: hidden;}

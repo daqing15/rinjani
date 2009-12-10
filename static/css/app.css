@@ -290,6 +290,8 @@ background-color:#52B930;
 text-decoration:none;
 }
 
+.item .tag { background: #829DBA; margin-right: 7px; float:left}
+
 .flag input {visibility: hidden;vertical-align: middle;  margin-left: -14px;}
 .flag label { display: block; float: left; }
 .flag .tag { font-size: 90%; background-color: #A9C945;}

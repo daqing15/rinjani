@@ -1,9 +1,9 @@
 import os
-import re
 import tornado.web
 import pymongo
 import urllib2
 
+import forms
 from models import Article, Activity, User, TagCombination, UserTagCombination, Vote, Tag
 from settings import MY_FLAGS
 
@@ -81,25 +81,16 @@ class FollowButton(BaseUIModule):
     def render(self, user):
         return self.render_string('modules/follow-button', user=user)
     
-def is_required(input):
-    for v in input.validators:
-        if getattr(v, 'test', None):
-            if v.test is bool:
-                return True
-    return False
-
 class Formfield(BaseUIModule):
     def render(self, i):
-        import forms
-        is_checkbox = isinstance(i, forms.Checkbox)
         return self.render_string('modules/field', i=i,
-                                  is_checkbox=is_checkbox,
-                                  is_required=is_required)
+                                  is_checkbox=forms.is_checkbox,
+                                  is_required=forms.is_required)
 
 class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
         return self.render_string('modules/field-incolumns',
-                                  inputs=inputs, is_required=is_required)
+                                  inputs=inputs, is_required=forms.is_required)
 
 class GoogleAnalytic(BaseUIModule):
     def render(self):
@@ -179,13 +170,10 @@ class Rating(BaseUIModule):
 class RelatedTags(BaseUIModule):
     def render(self, _tags, type):
         doc = TagCombination if type == 'content' else UserTagCombination
-        print doc
         size = len(_tags) + 1
-        print {'tags': {'$size': size, '$all': _tags}}
-        tags = doc.collection.find(
-                    {'tags': {'$size': size, '$all': _tags}}
-                ).sort('value',-1)
-        print tags.count()
+        tags = doc.all(
+                    {'value.tags': {'$size': size, '$all': _tags}}
+                ).sort('value.count',-1)
         return self.render_string('modules/related-tags', tags=tags, _tags=_tags,type=type)
     
 class ReportBox(BaseUIModule):

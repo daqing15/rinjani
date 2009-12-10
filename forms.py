@@ -12,6 +12,17 @@ def __(str):
         str = MyForm.locale.translate(str)
     return str
 
+def is_required(input):
+    for v in input.validators:
+        if getattr(v, 'test', None):
+            if v.test is bool:
+                return True
+    return False
+
+def is_checkbox(input):
+    return isinstance(input, Checkbox)
+
+
 class MyForm(form.Form):
     def __init__(self, *inputs, **kw):
         self.handler = None
@@ -30,6 +41,7 @@ class MyForm(form.Form):
             except: pass
 
             out.append('<div class="i">')
+            
             if isinstance(i, Checkbox):
                 out.append('<label for="%s">%s <span class="cb-label">%s</span> %s</label>' % (i.id, i.render(), _(i.description), i.rendernote(i.note)))
             else:
@@ -141,6 +153,12 @@ vusername = form.regexp(r"[a-z0-9]{6,9}", _("4-9 characters of alphabets and num
 vpass = form.regexp(r".{6,20}", _('Must be between 6 and 20 characters'))
 vemail = form.regexp(r".*@.*", _("Must be a valid email address"))
 
+api_request_form = MyForm(
+    Textbox("email", form.notnull, vemail, description=_("Your email")),
+    Textbox("fullname", form.notnull, description=_("Your full name")),
+    Textbox("website", description=_("Your website")),
+    Textarea("about", rows=3, cols=39, description=_("What are you planning to make?")),
+)
 
 register_form = MyForm(
     Textbox("username", form.notnull, vusername, description=_("User Name"), title=_("4-9 characters of alphabets and numbers, without space")),
