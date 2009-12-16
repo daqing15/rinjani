@@ -23,11 +23,14 @@ m = function() {
 		all.push(a);
 		return all;
 	}
-
 	c = combination(this.tags);
-	c.forEach(function(z) {
-		emit(z.join('#'), {tags: z, count: 1});
-	});
+	if (c.length == 1 && c[0].length == 0) {
+		emit('untagged', {tags: c, count: 1});
+	} else {
+		c.forEach(function(z) {
+			emit(z.join('#'), {tags: z, count: 1});
+		});
+	}
 };
 
 r = function(key, values) {
@@ -47,5 +50,6 @@ r = function(key, values) {
 		query : {},
 		out : collection_name
 	});
+	print(tojson(res));
 });
 

@@ -13,21 +13,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import tornado.web
+
 from .main import BaseHandler, authenticated
 from forms import page_form, InvalidFormDataError
-from web.utils import Storage
 from models import Donation, User, Activity
-import tornado.web
 
 class ListHandler(BaseHandler):
     @authenticated()
-    def get(self, slug=None):
-        user_type = self.get_current_user()['type']
-        
+    def get(self, username):
+        user = User.one({'username': username})
+        if user != self.current_user:
+            self.set_flash(self._("You are not allowed to view that page"))
+            self.redirect("/")
+            return
         donations = [{}, {}]
         if not donations:
             raise tornado.web.HTTPError(404)
-        self.render(user_type + "/donations", donations=donations)
+        self.render("profile/donations", user=user, donations=donations)
 
 class ConfirmHandler(BaseHandler):
     def get(self, slug):

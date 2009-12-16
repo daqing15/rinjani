@@ -9,3 +9,4 @@
 lib/*
 settings.py
 static/uploads*
+conf/peduli-solr*

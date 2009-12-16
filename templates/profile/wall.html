@@ -1,12 +1,12 @@
-{% extends '../base.html' %}
+{% extends '_dashboard.html' %}
 
-{% block title %} {{ get(user.fullname, user.username) }} - {{_('Comments')}}{% end %}
+{% block title %} {{ get(user.fullname, user.username) }} -  {{_('Profile')}}{% end %}
 
-{% block body %}
+{% block tabContent %}
 
-{{ modules.Tabs('profile_public', 'comments', fullname=get(user.fullname, user.username), username=user.username) }}
+{{ modules.Tabs(user, 'profile', 'wall', fullname=get(user.fullname, user.username), username=user.username) }}
 
-
+{% import math %}
 <div class="line">
     <div class="unit size3of4">
     {% set objects = pagination.get_objects() %}
@@ -25,6 +25,7 @@
     {% else %}
         <p>&nbsp;</p>
     {% end %}
+    <p class="small grey">Complete user streams here...</p>
     </div>
     <div class="lastUnit size1of4">
         {{ modules.CommentBox(user) }}
@@ -57,3 +58,6 @@
 
 {% end %}
 
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
+{% end %}

@@ -70,8 +70,8 @@ var Rinjani = {
         height:   'show',
         opacity:  'show'
       }, 'fast');
+      timeout = setTimeout("Rinjani.getFlashContainer(false).slideUp();", 4000);
     }
-    timeout = setTimeout("Rinjani.getFlashContainer(false).slideUp();", 4000);
   },
 
   /* flashes a message from javascript */
@@ -308,8 +308,8 @@ var timeout;
 
 $(function() {
 	R.setupAjax();
-	R.fadeInFlashMessages();
 	R.setupForm();
 	R.setupUI();
+	R.fadeInFlashMessages();
 });
 

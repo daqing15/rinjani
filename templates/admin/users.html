@@ -1,0 +1,60 @@
+{% extends '_dashboard.html' %}
+
+{% block title %}{{ _('Users') }}{% end %}
+
+{% block tabContent %}
+
+{{ modules.Tabs(current_user, 'admin', 'users') }}
+
+<div class="line">
+    <div class="unit size3of4">
+        <div class="filterblock">
+            <form>
+                <p>Show
+                <select name="by">
+                    <option>{{_('All')}}</option>
+                    <option>{{_('Verified')}}</option>
+                </select>
+                <input type="hidden" name="action" value="filter">
+                </p>
+            </form>
+        </div>
+     </div>
+     <div class="lastUnit size1of4">
+        <form>
+                <p>Search: 
+                <input type="text" name="q" value="" size="20" />
+                <input type="hidden" name="action" value="filter">
+                </p>
+            </form>
+     </div>
+</div>
+
+<form action="donation/confirm" method="post">
+     <table class="outline">
+        <thead>
+            <tr>
+                <th><a href="/admin/users?sort_by=u&sort={{_sort('u', by, sort)}}">Username</a></th>
+                <th><a href="/admin/users?sort_by=c&sort={{_sort('c', by, sort)}}">{{ _('Registered at')}}</a></th>
+                <th><a href="/admin/users?sort_by=ap&sort={{_sort('ap', by, sort)}}">{{ _('Auth Provider')}}</a></th>
+                <th><a href="/admin/users?sort_by=l&sort={{_sort('l', by, sort)}}">{{ _('Last Login') }}</a></th>
+                <th>{{ _('Actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in pagination.get_objects() %}
+            <tr>
+                <td><a href="/admin/user/{{user.username}}">{{ user.username }}</a></td>
+                <td>{{ fd(user.created_at) }}</td>
+                <td>{{ user.auth_provider.title() }}</td>
+                <td>{{ fd(user.last_login) }}
+                <td>remove edit</td>
+            </tr>
+            {% end %}
+        </tbody>
+     </table>
+     {{ pagination }}
+</form>
+
+{% end %}
+

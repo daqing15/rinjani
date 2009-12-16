@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'profile/_dashboard.html' %}
 
 {% block title %}
 {% set title = _('edit activity') if activity.slug else _('new activity') %}
 {{ title.title() }}{% end %}
 
-{% block body %}
+{% block tabContent %}
 
 <noscript>
 <div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
@@ -15,7 +15,7 @@
 <form method="post" action="{{BP}}/activity/edit" class="withtips">
 
 {% set title = 'edit activity' if activity.slug else 'new activity' %}
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title, dashboard=True) }}
+{{ modules.Tabs(user, 'new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title, dashboard=True) }}
 
 
 <div class="line tabWrapper">
@@ -37,8 +37,10 @@
                         
                          {{ modules.Formfield(f.tags) }}
                         <div class="tags suggestedtags">
-                            {{ modules.TagSuggestion(content_tags)}}
+                            {{ modules.TagSuggestion(settings.CONTENT_TAGS)}}
                         </div>
+                        
+                        {{ modules.Formfield(f.enable_comment) }}
                     
                     </div>
                     <div class="lastUnit size1of2">
@@ -76,9 +78,8 @@
                         <div class="line">
                         {{ modules.Formfield(f.date_start) }}
                         {{ modules.Formfield(f.date_end) }}
+                        {{ modules.Formfield(f.state) }}
                         </div>
-                         <hr class="hrthin" />
-                        {{ modules.Formfield(f.enable_comment) }}
                     </div>
                     <div class="lastUnit size2of3">
                         <div class="deps">
@@ -96,7 +97,7 @@
                             <div class="deptarget">
                                 {{ modules.Formfield(f.volunteer_tags) }}
                                 <div class="tags suggestedtags">
-                                    {{ modules.TagSuggestion(user_tags, '#volunteer_tags')}}
+                                    {{ modules.TagSuggestion(settings.USER_TAGS, '#volunteer_tags')}}
                                 </div>
                             </div>
                         </div>             
@@ -110,10 +111,9 @@
 </div>
 			
 <div class="buttons line">
-<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
 
 {% if not activity.slug or activity.status == 'draft' %}
-    <button class="positive" name="status" value="draft"><span><span>{{_('Save')}}</span></span></button>
+    <button class="positive" name="status" value="draft"><span><span>{{_('Save as Draft')}}</span></span></button>
     <button class="submit" name="status" value="published"><span><span>{{_('Publish')}}</span></span></button>
 {% elif activity.status == 'published' %}
     <button class="submit" name="status" value="published"><span><span>{{_('Save')}}</span></span></button>

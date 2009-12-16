@@ -1,0 +1,19 @@
+{% import models %}
+
+<h3>{{_('Search found in')}}</h3>
+<ul>
+    {% for facet,count in h.group(facets['type'],2) %}
+        {% if count %}
+        <li><a href="{{h.query_string(current_path,remove=['page'])}}&fq=type:{{facet}}">{{ _(models.CONTENT_MAP[int(facet)].title()) }}</a> ({{count}})</li>
+        {% end %}
+    {% end %}
+</ul>
+
+<h3>{{_('Search found with tags')}}</h3>
+<ul class="tags">
+{% for facet,count in h.group(facets['tags'],2) %}
+    {% if count %}
+    <li><a class="tag" href="{{h.query_string(current_path,remove=['page'])}}&fq=tags:{{facet}}">{{ facet }} x {{count}}</a></li>
+    {% end %}
+{% end %}
+</ul>

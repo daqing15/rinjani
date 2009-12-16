@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs('tags', tab, _('Tagged %s') % tab.title()) }}
+{{ modules.Tabs(current_user, 'tags', tab, _('Tagged %s') % tab.title()) }}
 
 {% if pagination.get_objects().count() %}
     {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
@@ -38,7 +38,7 @@
     <div class="mod rel-tags">
         <div class="inner">
             <div class="bd">
-                <h2 class="ultrabig grey">{{pagination.total}}</h2>
+                <h2 class="ultrabig grey">{{len(pagination)}}</h2>
                 {% if tab == 'content' %}
                     <p>{{_('Articles/activities tagged with')}}</p>
                 {% else %}

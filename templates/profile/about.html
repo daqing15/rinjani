@@ -1,0 +1,72 @@
+{% extends '_dashboard.html' %}
+
+{% block title %} {{ get(user.fullname, user.username) }} -  {{_('Profile')}}{% end %}
+
+{% block tabContent %}
+
+{{ modules.Tabs(user, 'profile', 'about', fullname=get(user.fullname, user.username), username=user.username) }}
+
+{% set need_infotab = user.phones or user.fax or user.website %}
+
+<div class="line">
+    <div class="unit size1of3">
+        <div id="userblock">{{ modules.UserBlock(user) }}</div>
+        
+        {% if need_infotab or user.followers or user.following %}
+         <div class="mod simple">
+            <div class="inner"><div class="bd">
+            
+            <ul class="vtabs"> 
+                {% if need_infotab %}<li><a href="#">{{_('Info')}}</a></li>{% end %} 
+                {% if user.followers %}<li><a href="#">{{_('Followers')}}</a></li>{% end %}
+                {% if user.following %}<li><a href="#">{{_('Following')}}</a></li>{% end %} 
+            </ul> 
+            
+            <div class="vpanes">
+                {% if need_infotab %}
+                <div class="vpane">
+                        {% if user.phones %}
+                            <p><span class="h4">{{ _('Phones') }}</span> {{ ', '.join(user.phones) }}</p>
+                        {% end %}
+                        {% if user.fax %}
+                            <p><span class="h4">{{ _('Fax') }}</span> {{ ', '.join(user.fax) }}</p>
+                        {% end %}
+                        
+                        {% if user.website %}
+                            <p><span class="h4">{{ _('Website') }}</span> <a href="{{user.website}}" target="_blank">{{ user.website }}</a></p>
+                        {% end %}
+                </div>
+                {% end %}
+                
+                {% if user.followers %}
+                <div class="vpane">
+                    {{ modules.UsersThumbs(user.followers, 'Followers') }}
+                </div>
+                {% end %}
+                
+                {% if user.following %}
+                <div class="vpane">
+                    {{ modules.UsersThumbs(user.following, 'Following') }}
+                </div>
+                {% end %}
+            </div>
+         </div></div>
+         </div>
+         {% end %}
+    </div>
+    <div class="lastUnit size2of3">
+        <div class="cb">
+            {% if user.profile_content_html %}<br /><h1>{{_('About') }} {{get(user.fullname, user.username)}}</h1>{% end %}
+            {% if user == current_user %}<div class="buttons"><a class="button" href="{{BP}}/profile/edit#fp"><span><span>{{ _('Edit Profile Description') }}</span></span></a></div>{% end %}
+            {{ user.profile_content_html if user.profile_content_html else "" }}
+        </div>
+    </div>
+    
+    
+</div>
+
+{% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
+{% end %}

@@ -1,0 +1,13 @@
+{% extends '_dashboard.html' %}
+
+{% block title %}{{ _('Admin Dashboard') }}{% end %}
+
+{% block tabContent %}
+
+{{ modules.Tabs(user, 'admin', 'dashboard', fullname=get(user.fullname, user.username), username=user.username) }}
+
+<h3>Some stats here...</h3>
+<p>Blah blah</p>
+
+{% end %}
+

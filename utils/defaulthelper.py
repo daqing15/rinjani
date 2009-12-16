@@ -175,5 +175,10 @@ def select(name, args, *validators, **attrs):
     dropdown = Dropdown(name, args, *validators, **attrs)
     return dropdown.render()
     
-
+def query_string(url,remove=None):
+    if remove:
+        import re
+        for q in remove:
+            url = re.sub("([?&]?)%s=[\w:-]+[?&]?" % q, '', url)
+    return url
     

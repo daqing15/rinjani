@@ -31,7 +31,7 @@ def main():
                 listener.ok()
                 continue
 
-            listener.send("MONGODB HAS BEEN RESTARTED. SO WILL APP!")
+            listener.send("MONGODB HAS BEEN RESTARTED. SO WILL THE APP!")
             rpci.supervisor.stopProcessGroup('app')
             rpci.supervisor.startProcessGroup('app', True)
             listener.ok()

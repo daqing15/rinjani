@@ -1,3 +1,10 @@
+// see models.py
+CONTENT_TYPE = {
+    GENERIC: 1,
+    ARTICLE: 2,
+    ACTIVITY: 3,
+    PAGE: 4
+}
 
 TAGS = ['economy', 'education', 'enterpreneurship', 'training', 'inspiring', 'public-figure', 'interview', 'photo', 'failure']
 USERTAGS = ['enterpreneurship', 'social-media', 'healtcare', 'ICT', 'insurance']
@@ -12,7 +19,7 @@ EXCERPT = [
 
 Article = {
     template : {
-        type: 'ART',
+        type: CONTENT_TYPE.ARTICLE,
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -26,7 +33,7 @@ Article = {
 
 Activity = {
     template : {
-        type: 'ACT',
+        type: CONTENT_TYPE.ACTIVITY,
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [],
@@ -51,6 +58,9 @@ function removeArrDuplicate(a) {
 }
 
 var choose_tags = function(T) {
+	if (Math.floor(Math.random()) == 4) 
+    	return []
+    	        
     if (!T) { T = TAGS; }
     tags = [];
     for(var i=Math.floor(Math.random() * 5); i>=0; i--) {
@@ -71,7 +81,7 @@ var choose_excerpt = function() {
 }
 
 var generate_random_content = function(ctype, id) {
-    uid = 1 + Math.floor(Math.random() * 50);
+    uid = "User-" + (1 + Math.floor(Math.random() * 50));
     t = ctype.template;
     t["_id"] = ctype.type + "-" + id;
     t["title"] = ctype.type + " #" + id;
@@ -79,6 +89,7 @@ var generate_random_content = function(ctype, id) {
     t["author"] = new DBRef("users", uid);
     t['excerpt'] = choose_excerpt();
     t["created_at"] = choose_date(id);
+    t["updated_at"] = t['created_at'];
     t["view_count"] = 1 + Math.floor(Math.random() * 500)
     t['tags'] = choose_tags();
     db[ctype.collectionName].save(t);
@@ -95,11 +106,12 @@ var generate_random_content = function(ctype, id) {
 
 ut = { _required_namespace: [], document_scan : null, last_login: new Date(), "website" : null, "profile_content_html" : null, "uid" : null, "locale" : null, "phones" : [], "auth_provider" : "form", "sex" : null, "birthday_date" : null, "timezone" : "Asia/Jakarta", "badges" : [], "attachments" : [], "preferences" : [], "article_count" : 0, "location" : [], "followers" : [], "is_verified" : true, "email" : null, "fax" : [], "tags" : [], "activity_count" : 0, "following" : [], "password_hashed" : "a7257ef242a856304478236fe46fee00f23f8a25", "is_admin" : false, "address" : null, "profile_content" : null, "fullname" : null, "access_token" : null, "type" : "agent", "points" : 0, "status" : "active", "avatar" : null, "donation_count" : 0, "contact_person" : null }
 for(var id=1; id < 51; id++) {
-    ut["_id"] = id;
+    ut["_id"] = "User-" + id;
     ut["username"] = "user" + id;
-    ut["created_at"] = choose_date(id);
     ut["about"] = "About mee user-" + id;
     ut['tags'] = choose_tags(USERTAGS);
+    ut["created_at"] = choose_date(id);
+    ut["updated_at"] = ut['created_at'];
     db.users.save(ut);
 }
 

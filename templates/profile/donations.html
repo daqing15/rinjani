@@ -1,0 +1,51 @@
+{% extends '_dashboard.html' %}
+
+{% block title %} {{ user.username }} -  {{_('Donations')}}{% end %}
+
+{% block tabContent %}
+
+{{ modules.Tabs(user, 'profile', 'donations', fullname=get(user.fullname, user.username), username=user.username) }}
+
+<div class="line">
+    <div class="unit size3of4">
+        <div class="filterblock">
+            <form>
+                <p>Show
+                <select name="by">
+                    <option>{{_('All')}}</option>
+                    <option>{{_('Verified')}}</option>
+                </select>
+                <input type="hidden" name="action" value="filter">
+                </p>
+            </form>
+        </div>
+     </div>
+     <div class="lastUnit size1of4">
+     </div>
+</div>
+
+<form action="donation/confirm" method="post">
+     <table class="outline">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>Account</th>
+                <th>Amount (RP)</th>
+                <th>Verified</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>phajero</th>
+                <th>BCA</th>
+                <th>100.000</th>
+                <th>v</th>
+            </tr>
+        </tbody>
+     </table>
+</form>
+
+<p><a class="button" href="{{BP}}/profile/{{current_user.username}}"><span><span>{{ _('Export as XLS...') }}</span></span></a></p>
+
+{% end %}
+

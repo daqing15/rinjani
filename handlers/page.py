@@ -13,16 +13,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import tornado.web
 from main import BaseHandler, authenticated
 from forms import page_form
-from web.utils import Storage
 from models import Page, EditDisallowedError
 from utils.utils import move_attachments, parse_attachments
-import tornado.web
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
-        page = Page.one({'slug': slug})
+        page = Page.one({'type': 'Page', 'slug': slug})
         if not page:
             raise tornado.web.HTTPError(404)
         self.render("page", page=page)
@@ -33,7 +32,7 @@ class EditHandler(BaseHandler):
         f = page_form()
         if slug:
             try:
-                page = Page.one({'slug': slug})
+                page = Page.one({'type': 'Page', 'slug': slug})
                 page.check_edit_permission(self.get_current_user())
                 page.formify()
                 f.fill(page)
@@ -46,23 +45,21 @@ class EditHandler(BaseHandler):
         else:
             page = Page()
         
-        self.render("page-edit", f=f, page=page)
+        self.render("page-edit", f=f, page=page, user=self.current_user)
     
     @authenticated(None, True)
     def post(self):
         f = page_form()
         data = self.get_arguments()
         is_edit = data.has_key('ori_slug')
-        
         _ = self._
-        
         try:
             attachments = self.get_argument('attachments', None)
             if attachments:
                 data['attachments'] = parse_attachments(data['attachments'], is_edit) 
                 
-            if f.validates(Storage(data)):
-                page = Page.one({'slug': data['ori_slug']}) if is_edit else Page()
+            if f.validates(tornado.web._O(data)):
+                page = Page.one({'type': 'Page', 'slug': data['ori_slug']}) if is_edit else Page()
                 page.save(data, user=self.current_user)
                 
                 if attachments and not is_edit:
@@ -76,15 +73,15 @@ class EditHandler(BaseHandler):
             page = Page()
             raise Exception(_("Invalid form data."))
         except Exception, e:
-            raise
             if attachments:
                 page['attachments'] = data['attachments']
             f.note = f.note if f.note else e
-            self.render("page-edit", f=f, page=page)
+            self.render("page-edit", f=f, page=page, user=self.current_user)
             
 class RemoveHandler(BaseHandler):
+    @authenticated(None, True)
     def post(self, slug):
-        page = Page.one({"slug": slug})
+        page = Page.one({'type': 'Page', 'slug': slug})
         if not page:
             raise tornado.web.HTTPError(404)
         

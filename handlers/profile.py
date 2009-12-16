@@ -15,63 +15,77 @@
 
 import hashlib
 import tornado.web
-from web.utils import Storage
 from pymongo.dbref import DBRef
 
 from main import BaseHandler, authenticated
-from models import User, Content, Article, Activity, BankAccount, Comment, get_or_404
-from utils.pagination import Pagination, ListPagination
-from forms import profile_form, account_form, comment_form, InvalidFormDataError
+from models import CONTENT_TYPE, User, Content, BankAccount, Comment, get_or_404
+from utils.pagination import Pagination
+from forms import profile_form, password_form, preferences_form, comment_form, InvalidFormDataError
 from utils.utils import extract_input_array, move_attachments, parse_attachments
-from settings import BANKS, FIELD_TAGS
-
 
 USER_TYPE = {'social org':'agent', 'sponsor': 'sponsor', 'public':'public'}
 
-class ViewHandler(BaseHandler):
+class AboutHandler(BaseHandler):
     def get(self, username):
         user = get_or_404(User, {'username': username})
-        #if user == self.current_user:
-        #    self.redirect("/dashboard")
-        #    return
-        self.render("profile", user=user)
+        self.render("profile/about", user=user)
 
-class AccountHandler(BaseHandler):
+class DashboardHandler(BaseHandler):
     @authenticated()
     def get(self):
-        f = account_form()
-        self.render('account', f=f)
+        user = self.current_user
+        self.redirect("profile/%s" % user.username)
+        
+class PreferenceHandler(BaseHandler):
+    @authenticated()
+    def get(self):
+        f_pwd = password_form()
+        f_pref=preferences_form()
+        prefs = self.current_user['preferences']
+        f_pref.fill(tornado.web._O(prefs))
+        self.render('profile/preference', user=self.current_user, f_pwd=f_pwd, f_pref=f_pref)
 
     @authenticated()
     def post(self):
-        f = account_form()
+        _ = self._
+        f_pwd = password_form()
+        f_pref = preferences_form()
+        action = self.get_argument('action', 'pref')
+        f = f_pwd if action == 'chpass' else f_pref
+        
         data = self.get_arguments()
-        user = self.current_user
+        del(data['action'])
         try:
-            if f.validates(Storage(data)):
-                if data.get('password', None):
-                    data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
-                    user.save(data)
-                    self.set_flash("Your password has been changed.")
-                    self.redirect("/account")
-                    return
-            raise InvalidFormDataError("Form still have errors.")
-        except: pass
-        self.render('account', f=f)
+            if f.validates(tornado.web._O(data)):
+                user = self.current_user
+                if action == 'chpass':
+                    user['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
+                    message = _("Your password has been changed.")
+                else:
+                    user['preferences'] = data
+                    message = _("Your preference has been saved.")
+                user.save(data)
+                self.set_flash(message)
+                self.redirect("/preferences")
+                return
+            raise InvalidFormDataError(_("Form still have errors."))
+        except Exception, e: 
+            f.note = f.note if f.note else e
+        self.render('account', f_pwd=f_pwd, f_pref=f_pref)
 
 class VerifyHandler(BaseHandler):
     @authenticated(['agent', 'sponsor'])
     def get(self):
-        f = account_form()
+        f =password_form()
         self.render('verify', f=f)
 
     @authenticated(['agent', 'sponsor'])
     def post(self):
-        f = account_form()
+        f = password_form()
         data = self.get_arguments()
         user = self.current_user
         try:
-            if f.validates(Storage(data)):
+            if f.validates(tornado.web._O(data)):
                 if data.get('password', None):
                     data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
                     user.save(data)
@@ -91,7 +105,7 @@ class EditHandler(BaseHandler):
         accounts = BankAccount.listify(accounts) if accounts.count() else []
         user.formify()
         f.fill(user)
-        self.render(user.type + "/profile-edit", f=f, user=user, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
+        self.render("profile/edit", f=f, user=user, accounts=accounts)
 
     @authenticated()
     def post(self):
@@ -108,7 +122,7 @@ class EditHandler(BaseHandler):
             if attachments:
                 data['attachments'] = parse_attachments(data['attachments'], True)
 
-            if f.validates(Storage(data)):
+            if f.validates(tornado.web._O(data)):
                 data['bank_accounts'] = accounts
                 if data.get('password', None):
                     data['password_hashed'] = hashlib.sha1(data.get('password')).hexdigest()
@@ -120,13 +134,13 @@ class EditHandler(BaseHandler):
                     user.save()
                 
                 self.set_flash(_("Profile saved."))
-                self.redirect("/dashboard")
+                self.redirect("/profile/%s" % user.username)
                 return
             raise InvalidFormDataError(_("Form still have errors. Please correct them before saving."))
         except Exception, e:
             if not isinstance(e, InvalidFormDataError): raise
             f.note = f.note if f.note else e
-            self.render(user.type + '/profile-edit', f=f, user=user, accounts=accounts, BANKS=BANKS, FIELD_TAGS=FIELD_TAGS)
+            self.render('profile/edit', f=f, user=user, accounts=accounts)
 
 class FollowHandler(BaseHandler):
     @authenticated()
@@ -157,17 +171,6 @@ class FollowHandler(BaseHandler):
                 self.set_flash(msg)
         self.redirect(self.get_argument('next'))
 
-class FollowersHandler(BaseHandler):
-    def get(self, username):
-        user = get_or_404(User, {'username': username})
-        pagination = ListPagination(self, user.followers)
-        self.render("profile-followers", user=user, pagination=pagination)
-
-class Dashboard(BaseHandler):
-    @authenticated()
-    def get(self):
-        drafts = Pagination(self, Content, {'author': DBRef(User.collection_name, self.current_user._id), 'status':'draft'}, 5)
-        self.render(self.current_user.type + "/dashboard", drafts=drafts)
 
 class UserListHandler(BaseHandler):
     def get(self):
@@ -179,29 +182,24 @@ class UserListHandler(BaseHandler):
         pagination = Pagination(self, User, {'type':type})
         self.render('users', pagination=pagination, tab=tab)
 
-class CommentsHandler(BaseHandler):
-    @authenticated()
-    def get(self):
-        pagination = Pagination(self, User, {}, 1)
-        self.render(self.current_user.type + '/comments', pagination=pagination)
 
-    @authenticated()
-    def post(self):
-        pass
+class ProfileHandler(BaseHandler):
+    def get_comments_for(self, user):
+        spec = {'for': DBRef(User.collection_name, user._id)}
+        return Pagination(self, Comment, spec)
 
-class ProfileCommentsHandler(BaseHandler):
-    def get_comments_for(self, username):
+    def get(self, username):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'for': DBRef(User.collection_name, user._id)}
-        return (user, Pagination(self, Comment, spec))
-
-    def get(self, username):
-        import math
-        user, pagination = self.get_comments_for(username)
+        
+        if user == self.current_user and user.is_admin:
+            self.redirect('/admin')
+            return
+        
+        pagination = self.get_comments_for(user)
         f = comment_form()
-        self.render('public/profile-comments', pagination=pagination, user=user, f=f, math=math)
+        self.render('profile/wall', pagination=pagination, user=user, f=f)
 
     @authenticated()
     def post(self, username):
@@ -209,37 +207,32 @@ class ProfileCommentsHandler(BaseHandler):
         f = comment_form()
         data = self.get_arguments()
         try:
-            if f.validates(Storage(data)):
+            if f.validates(tornado.web._O(data)):
                 comment = Comment()
-                comment['from'] = self.current_user
-                comment['for'] = user
-                comment['comment'] = data['comment']
-                comment.save()
+                comment.save(
+                        { 'from': self.current_user,
+                          'for': user,
+                          'comment': data['comment']
+                         }
+                    )
                 self.set_flash(self._("Comment has been saved."))
-                self.redirect("/profile/comments/" + username)
+                self.redirect("/profile/%s" % username)
                 return
             raise Exception()
         except Exception, e:
             f.note = f.note if f.note else e
-            self.render('public/profile-comments', pagination=pagination, user=user, f=f)
+            self.render('profile/%s' % username, pagination=pagination, user=user, f=f)
 
-class ArticlesHandler(BaseHandler):
-    def get(self, username):
+class ContentHandler(BaseHandler):
+    def get(self, username, type):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        spec = {'type': 'ART', 'status':'published', 'author': DBRef(User.collection_name, user._id)}
-        pagination = Pagination(self, Article, spec)
-        self.render('public/profile-items', pagination=pagination, user=user, type='articles')
-
-class ActivitiesHandler(BaseHandler):
-    def get(self, username):
-        user = User.one({'username': username})
-        if not user:
-            raise tornado.web.HTTPError(404)
-        spec = {'type': 'ACT', 'status':'published', 'author': DBRef(User.collection_name, user._id)}
-        pagination = Pagination(self, Activity, spec)
-        self.render('public/profile-items', pagination=pagination, user=user, type='activities')
+        ctype = type[:-1] if type in ['articles', 'pages'] else 'activity'
+        ctype = getattr(CONTENT_TYPE, ctype.upper())
+        spec = {'type': ctype, 'status':'published', 'author': DBRef(User.collection_name, user._id)}
+        pagination = Pagination(self, Content, spec)
+        self.render('profile/items', pagination=pagination, user=user, type=type)
 
 
 

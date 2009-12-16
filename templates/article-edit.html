@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'profile/_dashboard.html' %}
 
 {% block title %}
 {% set title = _('edit article') if article.slug else _('new article') %}
 {{ title.title() }}{% end %}
 
-{% block body %}
+{% block tabContent %}
 
 <noscript>
 <div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
@@ -15,7 +15,8 @@
 
 {% set title = 'edit article' if article.slug else 'new article' %}
 {% set title = title + ' (draft)' if article.status == 'draft' else title %}
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'article', title) }}
+
+{{ modules.Tabs(user, 'new_' + ('admin' if current_user.is_admin else current_user.type), 'article', title) }}
 
 <div class="line tabWrapper">
     <div class="unit size1of5">
@@ -30,14 +31,12 @@
             <div class="pane">
                 {{ modules.Formfield(f.title) }}
                 {{ modules.Formfield(f.excerpt) }}
-
-                <hr class="hrthin" />
-                {{ modules.Formfield(f.enable_comment) }}
-
                 {{ modules.Formfield(f.tags) }}
                 <div class="tags suggestedtags">
-                    {{ modules.TagSuggestion(content_tags)}}
+                    {{ modules.TagSuggestion(settings.CONTENT_TAGS)}}
                 </div>
+                
+                {{ modules.Formfield(f.enable_comment) }}
             </div>
             <div class="pane">
                 {{ modules.Formfield(f.content) }}
@@ -55,10 +54,9 @@
 </div>
 
 <div class="buttons line">
-<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
 
 {% if not article.slug or article.status == 'draft' %}
-    <button class="positive" name="status" value="draft"><span><span>{{_('Save')}}</span></span></button>
+    <button class="positive" name="status" value="draft"><span><span>{{_('Save as Draft')}}</span></span></button>
     <button class="positive" name="status" value="published"><span><span>{{_('Publish')}}</span></span></button>
 {% elif article.status == 'published' %}
     <button class="submit" name="status" value="published"><span><span>{{_('Save')}}</span></span></button>

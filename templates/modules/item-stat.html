@@ -22,15 +22,16 @@
             </form>
             {% if not current_user %}<p class="small grey">{{ _('Log in to be able to vote') }}</p>{% end %}
 
-            {% if not vote and current_user and current_user != item.author %}
+            {% if current_user and current_user != item.author %}
 <script type="text/javascript">
 var has_vote = {{ "true" if vote else "false"}};
 $('.flag .tag').mouseup(function() {
-    if (has_vote) return false;
         $tag = $(this)
         $flag = $tag.find('input');
+        c = $tag.find('input').parent().find('.voted').length;
+        alert(c);
         R.request('/flag',
-                { type: '{{ item.__class__.__name__ }}',
+                { type: {{ int(item['type']) }},
                   slug:'{{item.slug}}', flag: $flag.val() },
                 'POST', function(resp) {
                     if (resp.status == 'OK') {

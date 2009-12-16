@@ -5,7 +5,7 @@
 {% block body %}
 
     {{ modules.Splash() }}
-    {{ modules.ArticleLatest(limit=5) }}
+    {{ modules.ContentLatest('article', limit=5) }}
     {{ modules.TagCloud() }}
 
 {% end %}

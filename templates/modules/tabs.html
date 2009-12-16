@@ -3,10 +3,13 @@
     <h2>{{ _(title) }}</h2>
     <div id="tabs">
     {% for tab in tabs %}
-        {% if selected != tab[1] %}
-        <a href="{{BP}}{{tab[0]}}">{{ _(tab[1]) }}</a>
-        {% else %}
-        <a href="{{BP}}{{tab[0]}}" class="youarehere">{{ _(tab[1]) }}</a>
+        {% set private = len(tab) > 2 and tab[2].has_key('private') %}
+        {% if not private or current_user == user %}
+            {% if selected != tab[1] %}
+                <a href="{{BP}}{{tab[0]}}">{{ _(tab[1]) }}</a>
+            {% else %}
+                <a href="{{BP}}{{tab[0]}}" class="youarehere">{{ _(tab[1]) }}</a>
+            {% end %}
         {% end %}
     {% end %}
     </div>

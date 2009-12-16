@@ -1,6 +1,7 @@
 
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
+    (r"/search", 'handlers.misc.SearchHandler'),
     (r"/tweets", 'handlers.misc.TweetsHandler'),
     (r"/l/(\w+)", 'handlers.locale.SetHandler'),
     (r"/survey", 'handlers.misc.SurveyHandler'),
@@ -14,21 +15,21 @@ url_handlers = [
 
     (r"/donation/confirm/([\w\-]+)", 'handlers.donation.ConfirmHandler'),
 
-    (r"/account", 'handlers.profile.AccountHandler'),
+    (r"/dashboard", 'handlers.profile.DashboardHandler'),
+    (r"/preferences", 'handlers.profile.PreferenceHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
     (r"/profile/verify", 'handlers.profile.VerifyHandler'),
     (r"/profile/follow/([\w]+)", 'handlers.profile.FollowHandler'),
-    (r"/profile/followers/([\w]+)", 'handlers.profile.FollowersHandler'),
-    (r"/profile/donations", 'handlers.donation.ListHandler'),
-    (r"/profile/comments", 'handlers.profile.CommentsHandler'),
-    (r"/profile/comments/([\w]+)", 'handlers.profile.ProfileCommentsHandler'),
-    (r"/profile/articles/([\w]+)", 'handlers.profile.ArticlesHandler'),
-    (r"/profile/activities/([\w]+)", 'handlers.profile.ActivitiesHandler'),
-    (r"/profile/([\w]+)", 'handlers.profile.ViewHandler'),
+    (r"/profile/([\w]+)/followers", 'handlers.profile.FollowersHandler'),
+    (r"/profile/([\w]+)/donations", 'handlers.donation.ListHandler'),
+    (r"/profile/([\w]+)/about", 'handlers.profile.AboutHandler'),
+    (r"/profile/([\w]+)/(activities|articles|pages)", 'handlers.profile.ContentHandler'),
+    (r"/profile/([\w]+)", 'handlers.profile.ProfileHandler'),
+    
+    (r"/admin/?([\w\-]*)/?([\w\-]*)/?([\w\-]*)", 'handlers.admin.RouteHandler'),
 
     (r"/register", 'handlers.auth.RegisterHandler'),
     (r"/new-user", 'handlers.auth.NewUserHandler'),
-    (r"/dashboard", 'handlers.profile.Dashboard'),
 
     (r"/activities/?(latest|featured|popular)?", 'handlers.activity.ListHandler'),
     (r"/activity/new", 'handlers.activity.EditHandler'),
@@ -52,6 +53,7 @@ url_handlers = [
     (r"/users", 'handlers.profile.UserListHandler'),
 
     (r"/(content|user)/tagged/([\-\w\+]+)", 'handlers.tag.ViewHandler'),
+    (r"/tagged/([\-\w\+]+)", 'handlers.tag.ViewHandler'),
     (r"/tags/?(content|user)?", 'handlers.tag.ListHandler'),
     
     (r"/flag", 'handlers.tag.FlagHandler'),
@@ -60,7 +62,6 @@ url_handlers = [
     (r"/login/fb", 'handlers.auth.FacebookLoginHandler'),
     (r"/login/google", 'handlers.auth.GoogleLoginHandler'),
     (r"/login/twitter", 'handlers.auth.TwitterLoginHandler'),
-    (r"/login/yahoo", 'handlers.auth.YahooLoginHandler'),
     (r"/login", 'handlers.auth.LoginFormHandler'),
     (r"/logout.*", 'handlers.auth.LogoutHandler'),
 ]

@@ -3,7 +3,7 @@ from datetime import datetime
 from tornado.escape import xhtml_escape
 from web import form
 from utils.string import listify, dummy_translate as _
-from settings import USERTYPE, TIMEZONES
+from settings import USERTYPE, TIMEZONES, ACTIVITY_STAGES
 
 class InvalidFormDataError(Exception): pass
 
@@ -30,7 +30,21 @@ class MyForm(form.Form):
 
     def add_notnull_validator(self, thing, msg):
         self.validators.append(form.Validator(msg, lambda x: bool(thing)))
-
+    
+    def fill(self, source=None, **kw):
+        data = {}
+        for i in self.inputs: 
+            if isinstance(i, Checkbox):
+                if source.has_key(i.name) and type(source[i.name]) == bool:
+                    i.checked = source[i.name]
+                    source[i.name] = "1"
+                else:
+                    i.checked = source.has_key(i.name)
+                data.update({i.name: i.value})
+        data.update(source)
+        return form.Form.validates(self, data, False, **kw)
+    
+    
     def render_css(self):
         out = []
         out.append(self.rendernote(self.note))
@@ -58,9 +72,9 @@ class MyForm(form.Form):
 
         if note:
             html = """
-<div id="flash_message">
+<div id="flashbar" style="display:none">
     <script type="text/javascript">
-        document.getElementById('flash_message').style.display = 'none';
+        document.getElementById('flashbar').style.display = 'none';
     </script>
     <span>%s</span>
 </div>"""
@@ -99,13 +113,10 @@ class Datefield(Textbox):
         else:
             self.value = value
 
-class Checkbox(Input, form.Checkbox):
-    def set_value(self, value):
-        pass
-
-    def render(self):
-        self.value = __(self.value)
-        return super(Checkbox, self).render()
+class Checkbox(Input, form.Checkbox): pass
+    #def render(self):
+        #self.value = __(self.value)
+    #    return super(Checkbox, self).render()
 
 
 class Button(form.Button):
@@ -178,6 +189,7 @@ new_user_form = MyForm(
 login_form = MyForm(
     Textbox("username", form.notnull, size=30, description=_("Username")),
     Password("password", form.notnull, size=30, description=_("Password")),
+    Checkbox("rememberme", checked=True, value="1", description=_("Remember Me")),
 )
 
 activity_form = MyForm(
@@ -190,7 +202,8 @@ activity_form = MyForm(
     Checkbox("need_donation", value="1", description=_("Needs donations")),
     Checkbox("need_volunteer", value="1", description=_("Needs volunteers")),
     Textbox("volunteer_tags", size="30", description=_("Volunteer skills needed")),
-    Checkbox("enable_comment", value="1", description=_("Enable comments")),
+    Checkbox("enable_comment", value="1", description=_("Accept comments")),
+    Dropdown('state', args=ACTIVITY_STAGES, description=_('Activity Stage')),
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=39, description="Tags"),
     Textbox("lat", size=10, description="Latitude"),
     Textbox("long", size=10, description="Longitude"),
@@ -200,7 +213,7 @@ article_form = MyForm(
     Textbox("title", form.notnull, size=50, description=_("Title")),
     Textarea("excerpt", form.notnull, rows=3, cols=60, description=_("Excerpt/Lead"), title="Write it short and sweet. "),
     Textarea("content", form.notnull, rows=12, cols=60, _class="rte", rel="#contentPreview", description="Article Content"),
-    Checkbox("enable_comment", value="1", description=_("Enable comments")),
+    Checkbox("enable_comment", value="1", description=_("Accept comments")),
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=50, description="Tags", title="Separate with comma")
  )
 
@@ -213,9 +226,14 @@ page_form = MyForm(
     Textarea("content", form.notnull, rows=15, cols=50, _class="rte", rel="#contentPreview", description=_("Content")),
 )
 
-account_form = MyForm(
-    Password("password", form.notnull, vpass, size=20, description=_("Password"), title=_("Combine alphabet with numbers")),
-    Password("password2", form.notnull, vpass, size=20, description=_("Repeat Password")),
+preferences_form = MyForm(
+    Checkbox("enable_location", value="1", description=_("Enable Location Feature")),
+    Checkbox("send_email_on_writing", value="1", description=_("Send email notification")),
+)
+
+password_form = MyForm(
+    Password("password", form.notnull, vpass, size=20, description=_("New Password"), title=_("Combine alphabet with numbers")),
+    Password("password2", form.notnull, vpass, size=20, description=_("Repeat")),
     validators = [PassValidator()]
 
 )

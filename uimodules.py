@@ -1,10 +1,14 @@
 import os
+import re
 import tornado.web
 import pymongo
+from pymongo.dbref import DBRef
 import urllib2
 
 import forms
-from models import Article, Activity, User, TagCombination, UserTagCombination, Vote, Tag
+from utils.pagination import Pagination
+from models import Article, Activity, User, Content, \
+    TagCombination, UserTagCombination, Vote, Tag, CONTENT_TYPE
 from settings import MY_FLAGS
 
 class BaseUIModule(tornado.web.UIModule):
@@ -31,11 +35,17 @@ class AgentFeatured(BaseUIModule):
         agents = []
         return self.render_string('modules/agents-featured', agents=agents)
 
-class ArticleLatest(BaseUIModule):
-    def render(self, **kwargs):
-        articles = Article.all({'status':'published'}).sort([('created_at', -1)]).limit(3)
-        if articles:
-            return self.render_string('modules/articles-latest', articles=articles)
+class ContentLatest(BaseUIModule):
+    def render(self, type=None, **kwargs):
+        spec = {'status':'published'}
+        if type == 'article':
+            spec.update({'type': CONTENT_TYPE.ARTICLE})
+        elif type == 'activity':
+            spec.update({'type': CONTENT_TYPE.ACTIVITY})
+        limit = kwargs.pop('limit', 3)
+        items = Content.all(spec).sort([('created_at', -1)]).limit(limit)
+        if items:
+            return self.render_string('modules/articles-latest', items=items)
         else: return ''
 
 class ArticlesRelated(BaseUIModule):
@@ -46,15 +56,30 @@ class Avatar(BaseUIModule):
     def render(self, user):
         return self.render_string('modules/avatar', user=user)
 
+class ByAuthor(BaseUIModule):
+    def render(self, author):
+        uref = DBRef(User.collection_name, author['_id'])
+        spec = {'author': uref, 'status': 'published'}
+        pagination = Pagination(self.handler, Content, spec,\
+                                per_page = 5)
+        return self.render_string('modules/by-author', pagination=pagination)
+    
 class CommentBox(BaseUIModule):
     def render(self, user=None):
         from forms import comment_form
         f = comment_form()
         return self.render_string('modules/comment-box', f=f)
 
+class Draft(BaseUIModule):
+    def render(self, user):
+        drafts = Pagination(self.handler, Content, 
+                    {'author': DBRef(User.collection_name, user._id), 
+                     'status':'draft'})
+        return self.render_string('modules/item-list-plain', title="Drafts", items=drafts)
+    
 class Disqus(BaseUIModule):
     def render(self, item):
-        if not item.enable_comment:
+        if False and not item.enable_comment:
             return ""
         return self.render_string('modules/disqus', id=id)
 
@@ -63,6 +88,10 @@ class FansOf(BaseUIModule):
         fans = []
         return self.render_string('modules/fans-of', user=user, fans=fans)
 
+class Facets(BaseUIModule):
+    def render(self, facets):
+        return self.render_string('modules/facets', facets=facets)
+    
 class Fans(BaseUIModule):
     def render(self, user):
         fans = []
@@ -140,19 +169,26 @@ class Locale(BaseUIModule):
         return self.render_string('modules/locale', \
             locales=locales)
 
+class Logintips(BaseUIModule):
+    def render(self):
+        users = User.all({'status':'active'}).sort('created_at', -1).limit(5)
+        return self.render_string('modules/login-tips', users=users)
+    
 class Map(BaseUIModule):
     def render(self, location):
         locale = ('id', 'ID')
         return self.render_string('modules/map', locale=locale)
 
 class Menu(BaseUIModule):
+    cp = None
     def check(self, paths):
-        if self.cp in paths:
-            return 'current'
+        for path in paths:
+            if re.match(r"^%s" % path, self.cp):
+                return 'current'
         return ''
 
     def render(self):
-        self.cp = self.request.path.strip('/').split('/')[0]
+        self.cp = self.request.path.strip('/')
         return self.render_string('modules/menu', check=self.check)
 
 class Poll(BaseUIModule):
@@ -188,6 +224,13 @@ class Static(BaseUIModule):
             return self.render_string('modules/statics/%s' % template)
         return ''
 
+class SimilarContent(BaseUIModule):
+    def render(self, content):
+        # hmm.. kena yg tags >= yg lagi ditampilin aja
+        spec = {'_id': {'$ne':content._id}, 'tags': {'$all':content.tags}}
+        pagination = Pagination(self.handler, Content, spec, 5)
+        return self.render_string('modules/content-similar', pagination=pagination)
+                                  
 class Slideshow(BaseUIModule):
     def render(self):
         return self.render_string('modules/slideshow')
@@ -216,11 +259,12 @@ class Tabs(BaseUIModule):
         import tabs
         return getattr(tabs, name, [None,None])
 
-    def render(self, tabs, selected=0, title=None, dashboard=False, **kwargs):
+    def render(self, user, tabs, selected=0, title=None, dashboard=False, **kwargs):
         _title, tabs = self.get_tabs(tabs)
         if tabs:
             title = title if title else _title
             html = self.render_string('modules/tabs',
+                                      user=user,
                                       title=title,
                                       tabs=tabs,
                                       selected=selected,
@@ -251,8 +295,8 @@ class TagSuggestion(BaseUIModule):
         return self.render_string('modules/tags-suggestion', tags=tags, el=el)
 
 class TagContent(BaseUIModule):
-    def render(self, slug, type='article'):
-        action = '/%s/tag/%s' % (type, slug)
+    def render(self, slug, type='content'):
+        action = '/%s/tagged/%s' % (type, slug)
         return self.render_string('modules/tag-content', action=action)
 
 class UserBlock(BaseUIModule):

@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'profile/_dashboard.html' %}
 
 {% block title %}{{ _('New Page') }}{% end %}
 
-{% block body %}
+{% block tabContent %}
 
 {% set title = 'edit page' if page.slug else 'new page' %}
 
@@ -10,7 +10,7 @@
 
 <form method="post" action="{{BP}}/page/edit">
 
-{{ modules.Tabs('new_' + ('admin' if current_user.is_admin else current_user.type), 'page', title) }}
+{{ modules.Tabs(user, 'new_' + ('admin' if current_user.is_admin else current_user.type), 'page', title) }}
 
     {{ modules.Formfield(f.title) }}
     {{ modules.Formfield(f.content) }}

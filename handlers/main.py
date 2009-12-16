@@ -148,14 +148,16 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def template_vars(self):
-        from utils import defaulthelper, string
+        from utils import defaulthelper, string, timeutil
 
         return dict(
             current_path = self.request.uri,
             BP = self.settings.BASE_URL,
             get = lambda x,y: x or y,
             log = self.log,
+            quote = urllib.quote,
             settings = self.settings,
+            t = timeutil,
             h = defaulthelper,
             s = string,
             fd = self.locale.format_date

@@ -12,16 +12,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import binascii
-import urllib
 import hashlib
-import time
-import uuid
-
-from tornado import httpclient
 import tornado.auth
 import tornado.escape
 import web.form
+from recaptcha import captcha
 
 from forms import login_form, new_user_form, register_form, InvalidFormDataError
 from main import BaseHandler
@@ -56,7 +51,14 @@ class LoginFormHandler(BaseHandler):
 
         next = self.get_argument('next', '/dashboard')
         if f.validates(Storage(self.get_arguments())):
-            self.set_secure_cookie("username", username)
+            if user.status != 'active':
+                self.set_flash(self._("Your login has been disabled/deleted. Please contact admin."))
+                self.redirect("/")
+                return
+            
+            expire = 14 if self.get_argument('rememberme',None) else None
+            self.set_secure_cookie("username", username, expire)
+                
             from datetime import datetime
             user.last_login = datetime.now()
             user.save()
@@ -70,48 +72,62 @@ class LogoutHandler(BaseHandler, tornado.auth.FacebookMixin):
         self.clear_all_cookies()
         if loc:
             self.set_cookie('loc', loc)
-        self.set_flash("You are logged out now")
+        self.set_flash(self._("You have been logged out."))
         self.redirect("/")
 
 class RegisterHandler(BaseHandler):
     def get(self):
         f = register_form()
-        self.render("register", f=f)
+        captcha_html = captcha.displayhtml(self.settings.CAPTCHA_PUBLIC_KEY, True)
+        self.render("register", f=f, captcha_html=captcha_html, captcha_error='')
 
     def post(self):
         f = register_form()
+        captcha_html = captcha.displayhtml(self.settings.CAPTCHA_PUBLIC_KEY, True)
+        captcha_error = ''
         data = self.get_arguments()
-
+        _ = self._
         if False and data.has_key('username'):
             existing_user = User.one({'username': data['username']})
             f.add_notnull_validator(not existing_user, "The username you wanted is already taken.")
 
         try:
             if f.validates(Storage(data)):
-                new_user = User()
-                data['is_admin'] = False
-                data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
-                data['auth_provider'] = u'form'
-                new_user.save(data)
-                self.set_flash("You have been successfully registered. ")
-                self.redirect("/")
-                return
-            raise InvalidFormDataError("Form still have errors.")
+                
+                captcha_resp = captcha.submit(
+                                    self.get_argument('recaptcha_challenge_field'),
+                                    self.get_argument('recaptcha_response_field'),
+                                    self.settings.CAPTCHA_PRIVATE_KEY,
+                                    self.request.remote_ip
+                                )
+                if captcha_resp.is_valid:
+                    new_user = User()
+                    data['is_admin'] = False
+                    data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
+                    data['auth_provider'] = u'form'
+                    new_user.save(data)
+                    self.set_flash(_("You have been successfully registered. "))
+                    self.redirect("/")
+                    return
+                captcha_error = captcha_resp.error_code
+                raise Exception("Invalid captcha code") 
+            raise InvalidFormDataError(_("Form still have errors."))
         except Exception, e:
-            raise
             f.note = f.note if f.note else e
-            self.render("register", f=f)
+            self.render("register", f=f, captcha_html=captcha_html, captcha_error=captcha_error)
 
 
 class NewUserHandler(BaseHandler):
     def get(self):
         if not self.get_secure_cookie("user"):
-            raise tornado.web.HTTPError(403, "Authentication cookie does not exists. Please enable Cookie in your browser.")
+            raise tornado.web.HTTPError(403, self._("Authentication cookie does not exists. Please enable Cookie in your browser."))
         self.render("new-user", f=new_user_form())
 
     def post(self):
         f = new_user_form()
         user_cookie = self.get_secure_cookie("user")
+        
+        _ = self._
 
         if not user_cookie:
             raise tornado.web.HTTPError(403, "Authentication cookie does not exists. Please enable Cookie in your browser.")
@@ -134,10 +150,10 @@ class NewUserHandler(BaseHandler):
                 self.set_secure_cookie("username", user['username'])
                 self.clear_cookie("user")
                 self.clear_cookie("ap")
-                self.set_flash("Thank your for joining with us. You are logged in now.")
+                self.set_flash(_("Thank your for joining with us. You are logged in now."))
                 self.redirect("/")
                 return
-            raise InvalidFormDataError("Form still have errors.")
+            raise InvalidFormDataError(_("Form still have errors."))
         except Exception, e:
             f.note = f.note if f.note else e
             self.render("new-user", f=f)
@@ -148,7 +164,7 @@ class AuthMixin(object):
         if not peduli_user:
             """ New user """
             self.set_secure_cookie("user", tornado.escape.json_encode(user))
-            self.set_flash("You have been succefully authenticated. In order to be member, you need complete form shown below.")
+            self.set_flash(self._("You have been succefully authenticated. In order to be member, you need complete form shown below."))
             self.redirect("/new-user")
             return
 

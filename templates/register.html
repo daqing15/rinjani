@@ -12,7 +12,7 @@
     <h2>{{ _('Register') }}</h2>
     <div id="tabs">
         <a href="{{ settings.login_url }}">{{ _('Login') }}</a>
-        <a href="{{BP}}/register" class="youarehere">{{ _('register') }}</a>
+        <a href="{{BP}}/register" class="youarehere">{{ _('Join us') }}</a>
     </div>
 </div>
 
@@ -20,7 +20,7 @@
 
 <div class="line">
 	<div class="unit size1of4">
-	   {{ modules.Static('login-tips') }}
+	   {{ modules.Logintips() }}
 	</div>
 	<div class="lastUnit size3of4">
 	   <div class="line sep-left leftpadded10">
@@ -32,7 +32,12 @@
             {{ modules.Formfield(f.agree) }}
             <script type="text/javascript">
                 $('input[name=username]').focus();
+                var RecaptchaOptions = {
+            		   theme : 'clean'
+            		};
             </script>
+            {{ captcha_html }}
+            
             <div class="buttons">
                 <button class="submit" name="register"><span><span>{{_('Register')}}</span></span></button>
             </div>

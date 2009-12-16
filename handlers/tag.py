@@ -12,7 +12,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 import urllib2
+
 from main import BaseHandler, authenticated
 import models
 from models import User, Content, Vote, Tag, UserTag
@@ -27,11 +29,13 @@ class ListHandler(BaseHandler):
         self.render('tags', tab=tab, pagination=pagination)
 
 class ViewHandler(BaseHandler):
-    def get(self, tab, tags):
+    def get(self, tab, tags=None):
         tab = tab or 'content'
+        if tags is None:
+            tags, tab = tab, 'content'
         tags = urllib2.unquote(tags).split('+')
         doc = Content if tab == 'content' else User
-        pagination = Pagination(self, doc, {'tags': {'$all':tags}}, 10)
+        pagination = Pagination(self, doc, {'tags': {'$all':tags}})
         self.render('tag-view', tab=tab, tags=tags, pagination=pagination)
         
 class FlagHandler(BaseHandler):
@@ -39,24 +43,31 @@ class FlagHandler(BaseHandler):
     def post(self):
         data = self.get_arguments()
         try:
-            cls = getattr(models, self.get_argument('type'))
+            type = int(self.get_argument('type'))
             flag = self.get_argument('flag')
             slug = self.get_argument('slug')
-            cid = cls.one({'slug': slug})['_id']
+            spec = {'type': type, 'slug': slug}
+            cid = Content.one(spec)['_id']
             uid = self.current_user['_id']
             if int(flag) in [x for x,_y in MY_FLAGS]:
                 has_vote = Vote.one({'uid': uid ,'cid': cid})
                 if not has_vote:
-                    cls.collection.update(
-                        {'slug': slug}, {'$inc': { "votes." + flag: 1}}
+                    Content.collection.update(
+                        spec, {'$inc': { "votes." + flag: 1}}
                     )
                     vote = Vote()
                     vote['uid'],  vote['cid'], vote['vote'] = uid, cid, int(flag)
                     vote.save()
-                    self.json_response("Your vote has been noted", "OK")
-                raise Exception("Has vote")
+                    return self.json_response("You have voted has been noted", "OK")
+                else:
+                    Content.collection.update(
+                        spec, {'$inc': { "votes." + flag: -1}}
+                    )
+                    Vote.remove({'uid': uid, 'cid': cid})
+                    return self.json_response("Your vote has been removed", "OK")
             raise Exception("Invalid vote")
         except Exception, e:
+            raise
             return self.json_response(e.__str__(), "ERROR", data)
         
         self.json_response(None, "OK", data)

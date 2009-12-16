@@ -4,8 +4,8 @@ import re, os, sys
 from tornado.options import define, options, parse_command_line
 import logging
 
+# reference: django.core.management.commands.makemessages
 def make_messages(locale, basedir, srcdirs, outdir, extensions, verbose=False):
-    
     (_stdin, stdout, stderr) = os.popen3('xgettext --version', 't')
     match = re.search(r'(?P<major>\d+)\.(?P<minor>\d+)', stdout.read())
     
@@ -62,7 +62,9 @@ def make_messages(locale, basedir, srcdirs, outdir, extensions, verbose=False):
     else:
         raise Exception("You need to install xgettext")
 
-def convert_to_csv(pofile):
+def po_to_csv(pofile):
+    """ Convert .po to .csv format requied by Tornado"""
+    
     lines = open(pofile).readlines()
     clines, msgid, in_msg = [], [], False
     
@@ -105,4 +107,4 @@ if __name__ == "__main__":
     if cmd == 'makemessage':
         make_messages(options.locale, basedir, options.srcdir, options.outdir, options.ext, options.verbose)
     elif cmd == "makecsv":
-        convert_to_csv(os.path.join(basedir, options.outdir, options.locale + ".po"))
+        po_to_csv(os.path.join(basedir, options.outdir, options.locale + ".po"))

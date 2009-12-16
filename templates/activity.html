@@ -20,7 +20,8 @@
 {% block sidebar %}
      <div id='userblock'>{{ modules.UserBlock(activity.author) }}</div>
     {{ modules.ItemAction(activity) }}
-
+    {{ modules.ItemStat(activity) }}
+    
     {% if current_user != activity.author and activity.need_donation %}
         <div class="mod simple rounded">
             <b class="top"><b class="tl"></b><b class="tr"></b></b>
@@ -58,7 +59,8 @@
         {% end %}
     {% end %}
 
-    {{ modules.ItemStat(activity) }}
+    {{ modules.ByAuthor(activity.author) }}
+    {{ modules.SimilarContent(activity) }}
 
 <div class="modal facebox" id="boxdonation"><div class="wDialog"></div></div>
 <div class="ovl" id="slideshow">

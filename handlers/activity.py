@@ -13,18 +13,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import tornado.web
 from main import BaseHandler, authenticated
 from forms import activity_form
-from settings import CONTENT_TAGS, USER_TAGS
-from models import Activity, EditDisallowedError
-from web.utils import Storage
+from models import CONTENT_TYPE, Activity, EditDisallowedError
 from utils.pagination import Pagination
 from utils.utils import move_attachments, parse_attachments
-import tornado.web
 
 class ListHandler(BaseHandler):
     def get(self, tab):
-        spec = {'type': 'ACT', 'status':'published'}
+        spec = {'type': CONTENT_TYPE.ACTIVITY, 'status':'published'}
         tab = tab or 'latest'
         if tab == 'featured':
             spec.update({'featured':True})
@@ -38,7 +36,7 @@ class ListHandler(BaseHandler):
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
-        spec = {'type': 'ACT', 'status':'published', 'slug': slug}
+        spec = {'type': CONTENT_TYPE.ACTIVITY, 'status':'published', 'slug': slug}
         activity = Activity.one(spec)
         if not activity:
             raise tornado.web.HTTPError(404)
@@ -51,11 +49,8 @@ class EditHandler(BaseHandler):
         f = activity_form()
         if slug:
             try:
-                activity = Activity.one({"slug": slug})
+                activity = Activity.one({'type': CONTENT_TYPE.ACTIVITY, 'slug': slug})
                 activity.check_edit_permission(self.get_current_user())
-                f['need_donation'].checked = bool(activity['need_donation'])
-                f['need_volunteer'].checked = bool(activity['need_volunteer'])
-                f['enable_comment'].checked = bool(activity['enable_comment'])
                 activity.formify()
                 f.fill(activity)
             except EditDisallowedError:
@@ -66,7 +61,7 @@ class EditHandler(BaseHandler):
                 raise tornado.web.HTTPError(404)
         else:
             activity = Activity()
-        self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
+        self.render("activity-edit", f=f, activity=activity, user=self.current_user)
 
     @authenticated(['agent', 'sponsor'], False, True)
     def post(self):
@@ -81,8 +76,9 @@ class EditHandler(BaseHandler):
             if attachments:
                 data['attachments'] = parse_attachments(data['attachments'], is_edit)
 
-            if f.validates(Storage(data)):
-                activity = Activity.one({'slug': data['slug']}) if is_edit else Activity()
+            if f.validates(tornado.web._O(data)):
+                spec = {'type': CONTENT_TYPE.ACTIVITY, 'slug': data['slug']}
+                activity = Activity.one(spec) if is_edit else Activity()
                 activity.save(data, user=self.get_current_user())
 
                 if attachments and not is_edit:
@@ -95,21 +91,20 @@ class EditHandler(BaseHandler):
                 self.redirect(url)
                 return
             activity = Activity()
-            raise Exception(_("Form still have errors."))
+            raise Exception(_("Form still have errors. Please check for required fields."))
         except EditDisallowedError:
             self.set_flash(_("You are not allowed to edit this activity."))
             self.redirect(activity.get_url())
         except Exception, e:
-            raise
             if attachments:
                 activity['attachments'] = data['attachments']
             f.note = f.note if f.note else e
-            self.render("activity-edit", f=f, activity=activity, content_tags=CONTENT_TAGS, user_tags=USER_TAGS)
+            self.render("activity-edit", f=f, activity=activity, user=self.current_user)
 
 
 class RemoveHandler(BaseHandler):
     def post(self, slug):
-        activity = Activity.one({"slug": slug})
+        activity = Activity.one({'type': 'Activity', 'slug': slug})
         if not activity:
             raise tornado.web.HTTPError(404)
 

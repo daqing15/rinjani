@@ -1,0 +1,15 @@
+{% if pagination.get_objects().count() %}
+    <div class="mod">
+        <div class="inner">
+            <div class="bd">
+                <h3>{{ _('Similar Writings') }}</h3>
+                <ul>
+                {% for item in pagination.get_objects() %}
+                   <li><a href="{{ item.get_url() }}">{{ escape(item.title) }}</a></li>
+                {% end %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% end %}
+

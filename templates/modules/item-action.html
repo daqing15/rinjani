@@ -6,7 +6,7 @@
 </div>
 {% end %}
 
-{% if current_user %}
+{% if current_user and current_user == item.author %}
 <div class="line buttons"><p>   
     {{ h.link_if_editor(current_user, item.author, item.get_edit_url(), _('Edit'), _class='button') }} 
     {{ h.link_button_if_editor(current_user, item.author, item.get_remove_url(), _('Remove'), handler.xsrf_token) }}

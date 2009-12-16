@@ -1,0 +1,28 @@
+{% extends '_dashboard.html' %}
+
+{% block title %}{{_('Edit Profile')}}{% end %}
+
+{% block tabContent %}
+
+{{ f.rendernote(f.note) }}
+
+{{ modules.Tabs(user, 'edit_profile', 'profile', fullname=get(user.fullname, user.username), username=user.username) }}
+
+{% include "../modules/profile-edit.html" %}
+
+{% end %}
+
+{% block inlinejs %}
+<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
+<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
+<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+{% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript" src="{{ static_url('profile.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+{% end %}
+
+
+
+

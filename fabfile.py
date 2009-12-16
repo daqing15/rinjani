@@ -5,6 +5,7 @@ def _setup():
     env.mongo = '/opt/devel/mongodb/bin/mongo'
 
     env.localdir = '/rinjani/app'
+    env.localbase = '/rinjani'
     env.remotebase = '/rinjani'
     env.remotedir = '%s/app' % env.remotebase
     env.remotedbdir = '%s/var/db' % env.remotebase
@@ -27,6 +28,15 @@ def rebuilddb():
     tag()
     restart_app()
 
+def rebuild_localdb():
+    local("supervisorctl stop mongodb")
+    local("rm -rf %s/var/db" % env.localbase)
+    local("mkdir %s/var/db" % env.localbase)
+    local("supervisorctl start mongodb")
+    local("%s peduli %s/bin/dummydata.js %s/bin/tag-count.js %s/bin/tag-combination-count.js" \
+          % (env.mongo, env.localdir, env.localdir, env.localdir)
+          )
+    
 def restart_supervisor():
     run("killall supervisord && sleep 2 && supervisord")
 
@@ -38,7 +48,7 @@ def backup():
             % (env.envi, env.remotedir))
 
 def mergecss():
-    local("cd %s/static/css && cat app.css mod.css uicomponents.css > /tmp/rinjani.css && yuic /tmp/peduli.css > %s/static/css/rinjani.css" %(env.localdir, env.localdir) )
+    local("cd %s/static/css && cat app.css mod.css uicomponents.css > /tmp/rinjani.css && yuic /tmp/rinjani.css > %s/static/css/rinjani.css" %(env.localdir, env.localdir) )
 
 def _sync(path):
     local("rsync -rzvh %s/%s %s:%s/%s" % (env.localdir, path, env.hosts[0], env.remotedir, path))

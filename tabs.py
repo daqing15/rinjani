@@ -1,11 +1,19 @@
 
 from utils.string import dummy_translate as _
 
-dashboard_agent = (_('Dashboard'), [
+admin = (_('Dashboard'), [
     ('/dashboard', 'dashboard'),
-    ('/profile/donations', _('donations')),
-    ('/profile/donations', _('module2')),
-    ('/profile/donations', _('module3')),
+    ('/admin/users', _('users')),
+    ('/admin/verifications', _('verifications')),
+    ('/admin/reports', _('reports')),
+])
+
+profile = ('%(fullname)s', [
+    ('/profile/%(username)s', _('wall')),
+    ('/profile/%(username)s/about', _('about')),
+    ('/profile/%(username)s/donations', _('donations'), {'private':True}),
+    ('/profile/%(username)s/articles', _('articles')),
+    ('/profile/%(username)s/activities', _('activities')),
 ])
 
 new_public = ('New', [
@@ -21,19 +29,6 @@ new_admin = (_('New'), [
     ('/article/new', _('article')),
     ('/activity/new', _('activity')),    
     ('/page/new', _('page')),
-])
-
-dashboard_public = (_('Dashboard'), [
-    ('/dashboard', _('messages')),
-    ('/profile/comments', _('comments')),
-    ('/profile/supports', _('supports')),
-])
-
-profile_public = ('%(fullname)s', [
-    ('/profile/%(username)s', _('about')),
-    ('/profile/articles/%(username)s', _('articles')),
-    ('/profile/activities/%(username)s', _('activities')),
-    ('/profile/comments/%(username)s', _('comments')),
 ])
 
 articles = ('Articles', [
@@ -54,6 +49,10 @@ users = ('Users', [
     ('/users?tab=public', _('public')),
 ])
 
+edit_profile = ('Profile', [
+    ('/profile/edit', _('profile')),
+    ('/preferences', _('preferences')),
+])
 
 tags = ('Tags', [
     ('/tags/content', _('content')),

@@ -4,7 +4,7 @@
             <div class="line">
                 <ul class="tags">
             {% for tag in tags %}
-                <li><a href="{{BP}}/tagged/{{tag._id}}?t=content" class="tag s{{ tag.font_size }}">{{ tag._id }} x{{int(tag.value)}}</a></li>
+                <li><a href="{{BP}}/tagged/{{tag._id}}" class="tag s{{ tag.font_size }}">{{ tag._id }} x{{int(tag.value)}}</a></li>
             {% end %}
                 </ul>
             </div>

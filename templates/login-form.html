@@ -12,7 +12,7 @@
     <h2>{{ _('Come on in!') }}</h2>
     <div id="tabs">
         <a href="#" class="youarehere">{{ _('Login') }}</a>
-        <a href="{{BP}}/register">{{ _('register') }}</a>
+        <a href="{{BP}}/register">{{ _('Join us') }}</a>
     </div>
 </div>
 
@@ -34,6 +34,8 @@
 	        
             {{ modules.Formfield(f.username) }}
             {{ modules.Formfield(f.password) }}
+            {{ modules.Formfield(f.rememberme) }}
+            <p class="small grey">{{ _('Uncheck this if you are accessing this site from public computer')}}</p>
 	        <div class="buttons">
 	            <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
 	            <input type="hidden" name="next" value="{{ next }}" />
@@ -41,7 +43,7 @@
 	        <script type="text/javascript">
 	            $('input[name=username]').focus();
 	        </script>
-            <p class="small">try user26/hermione</p>
+            <p class="small">try user1/hermione</p>
 	    </div>
     </div>
 </div>

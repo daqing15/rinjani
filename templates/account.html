@@ -4,15 +4,14 @@
 
 {% block body %}
 
-<form method="post" class="withtips">
-
-{{ f.rendernote(f.note) }}
+{{ f_pref.rendernote(f_pref.note) }}
+{{ f_pwd.rendernote(f_pwd.note) }}
 
 <div id="subheader">
-    <h2>{{ _('Account') }}</h2>
+    <h2>{{ _('Preferences') }}</h2>
     <div id="tabs">
         <a href="{{BP}}/profile/edit">{{ _('profile') }}</a>
-        <a href="{{BP}}/account" class="youarehere">{{ _('account') }}</a>
+        <a href="{{BP}}/preferences" class="youarehere">{{ _('preferences') }}</a>
     </div>
 </div>
 
@@ -20,26 +19,36 @@
 
 <div class="line" style="width: 70%">
     <div class="unit size1of2">
-        {{ modules.Formfield(f.password) }}
-        {{ modules.Formfield(f.password2) }}
+        <form method="post" class="withtips">
+            {{ modules.Formfield(f_pref.enable_location) }}
+            {{ modules.Formfield(f_pref.send_email_on_writing) }}
+            <div class="buttons">
+                <button class="submit" name="action" value="change"><span><span>{{_('Save Preference')}}</span></span></button>
+            </div> 
+            <input type="hidden" name="action" value="pref" />
+            {{ xsrf_form_html() }}
+        </form>
     </div>
     <div class="lastUnit size1of2">
+        <form method="post" class="withtips">
+            {{ modules.Formfield(f_pwd.password) }}
+            {{ modules.Formfield(f_pwd.password2) }}    
+            <div class="buttons">
+                <button class="submit" name="action" value="change"><span><span>{{_('Change')}}</span></span></button>
+            </div>
+            <input type="hidden" name="action" value="chpass" />    
+            {{ xsrf_form_html() }}
+        </form>
     </div>
 </div>    
 
 <script type="text/javascript">
     $('input[name=password]').focus();
 </script>
-<div class="buttons">
-<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
-<button class="submit" name="action" value="change"><span><span>{{_('Change')}}</span></span></button>
-</div>
 </div>
 
 
-{{ xsrf_form_html() }}
 
-</form>
 
 {% end %}
 

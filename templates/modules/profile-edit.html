@@ -1,24 +1,9 @@
-{% extends '../base.html' %}
-
-{% block title %}{{_('Edit Profile')}}{% end %}
-
-{% block body %}
 
 <noscript>
 <div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
 </noscript>
 
-{{ f.rendernote(f.note) }}
-
 <form method="post" class="withtips">
-<div id="subheader">
-    <h2>{{ _('Profile') }} - {{ user.username }}</h2>
-    <div id="tabs">
-        <a href="{{BP}}/profile/edit" class="youarehere">{{ _('profile') }}</a>
-        <a href="{{BP}}/account">{{ _('account') }}</a>
-    </div>
-</div>
-
 <div class="line tabWrapper">
     <div class="unit size1of5">
         <!-- the tabs -->
@@ -41,7 +26,7 @@
                         {{ modules.Formfield(f.timezone) }}
                         {{ modules.Formfield(f.tags) }}
                         <div class="tags suggestedtags">
-                            {{ modules.TagSuggestion(FIELD_TAGS, '#tags')}}
+                            {{ modules.TagSuggestion(settings.FIELD_TAGS, '#tags')}}
                         </div>
                     </div>
                     <div class="lastUnit size1of3">
@@ -104,7 +89,7 @@
                     <div class="line accountsrc" style="display:none">
                         <div class="unit size1of5"><input type="text" name="acc_" size="13" /></div>
                         <div class="unit size1of5">
-                            {{ h.select('acc_', BANKS, value='bca') }}
+                            {{ h.select('acc_', settings.BANKS, value='bca') }}
                         </div>
                         <div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
                         <div class="unit size1of5"><input type="text" name="acc_" size="12" /></div>
@@ -121,7 +106,7 @@
                     <div class="line account">
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="13" value="{{ account[0]}}" /></div>
                         <div class="unit size1of5">
-                            {{ h.select('acc_'+str(i), BANKS, value=account[1]) }}
+                            {{ h.select('acc_'+str(i), settings.BANKS, value=account[1]) }}
                         </div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[2]}}" /></div>
                         <div class="unit size1of5"><input type="text" name="acc_{{i}}" size="12" value="{{ account[3]}}" /></div>
@@ -139,7 +124,6 @@
 </div>
 
 <div class="buttons">
-<button onclick="history.back(); return false;" name="action" value="back"><span><span>{{_('Cancel')}}</span></span></button>
 <button class="submit" name="action" value="save"><span><span>{{_('Save')}}</span></span></button>
 
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in user.attachments]) }}" />
@@ -163,20 +147,3 @@ is_new_doc = 0;
 textarea = '#profile_content';
 slug = '{{ user.username }}';
 </script>
-
-{% end %}
-
-{% block inlinejs %}
-<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
-<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
-{% end %}
-
-{% block postinlinejs %}
-<script type="text/javascript" src="{{ static_url('profile.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
-{% end %}
-
-
-
-

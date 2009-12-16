@@ -1,16 +1,28 @@
 import datetime
 import logging
-import re
 import markdown2
+import re
+import simplejson
+import time
 
 import tornado.web
 from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import DB, USERTYPE as _USER_TYPE
 from utils.string import force_unicode, listify, sanitize, slugify
 from utils.inline import processor, AttachmentInline, SlideshowInline
+from utils.json import JSONEncoder
 
 USER_TYPE = dict(_USER_TYPE).keys()
-CONTENT_TYPE = {'ART':'article', 'ACT':'activity', 'PAG': 'page'}
+
+class CONTENT_TYPE:
+    GENERIC = 1
+    ARTICLE = 2
+    ACTIVITY = 3
+    PAGE = 4
+    POST = 5
+    USER = 6
+
+CONTENT_MAP = [None, 'content', 'article', 'activity', 'page', 'post', 'user']
 
 class EditDisallowedError(Exception): pass
 
@@ -20,6 +32,9 @@ class Simpledoc(MongoDocument):
     skip_validation = True
     structure = {}
     
+class Queue(Simpledoc):
+    structure = { }
+        
 class BaseDocument(Simpledoc):
     use_autorefs = True
     sanitized_fields = []
@@ -31,10 +46,7 @@ class BaseDocument(Simpledoc):
 
     def formify(self):
         for k, t in self.structure.iteritems():
-            if t is bool:
-                #self[k] = "0" if self[k] is None else str(int(self[k]))
-                self[k] = "1"
-            elif t is list and self[k]:
+            if t is list and self[k]:
                 self[k] = ', '.join(self[k])
             elif t is datetime.datetime:
                 if self.has_key(k) and type(self[k]) is datetime.datetime:
@@ -109,6 +121,7 @@ class User(BaseDocument):
         'is_verified': bool,
         'last_login': datetime.datetime,
         'created_at': datetime.datetime,
+        'updated_at': datetime.datetime,
 
         # information
         'sex': unicode,
@@ -136,7 +149,10 @@ class User(BaseDocument):
         # site-related
         'following': list,
         'followers': list,
-        'preferences': list,
+        'preferences': {
+                        'enable_location': bool,
+                        'send_email_on_writing': bool 
+                        },
         'badges': list,
         'points': int,
         'article_count': int,
@@ -161,8 +177,10 @@ class User(BaseDocument):
         if not data:
             super(User,self).save()
             return
-
+        
         self.populate(data)
+        self['updated_at'] = datetime.datetime.utcnow()
+        
         if user and data.has_key('bank_accounts'):
             self.update_bank_accounts(user, data['bank_accounts'])
         super(User, self).save()
@@ -226,17 +244,22 @@ class Group(BaseDocument):
         'description': unicode,
         'members': list
     }
+
 class Content(BaseDocument):
     collection_name = 'contents'
     structure = {
         'author': User
     }
-    type = ''
+    type = CONTENT_TYPE.GENERIC
     required_fields = ['author', 'title', 'content']
     sanitized_fields = ['excerpt', 'content']
-    indexed_fields = ['content']
+    indexed_field = 'content'
     inline_fields = ['content']
-
+    
+    @property
+    def class_doc(self):
+        return CONTENT_MAP[int(self['type'])]
+    
     def authored_by(self, user):
         return self['author'] is user
 
@@ -290,7 +313,7 @@ class Content(BaseDocument):
             self['author'] = user
             new_doc = True
 
-        self['type'] = self.type
+        self['type'] = self.__class__.type
         self.pre_save(data, new_doc)
         self.set_slug(self, self['title'])
         super(Content, self).save()
@@ -306,13 +329,34 @@ class Content(BaseDocument):
         self.post_remove()
 
     def pre_save(self, data, new_doc): pass
-    def post_save(self, data, new_doc): pass
-    def pre_remove(self): pass
-    def post_remove(self): pass
-
+    def post_save(self, data, new_doc): 
+        if self.indexed_field:
+            payload = {
+                       'id': self['_id'],
+                       'title': self['title'],
+                       'content': self[self.indexed_field],
+                       'path': self.get_url(),
+                       'type': self['type'],
+                       'tags': self['tags'],
+                       'created_at': self['created_at'],
+                       'updated_at': self['updated_at']
+                       }
+        Queue.collection.update({'_id': 'indexing'}, 
+                                {'$push': {'payload': payload}},
+                                upsert=True)
+        
+    def pre_remove(self): 
+        payload = {'id': self['_id']}
+        Queue.collection.update({'_id': 'indexremoval'},
+                                 {'$push': {'payload': payload}},
+                                 upsert=True)
+        
+    def post_remove(self): 
+        pass
+    
     @property
     def base_url(self):
-        return "/" + CONTENT_TYPE[self['type']]
+        return "/" + CONTENT_MAP[int(self['type'])]
 
     def get_url(self):
         return "%s/%s" % (self.base_url, self.slug)
@@ -324,9 +368,9 @@ class Content(BaseDocument):
         return self.base_url + '/remove/' + self.slug
 
 class Article(Content):
-    type = 'ART'
+    type = CONTENT_TYPE.ARTICLE
     structure = {
-        'type': unicode,
+        'type': int,
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'),
         'featured': bool,
@@ -345,7 +389,7 @@ class Article(Content):
         'updated_at': datetime.datetime
     }
     api_fields = ['title', 'slug', 'excerpt', 'content', 
-                    'view_count', 'tags', 'created_at', 'updated_at'] 
+                    'view_count', 'tags', 'created_at'] 
     
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
@@ -358,14 +402,15 @@ class Article(Content):
     def post_save(self, data, new_doc):
         if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': 1}})
+        super(Article, self).post_save(data, new_doc)
 
     def post_remove(self):
         User.collection.update({'username': self.author.username}, {'$inc': { 'article_count': -1}})
 
 class Activity(Content):
-    type = 'ACT'
+    type = CONTENT_TYPE.ACTIVITY
     structure = {
-        'type': unicode,
+        'type': int,
         'author': User,
         'status': IS(u'published', u'draft', u'deleted'),
         'featured': bool,
@@ -397,10 +442,11 @@ class Activity(Content):
     }
     api_fields = ['title', 'slug', 'excerpt', 'content', 
                     'location', 'date_start', 'date_end', 
-                    'view_count', 'tags', 'created_at', 'updated_at']
+                    'view_count', 'tags', 'created_at']
     
     default_values = {'enable_comment': True, 'view_count': 0, 'comment_count': 0,
                       'status': u'published',
+                      'state': u'planning',
                       'featured': False,
                       'created_at':datetime.datetime.utcnow,
                       'updated_at':datetime.datetime.utcnow
@@ -410,15 +456,16 @@ class Activity(Content):
     def post_save(self, data, new_doc):
         if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': 1}})
-
+        super(Activity, self).post_save(data, new_doc)
+        
     def post_remove(self):
         User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': -1}})
 
 class Page(Content):
-    type = 'PAG'
+    type = CONTENT_TYPE.PAGE
     structure = {
         'author': User,
-        'type': unicode,
+        'type': int,
         'title': unicode,
         'slug': unicode,
         'content': unicode,
@@ -433,8 +480,8 @@ class Page(Content):
                       'updated_at':datetime.datetime.utcnow
                       }
 
-class Blog(Page):
-    type = 'BLO'
+class Post(Page):
+    type = CONTENT_TYPE.POST
 
 class Vote(BaseDocument):
     collection_name = 'votes'
@@ -453,14 +500,32 @@ class Comment(BaseDocument):
        'replies': [{'from': User, 'comment': unicode, 'created_at': datetime.datetime}],
        'created_at': datetime.datetime,
     }
+    sanitized_fields = ['comment', 'replies.comment']
     required_fields = ['from', 'for', 'comment']
     default_values = {'created_at':datetime.datetime.utcnow, \
                       'replies.created_at': datetime.datetime.utcnow}
+    
+    def save(self, data=None, user=None):
+        if not data:
+            super(Comment,self).save()
+            return
+        self.populate(data)
+        super(Comment, self).save()
 
+class Response(BaseDocument):
+    collection_name = 'responses'
+    structure = {
+        'for': Content,
+        'responses': [{'from': User, 'resp': unicode, 'created_at': datetime.datetime}],
+        'responses_count': int,
+        'last_response': datetime.datetime
+    }
+    
 class Volunteer(BaseDocument):
     collection_name = 'volunteers'
     structure = {
         'user': User,
+        'approved_by': User,
         'activity': Activity,
         'status': IS(u'approved', u'pending', u'rejected'),
         'asked_at': datetime.datetime,
@@ -517,8 +582,8 @@ class Donation(BaseDocument):
     structure =  {
         'from': User,
         'for': User,
-        'from_account': list,
-        'for_account': list,
+        'from_account': BankAccount,
+        'for_account': BankAccount,
         'transfer_no': unicode,
         'amount': float,
         'activity': Activity, # optional

@@ -1,9 +1,30 @@
 
 import urllib
+import re
 import tornado.web
 from main import BaseHandler
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.auth import TwitterMixin
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from utils.pagination import SearchPagination
+
+class SearchHandler(BaseHandler):
+    def get(self):
+        from utils.indexing import index
+        q = self.get_argument('q', None)
+        if q:
+            params = {}
+            args = self.request.arguments
+            params.update({'facet': 'true', 'facet.field': ['type','tags']})
+            if 'fq' in args:
+                params.update({'fq': args['fq']})
+            try:
+                pagination = SearchPagination(self, index, q, params)
+                self.render("search", pagination=pagination, q=q, error="")
+            except:
+                raise
+                self.render("search", pagination=[], q=q, error="Search facility is down")
+        else: 
+            self.render("search", pagination=[], q=q, error="Not Found")
 
 class SurveyHandler(BaseHandler):
     GFORM_BASEURL = u'http://spreadsheets.google.com/embeddedform?key='

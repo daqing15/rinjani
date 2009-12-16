@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs('tags', tab) }}
+{{ modules.Tabs(current_user, 'tags', tab) }}
 
 <div class="cb">
 
@@ -29,3 +29,7 @@
 
 {% end %}
 
+
+{% block sidebar %}
+    {{ modules.ContentLatest() }}
+{% end %}

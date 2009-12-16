@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ _('Search Result for %s') % escape(q) }}{%  end %}
+
+{% block body %}
+
+{% if len(pagination) %}
+    {% set c = h.alternate(['rodd','reven']) %}
+    {% set highlights = pagination['highlighting'] %}
+    {% for item in pagination.get_objects() %}
+        <div class="item line searchitem">
+            <div class="unit size1of6">
+                <p class="meta">{{ item['updated_at'][:10] }}</p>
+            </div>
+            <div class="lastUnit size5of6">
+                <p><a href="{{item['path']}}">{{ item['title'] }}</a></p>
+                <p class="excerpt">{{ highlights[item['id']]['content'].pop() }}</p>
+            </div>
+        </div>
+    {% end %}
+    {{ pagination }}
+    
+    <p class="clear"></p>
+
+{% else %}
+    <h3>{{error or "Not Found"}}</h3>
+    <p>Tips: cari lagi ya</p>
+{% end %}
+
+<style>
+.excerpt em { background: yellow; }
+</style>
+{% end %}
+
+{% block sidebar %}
+
+<h2>{{ q }}</h2>
+<p>plain english here.. articles contain {{q}} which are tagged with blah blah</p>
+
+{% if len(pagination) %}
+    {% if pagination['facets'] %}
+    
+    {{ modules.Facets(pagination['facets']) }}
+        
+    {% end %}
+{% end %}
+
+{% end %}
+

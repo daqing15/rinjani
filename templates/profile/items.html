@@ -1,0 +1,64 @@
+{% extends '_dashboard.html' %}
+
+{% block title %} {{ user.username }} -  {{_('Items')}}{% end %}
+
+{% block tabContent %}
+
+{{ modules.Tabs(user, 'profile', type, fullname=get(user.fullname, user.username), username=user.username) }}
+
+<div class="line item">
+<div class="unit size2of3">
+    {% if pagination.get_objects().count() %}
+        {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
+        {% for group in h.group(pagination.get_objects(), 2) %}
+            <div class="items line">
+            {% for i, item in enumerate(group) %}
+                {% set unit = "lastUnit" if i == (len(group)-1) else "unit" %}
+                <div class="{{ unit }} size1of2 {{c.next()}}">
+                      <div class="mod bubble bubbleLeft lol">
+                          <b class="top"><b class="tl"></b><b class="tr"></b></b>
+                          <div class="inner">
+                              <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{fd(item.created_at)}}</h3></div>
+                              <div class="bd">
+                                <p>{{ get(s.truncate_words(item.excerpt, 20), s.truncate_words(item.content, 15)) }}
+                                {% if item.author == current_user %}
+                                    /<a href="/{{item.class_doc.lower()}}/edit/{{item.slug}}">{{_('Edit')}}</a>
+                                {% end %}
+                                </p>
+                                <p class="tags">
+                                {% for tag in item.tags %}<a class="tag" href="/content/tagged/{{tag}}">{{tag}}</a>{%end%}
+                                </p> 
+                              </div>
+                          </div>
+                          <b class="bottom"><b class="bl"></b><b class="br"></b></b>
+                      </div>
+                </div>
+            {% end %}
+            </div>
+        {% end %}
+    {% else %}
+        <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
+    {% end %}
+</div>
+<div class="lastUnit size1of3">
+    {% if user == current_user %}
+        {{ modules.Draft(user) }}
+    {% end %}
+    <div class="mod">
+        <div class="inner">
+            <div class="hd"><h3>{{ _('Featured') }}</h3></div>
+            <div class="bd">
+                <p>Blah</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<p class="clear"></p>
+
+{{ pagination }}
+
+
+{% end %}
+
