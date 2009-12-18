@@ -6,7 +6,7 @@ from pymongo.dbref import DBRef
 import urllib2
 
 import forms
-from utils.pagination import Pagination
+from rinjani.pagination import Pagination
 from models import Article, Activity, User, Content, \
     TagCombination, UserTagCombination, Vote, Tag, CONTENT_TYPE
 from settings import MY_FLAGS
@@ -111,10 +111,12 @@ class FollowButton(BaseUIModule):
         return self.render_string('modules/follow-button', user=user)
     
 class Formfield(BaseUIModule):
-    def render(self, i):
+    def render(self, i, label=None):
         return self.render_string('modules/field', i=i,
                                   is_checkbox=forms.is_checkbox,
-                                  is_required=forms.is_required)
+                                  is_required=forms.is_required,
+                                  label=label
+                                  )
 
 class FormfieldInColumns(BaseUIModule):
     def render(self, *inputs):
@@ -217,11 +219,11 @@ class ReportBox(BaseUIModule):
         return self.render_string('modules/report-box')
 
 class Static(BaseUIModule):
-    def render(self, template):
+    def render(self, template, **kwargs):
         path = os.path.join(self.handler.application.settings['template_path'], \
             'modules', 'statics', template.lower() + '.html')
         if os.path.exists(path):
-            return self.render_string('modules/statics/%s' % template)
+            return self.render_string('modules/statics/%s' % template, **kwargs)
         return ''
 
 class SimilarContent(BaseUIModule):
@@ -278,7 +280,7 @@ class Tabs(BaseUIModule):
 
 class TagCloud(BaseUIModule):
     def render(self, **kwargs):
-        from utils.utils import calculate_cloud
+        from rinjani.utils import calculate_cloud
         import random
         tags = Tag.all().sort('value', -1).limit(15)
         tags = [tag for tag in tags]

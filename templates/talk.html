@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ _('Chat')}}{% end %}
+
+{% block body %}
+
+<style type="text/css">
+h2 { font-size: 140%; }
+h2 span { color: #999; }
+#inbox { height: 350px; padding:10px; }
+#input {
+  margin-top: 0.5em;
+}
+#message { float:left; width:700px; }
+#nav {
+  float: right;
+  z-index: 99;
+}
+.av { float: left; margin: 0 5px 5px 0;}
+
+.jScrollPaneContainer {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.jScrollPaneTrack {
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background: #aaa;
+}
+.jScrollPaneDrag {
+    position: absolute;
+    background: #666;
+    cursor: pointer;
+    overflow: hidden;
+}
+.jScrollPaneDragTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+.jScrollPaneDragBottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}
+a.jScrollArrowUp {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    text-indent: -2000px;
+    overflow: hidden;
+    /*background-color: #666;*/
+    height: 9px;
+}
+a.jScrollArrowUp:hover {
+    /*background-color: #f60;*/
+}
+
+a.jScrollArrowDown {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    right: 0;
+    text-indent: -2000px;
+    overflow: hidden;
+    /*background-color: #666;*/
+    height: 9px;
+}
+a.jScrollArrowDown:hover {
+    background-color: #f60;
+}
+a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
+    background-color: #f00;
+}
+</style>
+
+<div id="body">
+    <h2>Discuss <span>{{ activity['title'] }}</span></h2>
+    <div class="line">
+        <div class="unit">
+            <div class="mod round">
+                <div class="inner">
+                    <div id="inbox" class="scroll-pane">
+                        {% for message in messages %}
+                            {% include "chat-message.html" %}
+                        {% end %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="input" class="mod">
+                <form action="/chat/new" method="post" id="messageform">
+                    <div>
+                        <input name="body" id="message" /> 
+                        <button><span><span>{{ _('Post') }}</span></span></button>
+                    </div>
+                    <label><input type="checkbox" id="isscroll" name="isscroll" checked="checked" /> Scroll</label>
+                    
+                    <input type="hidden" name="next" value="{{ request.path }}"/>
+                    {{ xsrf_form_html() }}
+                </form>
+            </div>
+         </div>
+        
+    </div>
+
+</div>
+
+{% end %}
+
+{% block postinlinejs %}
+<script type="text/javascript">window.BPC="{{ch}}"</script>
+<script type="text/javascript" src="{{static_url('chat.js')}}"></script>
+
+{% end %}

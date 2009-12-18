@@ -5,10 +5,11 @@ url_handlers = [
     (r"/tweets", 'handlers.misc.TweetsHandler'),
     (r"/l/(\w+)", 'handlers.locale.SetHandler'),
     (r"/survey", 'handlers.misc.SurveyHandler'),
+    (r"/getloc", 'handlers.misc.GetLocHandler'),
     
-    (r"/chat", 'handlers.chat.MainHandler'),
-    (r"/chat/new", 'handlers.chat.MessageNewHandler'),
-    (r"/chat/updates", 'handlers.chat.MessageUpdatesHandler'),
+    (r"/talk/new/([\w\-]+)", 'handlers.talk.NewHandler'),
+    (r"/talk/updates/([\w\-]+)", 'handlers.talk.UpdatesHandler'),
+    (r"/talk/([\w\-]+)", 'handlers.talk.MainHandler'),
 
     (r"/attachment/add", 'handlers.attachment.AddHandler'),
     (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),

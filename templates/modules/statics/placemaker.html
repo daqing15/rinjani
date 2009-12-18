@@ -1,0 +1,28 @@
+{% set title = title if 'title' in locals() else 'Location' %} 
+
+<script type="text/javascript">
+function getLoc(loc) {
+	$('#lat').val(''); 
+    $('#long').val('');
+    R.request('/getloc', {loc: loc}, 'post',
+        function(response) {
+           if (response && response.lat) {
+               $('#lat').val(response.lat);
+               $('#long').val(response.long);
+           } else {
+               alert("Oops. The locaion can not be determined.");
+           }
+        }); 
+    return false;
+    }
+</script>
+<div class="deps">
+    <div class="depsrc">
+        <label><input type="checkbox" name="choose_loc" /> {{_(title)}}</label>
+    </div>
+    <div class="deptarget">
+        <!--<div class="loc" style="width:240px; height:150px; background:url(/static/uploads/maps/psm.gif) no-repeat;"></div>-->
+        <div>Location (eg. lenteng agung):<br /><span style="float:left"><input id="loc" type="text" name="loc" size="14" /></span> <button onclick="return getLoc($('#loc').val());"><span><span>Locate</span></span></button></div>
+        {{ modules.FormfieldInColumns(f.lat, f.long) }}
+    </div>
+</div>

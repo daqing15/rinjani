@@ -8,9 +8,9 @@ import time
 import tornado.web
 from mongokit import DBRef, MongoDocument, IS, SchemaTypeError
 from settings import DB, USERTYPE as _USER_TYPE
-from utils.string import force_unicode, listify, sanitize, slugify
-from utils.inline import processor, AttachmentInline, SlideshowInline
-from utils.json import JSONEncoder
+from rinjani.string import force_unicode, listify, sanitize, slugify
+from rinjani.inline import processor, AttachmentInline, SlideshowInline
+from rinjani.json import JSONEncoder
 
 USER_TYPE = dict(_USER_TYPE).keys()
 
@@ -21,6 +21,7 @@ class CONTENT_TYPE:
     PAGE = 4
     POST = 5
     USER = 6
+    BLOG = 7
 
 CONTENT_MAP = [None, 'content', 'article', 'activity', 'page', 'post', 'user']
 
@@ -33,7 +34,8 @@ class Simpledoc(MongoDocument):
     structure = {}
     
 class Queue(Simpledoc):
-    structure = { }
+    collection_name = 'queues'
+    structure = {'payload': dict }
         
 class BaseDocument(Simpledoc):
     use_autorefs = True
@@ -160,6 +162,7 @@ class User(BaseDocument):
         'donation_count': int,
 
     }
+    indexed_field = 'profile_content'
     required_fields = ['username']
     sanitized_fields = ['address', 'email', 'website', 'about']
     default_values = {
@@ -173,7 +176,7 @@ class User(BaseDocument):
 
     indexes = [ { 'fields': 'username', 'unique': True} ]
 
-    def save(self, data=None, user=None):
+    def save(self, data=None, user=None, safe=True):
         if not data:
             super(User,self).save()
             return
@@ -183,7 +186,33 @@ class User(BaseDocument):
         
         if user and data.has_key('bank_accounts'):
             self.update_bank_accounts(user, data['bank_accounts'])
-        super(User, self).save()
+        
+        new_doc = '_id' not in self
+        super(User, self).save(safe=safe)
+        self.post_save(data, new_doc)
+    
+    def post_save(self, data, new_doc): 
+        if self.indexed_field:
+            payload = {
+                       'id': self['_id'],
+                       'title': self['username'],
+                       'content': self[self.indexed_field],
+                       'path': self.get_url(),
+                       'type': CONTENT_TYPE.USER,
+                       'tags': self['tags'],
+                       'created_at': self['created_at'],
+                       'updated_at': self['updated_at']
+                       }
+        Queue.collection.update({'_id': 'indexing'}, 
+                                {'$push': {'payload': payload}},
+                                upsert=True)
+        
+    def remove(self): 
+        payload = {'id': self['_id']}
+        Queue.collection.update({'_id': 'indexremoval'},
+                                 {'$push': {'payload': payload}},
+                                 upsert=True)
+        super(User, self).remove()
 
     def update_bank_accounts(self, user, accounts):
         _accounts = list(user.get_bank_accounts())
@@ -295,7 +324,7 @@ class Content(BaseDocument):
             processor.register('slideshow', pis)
         return processor.process(src)
 
-    def save(self, data=None, user=None):
+    def save(self, data=None, user=None, safe=True):
         if not data:
             super(Content,self).save()
             return
@@ -316,7 +345,7 @@ class Content(BaseDocument):
         self['type'] = self.__class__.type
         self.pre_save(data, new_doc)
         self.set_slug(self, self['title'])
-        super(Content, self).save()
+        super(Content, self).save(safe=safe)
         self.post_save(data, new_doc)
 
     def remove(self, force=False):
@@ -452,7 +481,11 @@ class Activity(Content):
                       'updated_at':datetime.datetime.utcnow
                       }
     indexes = [ { 'fields': 'slug', 'unique': True}]
-
+    
+    def pre_save(data, new_doc):
+        if self['author']['type'] != 'sponsor':
+            self['is_champaign'] = False
+            
     def post_save(self, data, new_doc):
         if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': 1}})
@@ -468,29 +501,25 @@ class Page(Content):
         'type': int,
         'title': unicode,
         'slug': unicode,
+        'status': IS(u'published', u'draft'),
         'content': unicode,
         'content_html': unicode,
         'enable_comment': bool,
-        'attachments': [{'type':unicode, 'src':unicode, 'thumb_src':unicode, 'filename': unicode}],
+        'attachments': [{'type':unicode, 'src':unicode, \
+                         'thumb_src':unicode, 'filename': unicode}],
         'created_at': datetime.datetime,
         'updated_at': datetime.datetime
     }
     default_values = {'enable_comment': False,
-                      'created_at':datetime.datetime.utcnow,
-                      'updated_at':datetime.datetime.utcnow
+                      'created_at':datetime.datetime.utcnow
                       }
 
 class Post(Page):
     type = CONTENT_TYPE.POST
 
-class Vote(BaseDocument):
-    collection_name = 'votes'
-    structure = {
-        'uid': unicode,
-        'cid': unicode,
-        'vote': int,
-    }
-
+class Blog(Page):
+    type = CONTENT_TYPE.BLOG
+    
 class Comment(BaseDocument):
     collection_name = 'comments'
     structure = {
@@ -512,6 +541,23 @@ class Comment(BaseDocument):
         self.populate(data)
         super(Comment, self).save()
 
+class UserActivity(BaseDocument):
+    collection_name = 'points'
+    structure = {
+        'user': User,
+        'type': int,
+        'object': IS(Article, Activity, Post, Blog, Comment),
+        'points': int,
+        'created_at': datetime.datetime
+    }
+    
+    def score(self, user, object, activity):
+        User.collection.update({'username': user.username}, \
+                               {'$inc': { 'points': 1}})
+class Vote(BaseDocument):
+    collection_name = 'votes'
+    structure = {'uid': unicode, 'cid': unicode, 'vote': int}
+        
 class Response(BaseDocument):
     collection_name = 'responses'
     structure = {
@@ -636,6 +682,21 @@ class TagCombination(Simpledoc):
 class UserTagCombination(TagCombination):
     collection_name = 'user_tag_combinations'
         
+class Chat(Simpledoc):
+    collection_name = 'chats'
+    structure = {'channel': unicode, 
+                 'cursor': int,
+                 'settings': dict,
+                 'messages': [{
+                            'id': unicode,
+                            'from': User,
+                            'ts': float,
+                            'body': unicode,
+                            'html': unicode
+                            }] 
+                 }
+    default_values = {'cursor': 0, 'messages': []}
+    
 def get_or_404(cls, query=None):
     query = query if query else {}
     o = cls.one(query)
