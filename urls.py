@@ -11,13 +11,9 @@ url_handlers = [
     (r"/talk/updates/([\w\-]+)", 'handlers.talk.UpdatesHandler'),
     (r"/talk/([\w\-]+)", 'handlers.talk.MainHandler'),
 
-    (r"/attachment/add", 'handlers.attachment.AddHandler'),
-    (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
-
-    (r"/donation/confirm/([\w\-]+)", 'handlers.donation.ConfirmHandler'),
-
     (r"/dashboard", 'handlers.profile.DashboardHandler'),
     (r"/preferences", 'handlers.profile.PreferenceHandler'),
+    (r"/users", 'handlers.profile.UserListHandler'),
     (r"/profile/edit", 'handlers.profile.EditHandler'),
     (r"/profile/verify", 'handlers.profile.VerifyHandler'),
     (r"/profile/follow/([\w]+)", 'handlers.profile.FollowHandler'),
@@ -31,35 +27,23 @@ url_handlers = [
 
     (r"/register", 'handlers.auth.RegisterHandler'),
     (r"/new-user", 'handlers.auth.NewUserHandler'),
-
-    (r"/activities/?(latest|featured|popular)?", 'handlers.activity.ListHandler'),
-    (r"/activity/new", 'handlers.activity.EditHandler'),
-    (r"/activity/edit/([\w\-]+)", 'handlers.activity.EditHandler'),
-    (r"/activity/edit", 'handlers.activity.EditHandler'),
-    (r"/activity/remove/([\w\-]+)", 'handlers.activity.RemoveHandler'),
-    (r"/activity/([\w\-]+)", 'handlers.activity.ViewHandler'),
-
-    (r"/articles/?(latest|featured|popular)?", 'handlers.article.ListHandler'),
-    (r"/article/new", 'handlers.article.EditHandler'),
-    (r"/article/edit/([\w\-]+)", 'handlers.article.EditHandler'),
-    (r"/article/edit", 'handlers.article.EditHandler'),
-    (r"/article/remove/([\w\-]+)", 'handlers.article.RemoveHandler'),
-    (r"/article/([\w\-]+)", 'handlers.article.ViewHandler'),
-
-    (r"/page/new", 'handlers.page.EditHandler'),
-    (r"/page/edit/([\w\-]+)", 'handlers.page.EditHandler'),
-    (r"/page/edit", 'handlers.page.EditHandler'),
-    (r"/page/([\w\-]+)", 'handlers.page.ViewHandler'),
-
-    (r"/users", 'handlers.profile.UserListHandler'),
+    
+    (r"/articles/?(latest|featured|popular)?", r'handlers.article.ListHandler'),
+    (r"/activities/?(latest|featured|popular)?", r'handlers.activity.ListHandler'),
+    (r"/(activity|article|page|post)/new", r'handlers.\1.EditHandler'),
+    (r"/(activity|article|page|post)/edit/([\w\-]+)", r'handlers.\1.EditHandler'),
+    (r"/(activity|article|page|post)/edit", r'handlers.\1.EditHandler'),
+    (r"/(activity|article|page|post)/remove/([\w\-]+)", r'handlers.\1.RemoveHandler'),
+    (r"/(activity|article|page|post)/([\w\-]+)", r'handlers.\1.ViewHandler'),
+    
+    (r"/donation/confirm/([\w\-]+)", 'handlers.donation.ConfirmHandler'),
+    (r"/attachment/add", 'handlers.attachment.AddHandler'),
+    (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
 
     (r"/(content|user)/tagged/([\-\w\+]+)", 'handlers.tag.ViewHandler'),
     (r"/tagged/([\-\w\+]+)", 'handlers.tag.ViewHandler'),
     (r"/tags/?(content|user)?", 'handlers.tag.ListHandler'),
     
-    (r"/flag", 'handlers.tag.FlagHandler'),
-    (r"/report", 'handlers.report.Handler'),
-
     (r"/login/fb", 'handlers.auth.FacebookLoginHandler'),
     (r"/login/google", 'handlers.auth.GoogleLoginHandler'),
     (r"/login/twitter", 'handlers.auth.TwitterLoginHandler'),

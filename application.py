@@ -68,6 +68,14 @@ class Application(tornado.web.Application):
         handler = None
         args = []
         handlers = self._get_host_handlers(request)
+        
+        def get_args(handler_class, args):
+            args = list(args)
+            reps = re.findall(r"\\(\d+)", handler_class)
+            for rep in reps:
+                del(args[(int(rep)-1)])
+            return args
+            
         if not handlers:
             handler = RedirectHandler(
                 request, "http://" + self.default_host + "/")
@@ -78,10 +86,11 @@ class Application(tornado.web.Application):
                 match = pattern.match(request.path)
                 if match:
                     if not callable(handler_class):
+                        args = get_args(handler_class, match.groups())
+                        handler_class = re.sub(pattern, handler_class, request.path)
                         mod_name, handler_classname = get_mod_handler(handler_class)
                         handler_class = import_module(mod_name, handler_classname)
                         handler = handler_class(self, request, **kwargs)
-                    args = match.groups()
                     break
             if not handler:
                 handler = MissingHandler(self, request)
