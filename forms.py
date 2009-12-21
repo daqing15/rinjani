@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from tornado.escape import xhtml_escape
 from web import form
-from utils.string import listify, dummy_translate as _
+from rinjani.string import listify, dummy_translate as _
 from settings import USERTYPE, TIMEZONES, ACTIVITY_STAGES
 
 class InvalidFormDataError(Exception): pass
@@ -160,7 +160,7 @@ class PassValidator(form.Validator):
         self.msg = _("Password didn't match")
         return False
 
-vusername = form.regexp(r"[a-z0-9]{6,9}", _("4-9 characters of alphabets and numbers, without space"))
+vusername = form.regexp(r"[a-z0-9]{4,9}", _("4-9 characters of alphabets and numbers, without space"))
 vpass = form.regexp(r".{6,20}", _('Must be between 6 and 20 characters'))
 vemail = form.regexp(r".*@.*", _("Must be a valid email address"))
 
@@ -200,6 +200,7 @@ activity_form = MyForm(
     Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description=_("Content")),
     Textbox("donation_amount_needed", size=30, description=_("Amount of donation needed (Rp)")),
     Checkbox("need_donation", value="1", description=_("Needs donations")),
+    Checkbox("is_champaign", value="1", description=_("This is a champaign")),
     Checkbox("need_volunteer", value="1", description=_("Needs volunteers")),
     Textbox("volunteer_tags", size="30", description=_("Volunteer skills needed")),
     Checkbox("enable_comment", value="1", description=_("Accept comments")),

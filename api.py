@@ -18,10 +18,10 @@ from tornado.options import define, options, parse_command_line
 from web.utils import Storage
 
 from forms import api_request_form
-from models import IS, Simpledoc, User, Article, Activity
-from utils.string import generate_random_password
-from utils.pagination import Pagination
-from utils.json import JSONEncoder
+from models import IS, Simpledoc, User, Article, Activity, CONTENT_MAP
+from rinjani.string import generate_random_password
+from rinjani.pagination import Pagination
+from rinjani.json import JSONEncoder
 
 KEY_SIZE = 18
 SECRET_SIZE = 32
@@ -183,7 +183,7 @@ class Application(tornado.web.Application):
         static_dir = DIR + '/static'
         handlers = [
             (r'/(articles|activities)', ListHandler),
-            (r'/(article|activity)', ContentHandler),
+            (r'/(article|activity|page|post)/([\w\-]+)', ContentHandler),
             (r'/activate/\w+', RequestHandler),
             (r'/request', RequestHandler),
             (r'/register', RegisterHandler),

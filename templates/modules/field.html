@@ -1,6 +1,5 @@
 <div class="i">
-
-{% set desc = _(i.description)  %}
+{% set desc = label if label else _(i.description)  %}
 {% if is_required(i) %}{% set desc = "<strong>" + desc + "*</strong>" %}{% end %}
 
 {% if is_checkbox(i) %}

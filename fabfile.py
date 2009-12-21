@@ -1,7 +1,9 @@
 from fabric.api import env, local, run
+import main
+import rinjani.indexing
 
 def _setup():
-    env.hosts = ['user@obscurite.ind.ws']
+    env.hosts = ['root@obscurite.ind.ws']
     env.mongo = '/opt/devel/mongodb/bin/mongo'
 
     env.localdir = '/rinjani/app'
@@ -21,6 +23,12 @@ def tag():
     run("%s %s %s/bin/tag-count.js %s/bin/tag-combination-count.js" \
         % (env.mongo, env.db, env.remotedir, env.remotedir))
 
+def generate_doc():
+    rinjani.indexing.generate_doc_content()
+    
+def generate_index():
+    rinjani.indexing.index.rebuild_index()
+    
 def rebuilddb():
     run("supervisorctl stop all && rm -rf %s && mkdir %s && supervisorctl start all" \
         % (env.remotedbdir, env.remotedbdir))
@@ -36,6 +44,9 @@ def rebuild_localdb():
     local("%s peduli %s/bin/dummydata.js %s/bin/tag-count.js %s/bin/tag-combination-count.js" \
           % (env.mongo, env.localdir, env.localdir, env.localdir)
           )
+
+def rebuilddummy():
+    run("%s/bin/dummydata.py" % env.remotedir)
     
 def restart_supervisor():
     run("killall supervisord && sleep 2 && supervisord")
@@ -60,5 +71,6 @@ def synclib():
     _sync('lib/')
 
 def sync():
+    mergecss()
     _sync('')
 

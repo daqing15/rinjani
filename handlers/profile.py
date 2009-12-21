@@ -19,9 +19,9 @@ from pymongo.dbref import DBRef
 
 from main import BaseHandler, authenticated
 from models import CONTENT_TYPE, User, Content, BankAccount, Comment, get_or_404
-from utils.pagination import Pagination
 from forms import profile_form, password_form, preferences_form, comment_form, InvalidFormDataError
-from utils.utils import extract_input_array, move_attachments, parse_attachments
+from rinjani.utils import extract_input_array, move_attachments, parse_attachments
+from rinjani.pagination import Pagination
 
 USER_TYPE = {'social org':'agent', 'sponsor': 'sponsor', 'public':'public'}
 

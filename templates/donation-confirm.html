@@ -1,21 +1,18 @@
-{% extends 'base.html' %}
 
-{% block title %}{{_('Confirm Donation')}}{% end %}
 
-{% block body %}
 
 <div class="content-wrapper">
     <h3>Confirm Your Donation</h3> 
-    <p> 
-        You can only interact with elements that are inside this dialog. 
-        To close it click a button or use the ESC key. 
-    </p> 
+    <p>I have transferrend an amount of Rp xxx,xxx to</p>
+    <ul>
+        <li> Bank account <select><option>BCA</option><option>Bank Mandiri</option></select></li>
+        <li>Paypal a.n. <input type="text" /></li>
+    </ul> 
  
     <!-- yes/no buttons --> 
-    <p> 
-        <button class="close">{{_('Cancel')}}</button> 
-        <button class="close">{{_('Confirm')}}</button> 
-    </p> 
+    <div class="buttons"> 
+        <button class="close"><span><span>{{_('Cancel')}}</span></span></button> 
+        <button class="close"><span><span>{{_('Confirm')}}</span></span></button> 
+    </div> 
 </div>
 
-{% end %}

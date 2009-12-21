@@ -103,7 +103,7 @@ class RegisterHandler(BaseHandler):
                 if captcha_resp.is_valid:
                     new_user = User()
                     data['is_admin'] = False
-                    data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest())
+                    data['password_hashed'] = unicode(hashlib.sha1(data['password']).hexdigest(), 'utf-8')
                     data['auth_provider'] = u'form'
                     new_user.save(data)
                     self.set_flash(_("You have been successfully registered. "))
@@ -203,7 +203,7 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
         callback({
             "auth_provider": "facebook",
             "fullname": users[0]["name"],
-            "uid": unicode(users[0]["uid"]),
+            "uid": unicode(users[0]["uid"], 'utf-8'),
             "timezone": users[0]["timezone"],
             "avatar": users[0]["pic_square"],
             "access_token": session["session_key"],

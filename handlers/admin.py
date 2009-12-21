@@ -2,7 +2,7 @@ import tornado.web
 
 from main import BaseHandler, authenticated
 from models import Content, User, Page, Donation, BankAccount
-from utils.pagination import Pagination
+from rinjani.pagination import Pagination
 from forms import profile_form
 
 class RouteHandler(BaseHandler):

@@ -15,7 +15,7 @@
 # under the License.
 
 import tornado.web
-import time
+import datetime
 import logging
 
 from main import BaseHandler
@@ -27,14 +27,28 @@ class MainHandler(BaseHandler):
         activity = Activity.one({'slug': ch})
         if not activity:
             raise tornado.web.HTTPError(404)
-        channel = Chat.one({'_id': ch})
-        messages = channel['messages'] if channel else []
-        messages = messages[-MessageMixin.recent_size:]
-        self.render("talk", activity=activity, messages=messages, ch=ch)
+        recent = MessageMixin.get_recent(ch)
+        self.render("talk", activity=activity, messages=recent, ch=ch)
 
 class MessageMixin(object):
     waiters = {}
     recent_size = 100
+    
+    @classmethod
+    def get_recent(cls, ch, cursor=None):
+        js_get_recent = """
+function get_recent_messages(ch, cursor,recentSize) {
+    c = db.chats.findOne({_id:ch});
+    if (c && c['messages'].length) {
+        if (cursor) return c['messages'].slice(cursor);
+        return c['messages'].slice(-recentSize);
+    }
+    return [];
+}        
+        """
+        recent = Chat.collection.database.eval(js_get_recent, \
+                                          ch, cursor, cls.recent_size)
+        return recent
     
     @classmethod
     def _waiters(cls, ch, w=None):
@@ -48,8 +62,7 @@ class MessageMixin(object):
     def wait_for_messages(self, ch, callback, cursor=None):
         cls = MessageMixin
         if cursor:
-            channel = Chat.one({'_id': ch})
-            recent = channel['messages'][(int(cursor)-1):]
+            recent = cls.get_recent(ch, cursor)
             if recent:
                 callback(recent)
                 return
@@ -71,7 +84,7 @@ class NewHandler(BaseHandler, MessageMixin):
     def post(self, ch):
         spec = {'_id': ch}
         
-        insert_func = """
+        js_insert = """
 function insertNewMessage(ch, newMsg) {
     c = db.chats.findOne({_id:ch});
     id = c? (c['messages'].length + 1) : 1;
@@ -84,10 +97,10 @@ function insertNewMessage(ch, newMsg) {
             "from": self.current_user["username"],
             "avatar": self.current_user["avatar"],
             "body": self.get_argument("body"),
-            "ts": time.time()
+            "date": datetime.datetime.isoformat(datetime.datetime.utcnow())
         }
         
-        id = Chat.collection.database.eval(insert_func, ch, message)
+        id = Chat.collection.database.eval(js_insert, ch, message)
         message["id"] = id
         self.new_messages(ch, [message])
         self.write(message)

@@ -18,8 +18,8 @@ import tornado.web
 from main import BaseHandler, authenticated
 from forms import article_form
 from models import CONTENT_TYPE, EditDisallowedError, Article
-from utils.pagination import Pagination
-from utils.utils import move_attachments, parse_attachments
+from rinjani.pagination import Pagination
+from rinjani.utils import move_attachments, parse_attachments
 
 PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 

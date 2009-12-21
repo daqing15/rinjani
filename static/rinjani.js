@@ -1,4 +1,7 @@
 
+/* babel */
+var babel=new function(){var b=function(d){return d==1?0:1};var c=/%?%(?:\(([^\)]+)\))?([disr])/g;var a=this.Translations=function(d,e){this.messages={};this.locale=d||"unknown";this.domain=e||"messages";this.pluralexpr=b};a.load=function(d){var e=new a();e.load(d);return e};a.prototype={gettext:function(d){var e=this.messages[d];if(typeof e=="undefined"){return d}return(typeof e=="string")?e:e[0]},ngettext:function(e,d,g){var f=this.messages[e];if(typeof f=="undefined"){return(g==1)?e:d}return f[this.pluralexpr(g)]},install:function(){var d=this;window._=window.gettext=function(e){return d.gettext(e)};window.ngettext=function(f,e,g){return d.ngettext(f,e,g)};return this},load:function(d){if(d.messages){this.update(d.messages)}if(d.plural_expr){this.setPluralExpr(d.plural_expr)}if(d.locale){this.locale=d.locale}if(d.domain){this.domain=d.domain}return this},update:function(d){for(var e in d){if(d.hasOwnProperty(e)){this.messages[e]=d[e]}}return this},setPluralExpr:function(d){this.pluralexpr=new Function("n","return +("+d+")");return this}};this.format=function(){var e,f=arguments[0],d=0;if(arguments.length==1){return f}else{if(arguments.length==2&&typeof arguments[1]=="object"){e=arguments[1]}else{e=[];for(var g=1,h=arguments.length;g!=h;++g){e[g-1]=arguments[g]}}}return f.replace(c,function(k,i,j){if(k[0]==k[1]){return k.substring(1)}var l=e[i||d++];return(j=="i"||j=="d")?+l:l})}};
+
 /* metadata plugin
  * Copyright (c) 2006 John Resig, Yehuda Katz, Jörn Zaefferer, Paul McLanahan*/
 (function($){$.extend({metadata:{defaults:{type:"class",name:"metadata",cre:/({.*})/,single:"metadata"},setType:function(type,name){this.defaults.type=type;this.defaults.name=name},get:function(elem,opts){var settings=$.extend({},this.defaults,opts);if(!settings.single.length){settings.single="metadata"}var data=$.data(elem,settings.single);if(data){return data}data="{}";if(settings.type=="class"){var m=settings.cre.exec(elem.className);if(m){data=m[1]}}else{if(settings.type=="elem"){if(!elem.getElementsByTagName){return undefined}var e=elem.getElementsByTagName(settings.name);if(e.length){data=$.trim(e[0].innerHTML)}}else{if(elem.getAttribute!=undefined){var attr=elem.getAttribute(settings.name);if(attr){data=attr}}}}if(data.indexOf("{")<0){data="{"+data+"}"}data=eval("("+data+")");$.data(elem,settings.single,data);return data}}});$.fn.metadata=function(opts){return $.metadata.get(this[0],opts)}})(jQuery);
@@ -41,18 +44,17 @@ jQuery.fn.enable = function(opt_enable) {
     return this;
 };
 
-var frameOnload = function(e) {
-    if (e.contentDocument) {
-        $(e).css('height', e.contentDocument.body.offsetHeight + 35);
-    } else {
-        $(e).css('height', e.contentWindow.document.body.scrollHeight)
-    }
-}
-
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function() {};
 
+
 var Rinjani = {
+ /* the language for the context */
+  CONTEXT_LANG : null,
+
+  /* the active translations */
+  TRANSLATIONS : babel.Translations.load(translation_catalog).install(),
+		  
   /* Solace. helper for dynamicSubmit and request */
   _standardRemoteCallback : function(func) {
       return function(resp) {
@@ -73,7 +75,7 @@ var Rinjani = {
         }
   },
 
-  /* Solace. sends a request to a URL with optional data and
+  /* @from Solace. sends a request to a URL with optional data and
   evaluates the result.  You can only send requests
   to the own server that way and the endpoint has to
   return a valid json_response(). */
@@ -87,10 +89,74 @@ var Rinjani = {
       success:  Rinjani._standardRemoteCallback(callback)
     });
   },
-
-  displayLoginForm: function() {
-
+  
+  /* @from Solace. Parse an iso8601 date into a date object */
+  parseISO8601 : function(string) {
+	string = string.slice(0,19);
+    d = new Date(string
+      .replace(/(?:Z|([+-])(\d{2}):(\d{2}r))$/, ' GMT$1$2$3')
+      .replace(/^(\d{4})-(\d{2})-(\d{2})T?/, '$1/$2/$3 ')
+    );
+    d.setHours(d.getHours() - d.getTimezoneOffset()/60);
+    return d;
   },
+  
+  /* @from Solace. formats the date as timedelta.  If the date is too old, null is returned */
+  formatTimeDelta : function(d) {
+    var
+      diff = ((new Date).getTime() - d.getTime()) / 1000;
+    if (diff < 1)
+    	return _("just now");
+    if (diff > 1 && diff < 60)
+      return babel.format(_("%d seconds ago"), diff);
+    if (diff == 60)
+        return babel.format(_("1 minute ago"), diff);
+    
+    var n = Math.floor(diff / 60);
+    if (diff < 3600)
+      return babel.format(_("%d minutes ago"), n);
+    if (diff == 3600)
+        return babel.format(_("1 hour ago"), n);
+    
+    if (diff < 43200) {
+      var n = Math.floor(diff / 3600);
+      return babel.format(_("%d hours ago"), n);
+    }
+    return null;
+  },
+  
+  /* @from Solace. for dates more recent than 12 hours we switch to relative dates that
+  are updated every 30 seconds (semi-realtime).  If a date goes beyond
+  the 12 hour limit, the full date is displayed again. */
+useRelativeDates : function(element) {
+	 var relative = $('span.datetime', element).each(function() {
+	   $(this).data('rinjani_date', {
+	     str_val:  $(this).text(),
+	     parsed:   Rinjani.parseISO8601($(this).attr('title'))
+	   }).attr('title', '');
+	 });
+	
+	 function updateAllDates() {
+	   var items = $(relative);
+	   relative = [];
+	   items.each(function() {
+	     var delta = Rinjani.formatTimeDelta($(this).data('rinjani_date').parsed);
+	     if (delta != null) {
+	    	 console.log("berubah");
+	       $(this).text(delta);
+	       relative.push(this);
+	     }
+	     else {
+	       $(this).text($(this).data('rinjani_date').str_val);
+	     }
+	   });
+	   
+	   if (relative.length) {
+	     window.setTimeout(updateAllDates, 30000);
+	   }
+	 }
+	 updateAllDates();
+},
 
     /* flash container enhanced? */
   _flash_container_enhanced : false,
@@ -366,5 +432,6 @@ $(function() {
     R.setupForm();
     R.setupUI();
     R.fadeInFlashMessages();
+    R.useRelativeDates('#body');
 });
 

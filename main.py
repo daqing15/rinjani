@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -W ignore::DeprecationWarning
 import os.path
 import sys
 DIR = os.path.abspath(os.path.dirname(__file__))

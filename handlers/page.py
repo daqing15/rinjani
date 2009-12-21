@@ -17,7 +17,7 @@ import tornado.web
 from main import BaseHandler, authenticated
 from forms import page_form
 from models import Page, EditDisallowedError
-from utils.utils import move_attachments, parse_attachments
+from rinjani.utils import move_attachments, parse_attachments
 
 class ViewHandler(BaseHandler):
     def get(self, slug):

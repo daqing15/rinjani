@@ -1,5 +1,5 @@
 
-from utils.string import dummy_translate as _
+from rinjani.string import dummy_translate as _
 
 admin = (_('Dashboard'), [
     ('/dashboard', 'dashboard'),
@@ -58,3 +58,4 @@ tags = ('Tags', [
     ('/tags/content', _('content')),
     ('/tags/user', _('user'))
 ])
+

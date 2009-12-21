@@ -14,13 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from utils.utils import log
 import os.path
 import urllib
 import tornado.web
+
+from rinjani.utils import log, is_mobile_agent
+from rinjani import defaulthelper, string, timeutil, cache
 from forms import MyForm
 from models import User
-from utils import cache
 
 class api(object):
     def __init(self): pass
@@ -85,7 +86,6 @@ class BaseHandler(tornado.web.RequestHandler):
         is_mobile = False
         if self.settings.is_mobile_site:
             if not self.get_cookie('is_mobile', None):
-                from utils.utils import is_mobile_agent
                 is_mobile = is_mobile_agent(request)
                 self.set_cookie('is_mobile', str(int(is_mobile)))
             else:
@@ -101,7 +101,11 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def is_logged_in(self):
         return self.user is not None
-
+    
+    @property
+    def host(self):
+        return self.request.host
+    
     @property
     def settings(self):
         return tornado.web._O(self.application.settings)
@@ -148,8 +152,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def template_vars(self):
-        from utils import defaulthelper, string, timeutil
-
         return dict(
             current_path = self.request.uri,
             BP = self.settings.BASE_URL,

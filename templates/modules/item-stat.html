@@ -1,10 +1,16 @@
 <div class="mod stat">
     <div class="inner">
         <div class="bd">
-            <div class="line"><span class="ultrabig grey">{{int(item.view_count)}}</span> hits</div>
-
-            {{ modules.Tags(item.tags) }}
-
+            <div class="line item">
+                <div class="unit size1of3">
+                    <span><span class="ultrabig grey">{{int(item.view_count)}}</span></span><br />
+                    <span><span class="grey">23</span> comments</span>
+                </div>
+                <div class="lastUnit size2of3">
+                    {{ modules.Tags(item.tags) }}
+                </div>
+            </div>
+            
             {% if item.has_key('need_volunteer') %}
                 {{ modules.Tags(item.volunteer_tags) }}
             {% end %}
@@ -24,6 +30,7 @@
 
             {% if current_user and current_user != item.author %}
 <script type="text/javascript">
+// jelek banget :(
 var has_vote = {{ "true" if vote else "false"}};
 $('.flag .tag').mouseup(function() {
         $tag = $(this)

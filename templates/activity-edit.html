@@ -44,15 +44,7 @@
                     
                     </div>
                     <div class="lastUnit size1of2">
-                        <div class="deps">
-                            <div class="depsrc">
-                                <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                            </div>
-                            <div class="deptarget">
-                                <div class="loc" style="width:240px; height:150px; background:url(/static/uploads/maps/psm.gif) no-repeat;"></div>
-                                {{ modules.FormfieldInColumns(f.lat, f.long) }}
-                            </div>
-                        </div>
+                        {{ modules.Static('placemaker', f=f) }}
                     </div>
                 </div>
                 <div class="line">
@@ -100,7 +92,10 @@
                                     {{ modules.TagSuggestion(settings.USER_TAGS, '#volunteer_tags')}}
                                 </div>
                             </div>
-                        </div>             
+                        </div>    
+                        {% if current_user['type'] == 'sponsor' %}
+                            {{ modules.Formfield(f.is_champaign) }}
+                        {% end %}         
                     </div>
                 </div>
                 

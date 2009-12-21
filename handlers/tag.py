@@ -16,9 +16,8 @@
 import urllib2
 
 from main import BaseHandler, authenticated
-import models
 from models import User, Content, Vote, Tag, UserTag
-from utils.pagination import Pagination
+from rinjani.pagination import Pagination
 from settings import MY_FLAGS
 
 class ListHandler(BaseHandler):

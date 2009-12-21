@@ -16,7 +16,7 @@
 import re
 import tornado.web
 from tornado.web import RequestHandler, RedirectHandler
-from utils.mod import get_mod_handler, import_module
+from rinjani.mod import get_mod_handler, import_module
 
 import uimodules
 from urls import url_handlers

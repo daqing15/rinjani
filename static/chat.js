@@ -36,7 +36,6 @@ function newMessage(form) {
     $.postJSON("/talk/new/" + window.BPC, message, function(response) {
         updater.showMessage(response);
         if (message.id) {
-            alert("Apa sih");
             form.parent().remove();
         } else {
             form.find("input[type=text]").val("").select();
@@ -47,11 +46,11 @@ function newMessage(form) {
 
 jQuery.postJSON = function(url, args, callback) {
     args._xsrf = $.cookie("_xsrf");
-    $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+    $.ajax({url: url, data: $.param(args), dataType: "json", type: "POST",
         success: function(response) {
-    if (callback) callback(eval("(" + response + ")"));
+    if (callback) callback(response);
     }, error: function(response) {
-    //console.log("ERROR:", response)
+    	console.log("ERROR:", response)
     }});
 };
 
@@ -60,30 +59,36 @@ var _t =
     "<div class='line message' id='m${id}'>" +
         "<div class='avatar'></div> " +
         "<div><strong>${from}</strong>: <span class='msg'>${body}</span></div>" +
-        "<div><span class='small grey'>${ts}</span></div>" +
+        "<div><span class='datetime small grey'>${date}</span></div>" +
         "</div>";    
         
 var updater = {
     errorSleepTime: 2000,
     cursor: null,
     template: $.template(_t),
+    
     poll: function() {
         var args = {"_xsrf": $.cookie("_xsrf")};
         if (updater.cursor) args.cursor = updater.cursor;
-        $.ajax({url: "/talk/updates/" + window.BPC, type: "POST", dataType: "text",
-            data: $.param(args), success: updater.onSuccess,
-            error: updater.onError});
+        $.ajax({
+        	url: "/talk/updates/" + window.BPC, 
+        	type: "POST",
+        	dataType: "json",
+            data: args, 
+            success: updater.onSuccess,
+            error: updater.onError
+        });
     },
 
     onSuccess: function(response) {
         try {
-            updater.newMessages(eval("(" + response + ")"));
+            updater.newMessages(response);
         } catch (e) {
             updater.onError();
             return;
         }
         updater.errorSleepTime = 1000;
-        window.setTimeout(updater.poll, 700);
+        window.setTimeout(updater.poll, 0);
     },
 
     onError: function(response) {
@@ -93,10 +98,13 @@ var updater = {
     },
 
     newMessages: function(response) {
-        if (!response.messages) return;
+        if (!response.messages) {
+        	console.log("no update");
+        	return;
+        }
         updater.cursor = response.cursor;
         var messages = response.messages;
-        updater.cursor = messages[messages.length - 1].id;
+        updater.cursor = parseInt(messages[messages.length - 1].id);
         console.log(messages.length, "new messages, cursor:", updater.cursor);
         for (var i = 0; i < messages.length; i++) {
             updater.showMessage(messages[i]);
@@ -108,9 +116,10 @@ var updater = {
         if (existing.length > 0) return;
         var node = $(message.html);
         d = new Date(message['ts']);
-        message['ts'] = d.toUTCString();
+        message['date'] = R.formatTimeDelta(R.parseISO8601(message['date']));
         $inbox.append(updater.template, message);
         $inbox.data('jScrollPaneMaxScroll', $inbox.data('jScrollPaneMaxScroll') + node.height())
         scrollPane();
+        $inbox.slideDown();
     }
 };

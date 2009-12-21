@@ -24,7 +24,8 @@
                         {{ modules.Formfield(f.fullname) }}
                         {{ modules.Formfield(f.about) }}
                         {{ modules.Formfield(f.timezone) }}
-                        {{ modules.Formfield(f.tags) }}
+                        {% set label = _("Your skills") if current_user['type'] == 'public' else _("Work fields") %}
+                        {{ modules.Formfield(f.tags, label=label) }}
                         <div class="tags suggestedtags">
                             {{ modules.TagSuggestion(settings.FIELD_TAGS, '#tags')}}
                         </div>
@@ -63,15 +64,7 @@
                         {{ modules.Formfield(f.address) }}
                     </div>
                     <div class="lastUnit size2of5">
-                        <div class="deps">
-                            <div class="depsrc">
-                                <label><input type="checkbox" name="choose_loc" /> Select Location</label>
-                            </div>
-                            <div class="deptarget">
-                                <div class="loc" style="width:240px; height:150px; background:url(/static/uploads/maps/psm.gif) no-repeat;"></div>
-                                {{ modules.FormfieldInColumns(f.lat, f.long) }}
-                            </div>
-                        </div>
+                        {{ modules.Static('placemaker', f=f) }}
                     </div>
                  </div>
             </div>

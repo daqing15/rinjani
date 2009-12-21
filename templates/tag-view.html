@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{{ modules.Tabs(current_user, 'tags', tab, _('Tagged %s') % tab.title()) }}
+{{ modules.Tabs(current_user, 'tags', tab, _('Tagged <span>%s</span>') % tab) }}
 
 {% if pagination.get_objects().count() %}
     {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}

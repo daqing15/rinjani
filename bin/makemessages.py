@@ -57,7 +57,7 @@ def make_messages(locale, basedir, srcdirs, outdir, extensions, verbose=False):
                 if errors:
                     raise Exception("Errors happened while running msgmerge\n%s" % errors)
             open(pofile, 'wb').write(msgs)
-            convert_to_csv(pofile)
+            po_to_csv(pofile)
             os.unlink(potfile)
     else:
         raise Exception("You need to install xgettext")

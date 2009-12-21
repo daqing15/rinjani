@@ -17,8 +17,8 @@ import tornado.web
 from main import BaseHandler, authenticated
 from forms import activity_form
 from models import CONTENT_TYPE, Activity, EditDisallowedError
-from utils.pagination import Pagination
-from utils.utils import move_attachments, parse_attachments
+from rinjani.pagination import Pagination
+from rinjani.utils import move_attachments, parse_attachments
 
 class ListHandler(BaseHandler):
     def get(self, tab):

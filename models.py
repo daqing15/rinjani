@@ -35,7 +35,8 @@ class Simpledoc(MongoDocument):
     
 class Queue(Simpledoc):
     collection_name = 'queues'
-    structure = {'payload': dict }
+    structure = {'payload': dict, 'locked': bool}
+    default_fields = { 'locked': False}
         
 class BaseDocument(Simpledoc):
     use_autorefs = True
@@ -204,13 +205,13 @@ class User(BaseDocument):
                        'updated_at': self['updated_at']
                        }
         Queue.collection.update({'_id': 'indexing'}, 
-                                {'$push': {'payload': payload}},
+                                {'$push': {'payload': payload, 'locked':False}},
                                 upsert=True)
         
     def remove(self): 
         payload = {'id': self['_id']}
         Queue.collection.update({'_id': 'indexremoval'},
-                                 {'$push': {'payload': payload}},
+                                 {'$push': {'payload': payload, 'locked':False}},
                                  upsert=True)
         super(User, self).remove()
 
@@ -266,6 +267,15 @@ class User(BaseDocument):
     def get_url(self):
         return "/profile/" + self['username']
 
+class Org(User):
+    collection_name = 'users'
+
+class Sponsor(User):
+    collection_name = 'users'
+        
+class Volunteer(User):
+    collection_name = 'users'
+    
 class Group(BaseDocument):
     collection_name = 'groups'
     structure = {
@@ -371,13 +381,13 @@ class Content(BaseDocument):
                        'updated_at': self['updated_at']
                        }
         Queue.collection.update({'_id': 'indexing'}, 
-                                {'$push': {'payload': payload}},
+                                {'$push': {'payload': payload, 'locked':False}},
                                 upsert=True)
         
     def pre_remove(self): 
         payload = {'id': self['_id']}
         Queue.collection.update({'_id': 'indexremoval'},
-                                 {'$push': {'payload': payload}},
+                                 {'$push': {'payload': payload, 'locked':False}},
                                  upsert=True)
         
     def post_remove(self): 
@@ -448,8 +458,8 @@ class Activity(Content):
         'excerpt': unicode,
         'content': unicode,
         'content_html': unicode,
-        'location': {'lat': float, 'lang': float},
-
+        'lat': float,
+        'lang': float,
         'date_start': datetime.datetime,
         'date_end': datetime.datetime,
         'state': IS(u'planning', u'running', u'completed', u'cancelled', u'unknown'),
@@ -482,10 +492,6 @@ class Activity(Content):
                       }
     indexes = [ { 'fields': 'slug', 'unique': True}]
     
-    def pre_save(data, new_doc):
-        if self['author']['type'] != 'sponsor':
-            self['is_champaign'] = False
-            
     def post_save(self, data, new_doc):
         if new_doc:
             User.collection.update({'username': self.author.username}, {'$inc': { 'activity_count': 1}})
@@ -688,9 +694,9 @@ class Chat(Simpledoc):
                  'cursor': int,
                  'settings': dict,
                  'messages': [{
-                            'id': unicode,
+                            'id': int,
                             'from': User,
-                            'ts': float,
+                            'date': unicode,
                             'body': unicode,
                             'html': unicode
                             }] 

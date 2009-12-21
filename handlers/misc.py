@@ -1,30 +1,38 @@
-
+import logging
 import urllib
-import re
-import tornado.web
-from main import BaseHandler
 from tornado.auth import TwitterMixin
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from utils.pagination import SearchPagination
+import tornado.web
+from placemaker import placemaker
+
+from main import BaseHandler
 
 class SearchHandler(BaseHandler):
     def get(self):
-        from utils.indexing import index
+        from rinjani.indexing import index
+        from rinjani.pagination import SearchPagination
+        
         q = self.get_argument('q', None)
+        sortby = self.get_argument('sb', 'score')
+        sort = self.get_argument('s', 'desc')
+        
         if q:
             params = {}
             args = self.request.arguments
-            params.update({'facet': 'true', 'facet.field': ['type','tags']})
+            params.update({'sort':"%s %s" % (sortby,sort), \
+                           'facet': 'true', \
+                           'facet.field': ['type','tags']})
             if 'fq' in args:
                 params.update({'fq': args['fq']})
+            
             try:
                 pagination = SearchPagination(self, index, q, params)
-                self.render("search", pagination=pagination, q=q, error="")
+                self.render("search", pagination=pagination, q=q, error="",sortby=sortby)
             except:
                 raise
                 self.render("search", pagination=[], q=q, error="Search facility is down")
         else: 
-            self.render("search", pagination=[], q=q, error="Not Found")
+            self.render("search", pagination=[], q=q, error="Not Found",sortby=sortby)
 
 class SurveyHandler(BaseHandler):
     GFORM_BASEURL = u'http://spreadsheets.google.com/embeddedform?key='
@@ -47,7 +55,7 @@ class SurveyHandler(BaseHandler):
     def post(self):
         data = urllib.urlencode(self.get_utf_arguments())
         url = self.GFORM_ACTION + u'?' + data
-        http = tornado.httpclient.AsyncHTTPClient()
+        http = AsyncHTTPClient()
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         http.fetch(
                    HTTPRequest(url, 'POST', headers, body=data),
@@ -73,6 +81,29 @@ class SurveyHandler(BaseHandler):
         args = [(key, value.encode('utf-8')) for key,value in args.iteritems()]
         return dict(args)
 
+class GetLocHandler(BaseHandler, TwitterMixin):
+    def on_response(self, response):
+        #logging.warn(response.body)
+        p = placemaker(self.settings.YAHOO_API_KEY)
+        
+        places = p.process_response(response.body)
+        if places:
+            c = places[0].centroid
+            self.write({'long':c.longitude, 'lat': c.latitude, 'place': c.longitude})
+        else:
+            self.write({})
+        self.finish()
+    
+    @tornado.web.asynchronous
+    def post(self):
+        loc = self.get_argument('loc')
+        p = placemaker(self.settings.YAHOO_API_KEY)
+        url, data = p.format_request("I live in %s " % loc)
+        req = HTTPRequest(url, method="POST", body=data)
+        
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(req, callback=self.async_callback(self.on_response))
+        
 class TweetsHandler(BaseHandler, TwitterMixin):
     def tweetime_to_datetime(self, t):
         # Sun Dec 06 17:36:25 +0000 2009

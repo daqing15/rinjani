@@ -24,10 +24,10 @@ import twitter
 import sys
 sys.path.insert(0,'..')
 
-from settings import BASE_PATH, TWITTER_USER, TWITTER_PASSWORD
+from settings import BASE_DIR, TWITTER_USER, TWITTER_PASSWORD
 
 api = twitter.Api(username=TWITTER_USER, password=TWITTER_PASSWORD)
-repo = git.Repo(BASE_PATH)
+repo = git.Repo(BASE_DIR)
 
 head = [head for head in repo.heads if head.name == repo.active_branch][0]
 lc = head.commit

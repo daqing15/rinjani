@@ -10,8 +10,9 @@
     <div class="cb">
         {{ activity.content_html }}
     </div>
-
 </div>
+
+{{ modules.ByAuthor(activity.author) }}
 
 {{ modules.Disqus(activity) }}
 
@@ -22,7 +23,9 @@
     {{ modules.ItemAction(activity) }}
     {{ modules.ItemStat(activity) }}
     
-    {% if current_user != activity.author and activity.need_donation %}
+        
+    {% set accounts = activity.author.get_bank_accounts() %}
+    {% if current_user != activity.author and accounts.count() and activity.need_donation %}
         <div class="mod simple rounded">
             <b class="top"><b class="tl"></b><b class="tr"></b></b>
             <div class="inner">
@@ -30,37 +33,29 @@
                 {% if activity.donation_amount_needed %}<p class="">(for as much as Rp {{ s.commify(activity.donation_amount_needed) }},-)</p>{% end %}
                 </div>
                 <div class="bd">
-                  {% set accounts = activity.author.get_bank_accounts() %}
-
-                  {% if accounts.count() %}
                     <div class="buttons">
-                    <a class="dialog button" rel="#accounts" href="#"><span><span>Donate</span></span></a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}"><span><span>{{ _('Confirm My Donation') }}</span></span></a>
+                        <a class="dialog button" rel="#accounts" href="#"><span><span>Donate</span></span></a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}"><span><span>{{ _('Confirm My Donation') }}</span></span></a>
                     </div>
-                  {% end %}
                 </div>
             </div>
         </div>
-
-        {% if current_user != activity.author and accounts.count() %}
-            <div id="accounts" class="modal facebox">
-                <div class="wDialog">
-                    <h3>{{_('Bank accounts of ')}} {{ h.get(activity.author.fullname, activity.author.username) }}</h3>
-                    <table>
-                      {% for acc in  accounts %}
-                      <tr>
-                        <td>{{ acc['bank'].upper() }}</td>
-                        <td>{{ acc['number']}}</td>
-                        <td>{{ acc['holder'] }}</td>
-                      </tr>
-                      {% end %}
-                    </table>
-                </div>
+        <div id="accounts" class="modal facebox">
+            <div class="wDialog">
+                <h3>{{_('Give Donation') }}</h3>
+                <p>{{_('To give donation to %s, transfer money to one of these accounts') % h.get(activity.author.fullname, activity.author.username) }}</p>
+                <table>
+                  {% for acc in  accounts %}
+                  <tr>
+                    <td>{{ acc['bank'].upper() }}</td>
+                    <td>{{ acc['number']}}</td>
+                    <td>{{ acc['holder'] }}</td>
+                  </tr>
+                  {% end %}
+                </table>
             </div>
+        </div>
         {% end %}
-    {% end %}
-
-    {{ modules.ByAuthor(activity.author) }}
-    {{ modules.SimilarContent(activity) }}
+        <iframe id="chatbox" src="/talk/{{activity.slug}}">Chat</iframe>
 
 <div class="modal facebox" id="boxdonation"><div class="wDialog"></div></div>
 <div class="ovl" id="slideshow">

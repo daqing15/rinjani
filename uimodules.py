@@ -166,7 +166,7 @@ class Locale(BaseUIModule):
         from tornado.locale import LOCALE_NAMES
         supported_locales = set(tornado.locale.get_supported_locales(self.handler.locale))
 
-        locales = dict([(l,LOCALE_NAMES[l]['name'].lower()) for l in supported_locales])
+        locales = dict([(l,re.sub("\(.*\)","", LOCALE_NAMES[l]['name'].lower())) for l in supported_locales])
         locales.pop(self.handler.locale.code)
         return self.render_string('modules/locale', \
             locales=locales)

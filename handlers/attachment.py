@@ -19,8 +19,8 @@ import shutil
 import tempfile
 from mimetypes import guess_extension
 from main import BaseHandler, authenticated
-from utils.utils import unique_filename, create_thumbnails, sanitize_path
-from utils.string import slugify
+from rinjani.utils import unique_filename, create_thumbnails, sanitize_path
+from rinjani.string import slugify
 import models
 
 from settings import PIC_SIZES,IMAGE_CONTENT_TYPES, ALLOWED_CONTENT_TYPES
@@ -101,7 +101,7 @@ class AddHandler(BaseHandler):
                         try:
                             id = 'slug' if cls.structure.has_key('slug') else 'username'
                             doc = cls.one({id: self.get_argument('slug')} )
-                            doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src), filename=unicode(filename))]
+                            doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src, 'utf-8'), filename=unicode(filename, 'utf-8'))]
                             doc.save()
                         except Exception, e:
                             return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")

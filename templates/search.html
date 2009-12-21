@@ -5,12 +5,23 @@
 {% block body %}
 
 {% if len(pagination) %}
+
+
+<div id="subheader">
+    <h2>{{ _('Sort by') }}</h2>
+    <div id="tabs">
+        {% set get_class = lambda x,y: "class='youarehere'" if x == y else "" %} 
+        <a href="{{h.query_string(current_path, remove=['page'])}}&sb=score" {{get_class('score',sortby)}}>{{ _('Relevancy') }}</a>
+        <a href="{{h.query_string(current_path, remove=['page'])}}&sb=created_at" {{get_class('created_at',sortby)}}>{{ _('Date') }}</a>
+    </div>
+</div>
+
     {% set c = h.alternate(['rodd','reven']) %}
     {% set highlights = pagination['highlighting'] %}
     {% for item in pagination.get_objects() %}
         <div class="item line searchitem">
             <div class="unit size1of6">
-                <p class="meta">{{ item['updated_at'][:10] }}</p>
+                <p class="meta">{{ item['created_at'][:10] }}</p>
             </div>
             <div class="lastUnit size5of6">
                 <p><a href="{{item['path']}}">{{ item['title'] }}</a></p>
@@ -35,7 +46,7 @@
 {% block sidebar %}
 
 <h2>{{ q }}</h2>
-<p>plain english here.. articles contain {{q}} which are tagged with blah blah</p>
+<p>Took {{ pagination['headers']['QTime']}}ms. Searching for articles contain {{q}} tagged with blah blah</p>
 
 {% if len(pagination) %}
     {% if pagination['facets'] %}
