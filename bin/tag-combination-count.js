@@ -23,7 +23,7 @@ m = function() {
 		all.push(a);
 		return all;
 	}
-	c = combination(this.tags);
+	c = combination(this.tags.sort());
 	if (c.length == 1 && c[0].length == 0) {
 		emit('untagged', {tags: c, count: 1});
 	} else {

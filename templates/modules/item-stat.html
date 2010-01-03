@@ -3,59 +3,27 @@
         <div class="bd">
             <div class="line item">
                 <div class="unit size1of3">
-                    <span><span class="ultrabig grey">{{int(item.view_count)}}</span></span><br />
-                    <span><span class="grey">23</span> comments</span>
+                    <span><span class="ultrabig grey">{{int(h.get(item.view_count,0))}}</span></span><br />
+                    <span><span class="grey">{{ len(item.comments) }}</span> comments</span>
                 </div>
                 <div class="lastUnit size2of3">
                     {{ modules.Tags(item.tags) }}
                 </div>
             </div>
-            
+
+<div class="link">            
+    <div style="width: 3ex;" class="midcol unvoted">
+        <div onclick="showcover(true, 'vote_t3_aidea')" class="arrow up"></div>
+        <div class="score dislikes">15</div>
+        <div class="score unvoted">16</div>
+        <div class="score likes">17</div>
+        <div onclick="showcover(true, 'vote_t3_aidea')" class="arrow down"></div>
+    </div>
+</div>
             {% if item.has_key('need_volunteer') %}
                 {{ modules.Tags(item.volunteer_tags) }}
             {% end %}
 
-
-            <form action="/flag" class="line">
-                <h3 style="margin-bottom:5px">{% if current_user %}{{ _('What do you think?')}} {% else %} {{ _('User Vote') }} {% end %}</h3>
-                <div class="flag">
-                    {% for flag, count in votes.iteritems() %}
-                        {% set c = " voted " if (vote and str(vote.vote) == flag) else "" %}
-                    <label class="tag t1{{c}}"> <input type="radio" class="ut" name="myflag" value="{{flag}}"/>{{FLAGS[flag]}} {% if count %} <span>{{count}}</span>{% else %}<span></span>{% end %}</label>
-                    {% end %}
-                    <label class="tag hidden"> <input type="radio" class="ut" name="myflag" value="" />Sampah <span>0</span></label>
-                </div>
-            </form>
-            {% if not current_user %}<p class="small grey">{{ _('Log in to be able to vote') }}</p>{% end %}
-
-            {% if current_user and current_user != item.author %}
-<script type="text/javascript">
-// jelek banget :(
-var has_vote = {{ "true" if vote else "false"}};
-$('.flag .tag').mouseup(function() {
-        $tag = $(this)
-        $flag = $tag.find('input');
-        c = $tag.find('input').parent().find('.voted').length;
-        alert(c);
-        R.request('/flag',
-                { type: {{ int(item['type']) }},
-                  slug:'{{item.slug}}', flag: $flag.val() },
-                'POST', function(resp) {
-                    if (resp.status == 'OK') {
-                        $tag.addClass("voted");
-                        $vote = $tag.find('span');
-                        if ($vote.text() != "") {
-                            $vote.text(parseInt($vote.text())+1);
-                        } else {
-                            $vote.text("1");
-                        }
-                        has_vote = true;
-                    }
-                }
-    );
-});
-</script>
-            {% end %}
         </div>
     </div>
 </div>

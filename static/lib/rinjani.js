@@ -63,14 +63,22 @@ var Rinjani = {
                 + encodeURIComponent(document.location.href);
                return;
           }
+          if (resp.data && resp.data.fixed_by_login) {
+        	  Rinjani.flash(_("You need to login to do that"));
+        	  return;
+          }
           if (func) func(resp);
           if (resp.message) { Rinjani.flash(resp.message); $.cookie('f', null); };
           if (resp.data && resp.data.next) {
               $.cookie('f', resp.data.msg);
               document.location=resp.data.next;
           }
-          if (resp.data && resp.data.html_target) {
-              $(resp.data.html_target).html(resp.data.html);
+          if (resp.data && resp.data.html) {
+        	  if (resp.data.append) {
+        		  $(resp.data.target).append(resp.data.html);
+        	  } else {
+        		  $(resp.data.target).html(resp.data.html);
+        	  }
           }
         }
   },
@@ -103,21 +111,19 @@ var Rinjani = {
   
   /* @from Solace. formats the date as timedelta.  If the date is too old, null is returned */
   formatTimeDelta : function(d) {
-    var
-      diff = ((new Date).getTime() - d.getTime()) / 1000;
+	// todo: read more about plural form :p
+    var diff = ((new Date).getTime() - d.getTime()) / 1000;
     if (diff < 1)
     	return _("just now");
     if (diff > 1 && diff < 60)
       return babel.format(_("%d seconds ago"), diff);
     if (diff == 60)
-        return babel.format(_("1 minute ago"), diff);
-    
+        return _("1 minute ago");
     var n = Math.floor(diff / 60);
     if (diff < 3600)
       return babel.format(_("%d minutes ago"), n);
     if (diff == 3600)
-        return babel.format(_("1 hour ago"), n);
-    
+        return _("1 hour ago");
     if (diff < 43200) {
       var n = Math.floor(diff / 3600);
       return babel.format(_("%d hours ago"), n);
@@ -234,7 +240,7 @@ useRelativeDates : function(element) {
         tag = tag.replace(new RegExp('(__SINGLE_QUOTE__)', 'g'), "'");
         for (var i in usedTags) {
             if (usedTags[i] == tag) {
-                alert('' + tag + ' is already in the list.  To remove a tag, edit the field above.');
+                alert( babel.format(_('%s is already in the list.  To remove a tag, edit the field above.'), tag));
                 return;
            }
         }
@@ -313,7 +319,7 @@ useRelativeDates : function(element) {
       // the ajax setup
       $.ajaxSetup({
           error: function() {
-              Rinjani.flash('Could not contact server. Connection problems?');
+              Rinjani.flash(_('Could not contact server. Check your internet connection.'));
               $('#loading').hide();
           }
       });
@@ -332,8 +338,8 @@ useRelativeDates : function(element) {
         });
 
         $('button.ajax').live('click', function() {
-            var action=$(this).parent('form').attr('action');
-            R.request(action, {}, 'POST');
+        	$form = $(this).parents('form');
+            R.request($form.attr('action'), $form.formToDict(), 'POST');
             return false;
         });
 

@@ -192,11 +192,9 @@ login_form = MyForm(
     Checkbox("rememberme", checked=True, value="1", description=_("Remember Me")),
 )
 
-activity_form = MyForm(
+project_form = MyForm(
     Textbox("title", form.notnull, size=39, description=_("Title")),
-    Datefield("date_start", _class="date", size=15, description=_("Start")),
-    Datefield("date_end", _class="date", size=15, description=_("End")),
-    Textarea("excerpt", rows=3, cols=39, description=_("Excerpt/Lead")),
+    Textarea("goal", form.notnull, rows=3, cols=30, description=_("Goal")),
     Textarea("content", form.notnull, _class="rte", rel="#contentPreview", rows=12, cols=40, description=_("Content")),
     Textbox("donation_amount_needed", size=30, description=_("Amount of donation needed (Rp)")),
     Checkbox("need_donation", value="1", description=_("Needs donations")),
@@ -204,10 +202,10 @@ activity_form = MyForm(
     Checkbox("need_volunteer", value="1", description=_("Needs volunteers")),
     Textbox("volunteer_tags", size="30", description=_("Volunteer skills needed")),
     Checkbox("enable_comment", value="1", description=_("Accept comments")),
-    Dropdown('state', args=ACTIVITY_STAGES, description=_('Activity Stage')),
+    Dropdown('state', args=ACTIVITY_STAGES, description=_('State')),
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=39, description="Tags"),
     Textbox("lat", size=10, description="Latitude"),
-    Textbox("long", size=10, description="Longitude"),
+    Textbox("lng", size=10, description="Longitude"),
  )
 
 article_form = MyForm(
@@ -252,6 +250,6 @@ profile_form = MyForm(
     Textbox("website", size=40, description=_("Website")),
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=40, description="Your Fields/Skills"),
     Textbox("lat", size=10, description="Latitude"),
-    Textbox("long", size=10, description="Longitude")
+    Textbox("lng", size=10, description="Longitude")
 )
 

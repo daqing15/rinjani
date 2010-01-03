@@ -1,0 +1,71 @@
+{% if False %}
+
+{% set title = title if 'title' in locals() else 'Location' %} 
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+
+<script type="text/javascript">
+var map;
+var getLoc= function() {}
+var marker;
+
+$(document).ready(function() {
+    var fillLocInput = function(lat, lng) {
+    	$('#lat').val(lat); 
+        $('#lng').val(lng); 
+    }
+
+    var placeMarker = function(location) {
+    	fillLocInput(location.lat, location.lng);
+      var clickedLocation = new google.maps.LatLng(location.lat, location.lng);
+      if (marker) {
+    	  marker.setMap(null);
+      }
+      marker = new google.maps.Marker({position: clickedLocation,map: map, title:_('Project Location')});
+      map.setCenter(clickedLocation);
+      map.setZoom(14);
+    }
+
+     var setLoc = function(resp, status) {
+         if (status == google.maps.GeocoderStatus.ZERO_RESULTS) { R.flash(_("Cant determine the location. Try another address.")); return;}
+         if (status != google.maps.GeocoderStatus.OK) { R.flash(_("Oops. We have problem. Try again later.")); }
+
+         R.flash(_("Found") + ": " + resp[0].formatted_address + ". " + _("Please wait while the map loaded with new location."));
+         // todo: display list of all addressess
+         foundLoc = resp[0].geometry.location; // loc of 1st result
+         placeMarker({lat:foundLoc.lat(), lng: foundLoc.lng()});
+     } 
+
+    getLoc = function(address) {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({address: address, country:'ID'}, setLoc);
+    }
+
+   var mapOptions = { backgroundColor:'#ffffff', 
+           mapTypeControl: false,
+           zoom: 9, 
+           mapTypeId: google.maps.MapTypeId.ROADMAP, 
+           center: new google.maps.LatLng({{h.get(f.lat.value, -6.2925)}}, {{h.get(f.lng.value, 106.831)}})
+        };
+   map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+   google.maps.event.addListener(map, 'click', function(event) { 
+       placeMarker({lat: event.latLng.lat(), lng: event.latLng.lng()}); });
+	   
+   $('#mapblock').show();
+   
+    
+
+});
+</script>
+
+<div id="mapblock" style="display:none;">
+    <h3>{{_('Location')}}</h3>
+    <div id="map_canvas" class="map_canvas" style="width:320px; height:250px;"></div>
+    <div>Location (eg. lenteng agung):<br />
+    <span style="float:left"><input id="loc" type="text" name="loc" size="14" /></span> 
+    <button onclick="getLoc($('#loc').val()); return false;"><span><span>{{ _('Set location')}}</span></span></button></div>
+</div>
+
+<div style="visibility:hidden; height: 1px; overflow:hidden;">{{ modules.Formfield(f.lat) }} {{ modules.Formfield(f.lng) }}</div>
+
+{% end %}

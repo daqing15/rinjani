@@ -34,6 +34,7 @@
 
 {% if current_user %}
 <script type="text/javascript">
+$(document).ready(function() {
     $('.fComment input').click(function(e) {
         $this = $(this); $this.hide();
         $cmb = $('.cmb', $(this).parent());
@@ -47,7 +48,7 @@
                 $(c).hide(); $(i).show();
             }});
     });
-    
+});    
 </script>
 {% end %}
 
@@ -58,6 +59,3 @@
 
 {% end %}
 
-{% block inlinejs %}
-<script type="text/javascript" src="{{ static_url('jquery.tools.min.js') }}"></script>
-{% end %}

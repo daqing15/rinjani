@@ -19,16 +19,15 @@ import datetime
 import logging
 
 from main import BaseHandler
-from models import Chat, Activity
+from models import Chat, Project, CONTENT_TYPE
 
 class MainHandler(BaseHandler):
-    @tornado.web.authenticated
     def get(self, ch):
-        activity = Activity.one({'slug': ch})
-        if not activity:
+        project = Project.one({'type': CONTENT_TYPE.PROJECT, 'slug': ch})
+        if not project:
             raise tornado.web.HTTPError(404)
         recent = MessageMixin.get_recent(ch)
-        self.render("talk", activity=activity, messages=recent, ch=ch)
+        self.render("talk", project=project, messages=recent, ch=ch)
 
 class MessageMixin(object):
     waiters = {}
@@ -82,8 +81,6 @@ function get_recent_messages(ch, cursor,recentSize) {
 class NewHandler(BaseHandler, MessageMixin):
     @tornado.web.authenticated
     def post(self, ch):
-        spec = {'_id': ch}
-        
         js_insert = """
 function insertNewMessage(ch, newMsg) {
     c = db.chats.findOne({_id:ch});
@@ -106,7 +103,6 @@ function insertNewMessage(ch, newMsg) {
         self.write(message)
 
 class UpdatesHandler(BaseHandler, MessageMixin):
-    @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self, ch):
         cursor = self.get_argument("cursor", None)

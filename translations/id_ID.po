@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-19 01:03+0700\n"
+"PO-Revision-Date: 2010-01-01 07:46+0700\n"
 "Last-Translator: hafizhuddin amin <hafizhuddin.amin@gmail.com>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -600,9 +600,8 @@ msgid "Search Result for %s"
 msgstr ""
 
 #: /media/disk/gryffindor/projects/rinjani/app/templates/search.html:11
-#, fuzzy
 msgid "Sort by"
-msgstr "Didukung oleh"
+msgstr "Urut berdasarkan"
 
 #: /media/disk/gryffindor/projects/rinjani/app/templates/search.html:14
 msgid "Relevancy"

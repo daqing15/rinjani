@@ -1,0 +1,34 @@
+{% set accounts = project.author.get_bank_accounts() %}
+
+{% if accounts.count() and project.need_donation %}
+
+    <div class="mod simple rounded">
+        <b class="top"><b class="tl"></b><b class="tr"></b></b>
+        <div class="inner">
+            <div class="hd"><h3 class="h-donate">{{ _('Plea for donation!') }}</h3>
+            {% if project.donation_amount_needed %}<p class="">(for as much as Rp {{ s.commify(project.donation_amount_needed) }},-)</p>{% end %}
+            </div>
+            <div class="bd">
+                <div class="buttons">
+                    <a class="dialog button" rel="#accounts" href="#"><span><span>Donate</span></span></a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{project.slug}}"><span><span>{{ _('Confirm My Donation') }}</span></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="accounts" class="modal facebox">
+        <div class="wDialog">
+            <h3>{{_('Give Donation') }}</h3>
+            <p>{{_('To give donation to %s, transfer money to one of these accounts') % h.get(project.author.fullname, project.author.username) }}</p>
+            <table>
+              {% for acc in  accounts %}
+              <tr>
+                <td>{{ acc['bank'] }}</td>
+                <td>{{ acc['number']}}</td>
+                <td>{{ acc['holder'] }}</td>
+              </tr>
+              {% end %}
+            </table>
+        </div>
+    </div>
+
+{% end %}

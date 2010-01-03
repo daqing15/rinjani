@@ -1,21 +1,20 @@
 {% extends 'profile/_dashboard.html' %}
 
 {% block title %}
-{% set title = _('edit activity') if activity.slug else _('new activity') %}
+{% set title = _('edit project') if project.has_key('_id') else _('new project') %}
 {{ title.title() }}{% end %}
 
 {% block tabContent %}
 
 <noscript>
-<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
+<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Project.</strong></div>
 </noscript>
 
 {{ f.rendernote(f.note) }}
 
-<form method="post" action="{{BP}}/activity/edit" class="withtips">
+<form method="post" class="withtips">
 
-{% set title = 'edit activity' if activity.slug else 'new activity' %}
-{{ modules.Tabs(user, 'new_' + ('admin' if current_user.is_admin else current_user.type), 'activity', title, dashboard=True) }}
+{{ modules.Tabs(user, 'new_' + ('admin' if current_user.is_admin else current_user.type), 'project', title, dashboard=True) }}
 
 
 <div class="line tabWrapper">
@@ -32,8 +31,10 @@
 			<div class="pane">
                 <div class="line">
                     <div class="unit size1of2">
+                        {{ modules.Formfield(f.state) }}
+                        
         				{{ modules.Formfield(f.title) }}
-        				{{ modules.Formfield(f.excerpt) }}
+        				{{ modules.Formfield(f.goal) }}
                         
                          {{ modules.Formfield(f.tags) }}
                         <div class="tags suggestedtags">
@@ -46,9 +47,6 @@
                     <div class="lastUnit size1of2">
                         {{ modules.Static('placemaker', f=f) }}
                     </div>
-                </div>
-                <div class="line">
-                   
                 </div>
 			</div>
 			<div class="pane">
@@ -66,14 +64,7 @@
 			</div>
 			<div class="pane">
                 <div class="line">
-                    <div class="unit size1of3">
-                        <div class="line">
-                        {{ modules.Formfield(f.date_start) }}
-                        {{ modules.Formfield(f.date_end) }}
-                        {{ modules.Formfield(f.state) }}
-                        </div>
-                    </div>
-                    <div class="lastUnit size2of3">
+                    <div class="unit size2of3">
                         <div class="deps">
                             <div class="depsrc">
                                 {{ modules.Formfield(f.need_donation) }} <span class="grey small">{{_('If checked, your <a target=_blank href=/profile/edit#fb>Bank Account</a> will be displayed.')}}</span>
@@ -97,6 +88,11 @@
                             {{ modules.Formfield(f.is_champaign) }}
                         {% end %}         
                     </div>
+                    <div class="lastUnit size1of3">
+                        <div class="line">
+                        
+                        </div>
+                    </div>
                 </div>
                 
                 
@@ -106,29 +102,33 @@
 </div>
 			
 <div class="buttons line">
-
-{% if not activity.slug or activity.status == 'draft' %}
+<div class="unit">
+{% if not project.has_key('_id') or project.status == 'draft' %}
     <button class="positive" name="status" value="draft"><span><span>{{_('Save as Draft')}}</span></span></button>
     <button class="submit" name="status" value="published"><span><span>{{_('Publish')}}</span></span></button>
-{% elif activity.status == 'published' %}
+{% elif project.status == 'published' %}
     <button class="submit" name="status" value="published"><span><span>{{_('Save')}}</span></span></button>
     <button class="negative" name="status" value="draft"><span><span>{{_('Unpublish')}}</span></span></button>
 {% end %}
 
-{% if activity.slug %}    
-    {{ h.link_button_if_editor(current_user, activity.author, BP + '/activity/remove/' + activity.slug, _('Remove'), handler.xsrf_token) }}
+{% if project.has_key('_id') %}    
+    {{ h.link_button_if_editor(current_user, project.author, BP + '/project/remove/' + project.slug, _('Remove'), handler.xsrf_token) }}
 {% end %}
 
 </div>
+<div class="lastUnit">
+<a target="_blank" href="{{project.get_url()}}">{{_('View')}}</a>
+</div>
+</div>
 
-<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in activity.attachments]) }}" />
-<input type="hidden" name="attachment_counter" value="{{len(activity.attachments)}}" />
+<input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in project.attachments]) }}" />
+<input type="hidden" name="attachment_counter" value="{{len(project.attachments)}}" />
 
 {{ xsrf_form_html() }}
 
-{% if activity.slug %}
+{% if project.slug %}
 <input type="hidden" name="is_edit" value="1" />
-<input type="hidden" name="slug" value="{{activity.slug}}" />
+<input type="hidden" name="slug" value="{{project.slug}}" />
 {% end %}
     
 </form>
@@ -142,20 +142,20 @@
 // uploads
 $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
-content_type = 'activity';
-is_new_doc = {{ int(not bool(activity.slug)) }};
+content_type = 3;
+is_new_doc = {{ int(not bool(project.slug)) }};
 textarea = '#content';
-slug = '{{ activity.slug if activity.slug else '' }}';
+slug = '{{ project.slug if project.slug else '' }}';
 </script>
 
 {% end %}
 
 {% block inlinejs %}
-<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
-<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="{{ static_url('date.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('jquery.datepicker.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{static_url('lib/markitup/markitup.markdown.js')}}"></script>
+<link href="{{static_url('lib/markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
+<script type="text/javascript" src="{{ static_url('lib/date.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('lib/jquery.datepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('lib/ajaxupload.min.js') }}"></script>
 <link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
 <script type="text/javascript">
 $(function() {
@@ -165,6 +165,6 @@ $(function() {
 {% end %}
 
 {% block postinlinejs %}
-<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('lib/upload.js') }}"></script>
 {% end %}
 

@@ -15,6 +15,7 @@
 # under the License.
 
 import os.path
+import httplib
 import urllib
 import tornado.web
 
@@ -23,17 +24,16 @@ from rinjani import defaulthelper, string, timeutil, cache
 from forms import MyForm
 from models import User
 
-class api(object):
-    def __init(self): pass
-    def __call_(self, method):
-        cls = self # api class
-        
-        def render():
-            pass
-        def wrapped_method(self, *args, **kwargs):
-            pass
-        return wrapped_method
-        
+def from_local(method):
+    def wrapper(self, *args, **kwargs):
+        # awas kl nginx gak ngasi info akurat :p
+        if self.request.headers['X-Real-Ip'] != '127.0.0.1':
+            self.set_status(403)
+            message = "HTTP %d: %s" % (403, httplib.responses[403])
+            self.finish(message)
+        return method(self, *args, **kwargs)
+    return wrapper
+
 class authenticated(object):
     """Decorate methods with this to require authenticated access"""
     def __init__(self, allowed_types=None, admin_access=None, verified_access=None):
@@ -46,8 +46,14 @@ class authenticated(object):
 
     def __call__(self, method):
         cls = self
-
+        
         def wrapped_method(self, *args, **kwargs):
+            def response_error(message, redirect_url="/"):
+                if self.is_xhr():
+                    return self.json_response(message, "ERROR", {"fixed_by_login": True})
+                self.set_flash(message)
+                self.redirect(redirect_url)
+            
             _ = self._
             
             user = self.current_user
@@ -55,9 +61,7 @@ class authenticated(object):
                 url = self.get_login_url()
                 if '?' not in url:
                     url += "?" + urllib.urlencode(dict(next=self.request.uri))
-                self.set_flash(_('You have to login in order to see that page.'))
-                self.redirect(url)
-                return
+                return response_error(_('You have to login in order to see that page'), url)
             else:
                 in_type = True
                 if cls.allowed_types:
@@ -69,14 +73,10 @@ class authenticated(object):
                     if not cls.verified_access or (cls.verified_access and (user['is_admin'] or user['is_verified'])):
                         return method(self, *args, **kwargs)
 
-                    self.set_flash(_('Access to that page is only for verified user. Please <a href="/profile/verify">verify your account</a>.'))
-                    self.redirect('/')
-                    return
+                    return response_error(_('Access to that page is only for verified user. Please <a href="/profile/verify">verify your account</a>.'))
                 if (cls.allowed_types and not in_type and not user['is_admin']) \
                         or (not cls.allowed_types and not user['is_admin']):
-                    self.set_flash(_('You dont have privilleges to access that page'))
-                    self.redirect('/')
-                    return
+                    return response_error(_('You dont have privilleges to access that page'))
             raise tornado.web.HTTPError(403)
         return wrapped_method
 

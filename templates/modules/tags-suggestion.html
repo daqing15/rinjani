@@ -4,10 +4,12 @@
 <p class="small grey"><span>{{ _('Suggestion (click to add)')}}:<br /></span>
 {% for cat, t in tags.iteritems() %}
     {% set n = len(t) %}
-    {{ cat.upper() }}:
-        {% for i, tag in enumerate(t) %}
-            {% set ending = ', ' if (i < n-1) else '.' %}  
-            <a href="#" onclick="R.addTag('{{tag}}'{{elp}})">{{tag}}</a>{{ending}}
-        {% end %}
+    <span class="tagset-{{cat}}">
+    {{ cat.upper() }}:    
+    {% for i, tag in enumerate(t) %}
+        {% set ending = ', ' if (i < n-1) else '.' %}  
+        <a href="#" onclick="R.addTag('{{tag}}'{{elp}})">{{tag}}</a>{{ending}}
+    {% end %}
+    </span>
 {% end %}
 </p>

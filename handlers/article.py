@@ -17,7 +17,7 @@ import tornado.web
 
 from main import BaseHandler, authenticated
 from forms import article_form
-from models import CONTENT_TYPE, EditDisallowedError, Article
+from models import EditDisallowedError, Article
 from rinjani.pagination import Pagination
 from rinjani.utils import move_attachments, parse_attachments
 
@@ -25,7 +25,7 @@ PERMISSION_ERROR_MESSAGE = "You are not allowed to edit this article"
 
 class ListHandler(BaseHandler):
     def get(self, tab):
-        spec = {'type': CONTENT_TYPE.ARTICLE, 'status':'published'}
+        spec = {'status':'published'}
         tab = tab or 'latest'
         if tab == 'featured':
             spec.update({'featured':True})
@@ -39,11 +39,11 @@ class ListHandler(BaseHandler):
 
 class ViewHandler(BaseHandler):
     def get(self, slug):
-        spec = {'type': CONTENT_TYPE.ARTICLE, 'status':'published', "slug": slug}
+        spec = {'status':'published', "slug": slug}
         article = Article.one(spec)
         if not article:
             raise tornado.web.HTTPError(404)
-        Article.collection.update({'slug': slug}, {'$inc': { 'view_count': 1}})
+        article.increment_view_count()
         self.render("article", article=article)
 
 class EditHandler(BaseHandler):
@@ -52,7 +52,7 @@ class EditHandler(BaseHandler):
         f = article_form()
         if slug:
             try:
-                spec = {'type': CONTENT_TYPE.ARTICLE, 'slug':slug}
+                spec = {'slug':slug}
                 article = Article.one(spec)
                 article.check_edit_permission(self.get_current_user())
                 article.formify()
@@ -62,30 +62,30 @@ class EditHandler(BaseHandler):
                 self.redirect(article.get_url())
                 return
             except:
-                raise tornado.web.HTTPError(404)
+                raise tornado.web.HTTPError(500)
         else:
             article = Article()
 
         self.render("article-edit", f=f, article=article, user=self.current_user)
 
     @authenticated()
-    def post(self):
+    def post(self, slug=None):
         f = article_form()
         data = self.get_arguments()
-        is_edit = data.has_key('is_edit')
+        attachments = self.get_argument('attachments', None)
+        is_edit = bool(slug)
         
         _ = self._
+        
         try:
-            attachments = self.get_argument('attachments', None)
             if attachments:
                 data['attachments'] = parse_attachments(data['attachments'], is_edit)
 
             if f.validates(tornado.web._O(data)):
-                spec = {'type': CONTENT_TYPE.ARTICLE, 'slug':data['slug']}
-                article = Article.one(spec) if is_edit else Article()
+                article = Article.one({'slug':slug}) if is_edit else Article()
                 article.save(data, user=self.current_user)
 
-                if attachments and not is_edit:
+                if attachments:
                     # ganti sama $push nih
                     article['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     article.update_html()
@@ -101,7 +101,6 @@ class EditHandler(BaseHandler):
             self.set_flash(PERMISSION_ERROR_MESSAGE)
             self.redirect(article.get_url())
         except Exception, e:
-            raise
             if attachments:
                 article['attachments'] = data['attachments']
             f.note = f.note if f.note else e
@@ -110,8 +109,7 @@ class EditHandler(BaseHandler):
 
 class RemoveHandler(BaseHandler):
     def post(self, slug):
-        spec = {"type": CONTENT_TYPE.ARTICLE, "slug": slug}
-        article = Article.one(spec)
+        article = Article.one({"slug": slug})
         if not article:
             raise tornado.web.HTTPError(404)
 

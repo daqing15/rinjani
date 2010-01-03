@@ -1,0 +1,14 @@
+{% if users %}
+<div class="mod">
+    <div class="inner">
+        <div class="hd"><h3>Warga Teladan</h3></div>
+        <div class="bd">
+            <ul>
+            {% for user in users %}
+                <li><a href="/profile/{{ user['username'] }}">{{ h.get(user['fullname'], user['username']) }}</a> - {{ user['points'] }}pts </li>
+            {% end %}
+            </ul>   
+        </div>
+    </div>
+</div>
+{% end %}

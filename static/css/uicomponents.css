@@ -109,6 +109,30 @@ a.button:visited {
 #dsq-content button span { background: none; height: auto;}
 
 
+.link .score {
+color:#C6C6C6;
+text-align:center;
+}
+.score.likes, .score.dislikes {
+display:none;
+}
+.arrow.up  {
+	background-image:url("img/sprite.png?v=30e3875d624ba0d9f5811bd4e6068f68");
+	background-position:-4px -223px;
+}
+.arrow.down {
+background-image:url("img/sprite.png?v=30e3875d624ba0d9f5811bd4e6068f68");
+background-position:-4px -245px;
+}
+.arrow {
+background-position:center center;
+background-repeat:no-repeat;
+cursor:pointer;
+display:block;
+height:14px;
+margin:2px auto 0;
+width:15px;
+}
 
 .tabWrapper { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
 ul.tabs { padding: 0 0 10px 0; }
@@ -397,72 +421,6 @@ a.dp-choose-date.dp-disabled {
  */
 input.dp-applied {
 	float: left;
-}
-
-
-.jScrollPaneContainer {
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.jScrollPaneTrack {
-    position: absolute;
-    cursor: pointer;
-    right: 0;
-    top: 0;
-    height: 100%;
-    background: #aaa;
-}
-.jScrollPaneDrag {
-    position: absolute;
-    background: #666;
-    cursor: pointer;
-    overflow: hidden;
-}
-.jScrollPaneDragTop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-}
-.jScrollPaneDragBottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    overflow: hidden;
-}
-a.jScrollArrowUp {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    text-indent: -2000px;
-    overflow: hidden;
-    /*background-color: #666;*/
-    height: 9px;
-}
-a.jScrollArrowUp:hover {
-    /*background-color: #f60;*/
-}
-
-a.jScrollArrowDown {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
-    right: 0;
-    text-indent: -2000px;
-    overflow: hidden;
-    /*background-color: #666;*/
-    height: 9px;
-}
-a.jScrollArrowDown:hover {
-    background-color: #f60;
-}
-a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
-    background-color: #f00;
 }
 
 /* HORIZONTAL ACCORDION IN HOME */

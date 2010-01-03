@@ -8,7 +8,7 @@
 <div class="buttons">
     <a class="button nArt" href="/article/new"><span><span>{{ _('New Article') }}</span></span></a>
     {% if user.type == 'agent' or user.type == 'sponsor' %} 
-    <a class="button nAct" href="/activity/new"><span><span>{{ _('New Activity') }}</span></span></a>
+    <a class="button nAct" href="/project/new"><span><span>{{ _('New Project') }}</span></span></a>
     <a class="button nPost" href="/post/new"><span><span>{{ _('New Blog Post') }}</span></span></a>
     {% end %}
     {% if user.is_admin %} 

@@ -7,11 +7,12 @@
 {% block tabContent %}
 
 <noscript>
-<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Activity.</strong></div>
+<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write new Article/Project.</strong></div>
 </noscript>
 
 {{ f.rendernote(f.note) }}
-<form action="{{BP}}/article/edit" method="post" class="withtips">
+
+<form method="post" class="withtips">
 
 {% set title = 'edit article' if article.slug else 'new article' %}
 {% set title = title + ' (draft)' if article.status == 'draft' else title %}
@@ -22,7 +23,7 @@
     <div class="unit size1of5">
         <!-- the tabs -->
         <ul class="tabs">
-            <li><a href="#fi">{{_('Information')}}</a></li>
+            <li><a href="#fi">{{_('Meta')}}</a></li>
             <li><a href="#fc">{{_('Content')}}</a></li>
         </ul>
     </div>
@@ -84,7 +85,7 @@
 <script type="text/javascript">
 $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
-content_type = 'article';
+content_type = 2;
 is_new_doc = {{ int(not bool(article.slug)) }};
 textarea = '#content';
 slug = '{{ article.slug if article.slug else '' }}';
@@ -93,13 +94,13 @@ slug = '{{ article.slug if article.slug else '' }}';
 {% end %}
 
 {% block inlinejs %}
-<script type="text/javascript" src="{{static_url('markitup/markitup.markdown.js')}}"></script>
-<link href="{{static_url('markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="{{ static_url('ajaxupload.min.js') }}"></script>
+<script type="text/javascript" src="{{static_url('lib/markitup/markitup.markdown.js')}}"></script>
+<link href="{{static_url('lib/markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
+<script type="text/javascript" src="{{ static_url('lib/ajaxupload.min.js') }}"></script>
 {% end %}
 
 {% block postinlinejs %}
-<script type="text/javascript" src="{{ static_url('upload.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('lib/upload.js') }}"></script>
 {% end %}
 
 

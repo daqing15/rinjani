@@ -1,51 +1,51 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ escape(activity.title) }} - {{_('Activity')}}{% end %}
+{% block title %} {{ escape(project.title) }} - {{_('project')}}{% end %}
 
 {% block body %}
 
 <div class="post">	    
-	<h2>{{ escape(activity.title) }}</h2>
+	<h2>{{ escape(project.title) }}</h2>
 	
 	<div class="cb">
-	    {{ activity.content_html }}
+	    {{ project.content_html }}
         
-        {% if activity.deliverable %}
+        {% if project.deliverable %}
 	    <h4>Deliverable</h4>
-	    	{{ activity.deliverable_html }}
+	    	{{ project.deliverable_html }}
 	    {% end %}
 	</div>
 	
 </div>
 
-{% if activity.enable_comment %}
-    {{ modules.Disqus(activity._id) }}     
+{% if project.enable_comment %}
+    {{ modules.Disqus(project._id) }}     
 {% end %}
 
 {% end %}
 
 {% block sidebar %}
-    {{ modules.UserBlock(activity.author) }}
+    {{ modules.UserBlock(project.author) }}
     
-    {% if current_user and current_user == activity.author %}
+    {% if current_user and current_user == project.author %}
      <div class="editbar">
-        {{ h.link_if_editor(current_user, activity.author, BP + '/activity/edit/' + activity.slug, _('Edit'), _class='button') }} 
-        {{ h.link_button_if_editor(current_user, activity.author, BP + '/activity/remove/' + activity.slug,  _('Remove'), handler.xsrf_token) }}
+        {{ h.link_if_editor(current_user, project.author, BP + '/project/edit/' + project.slug, _('Edit'), _class='button') }} 
+        {{ h.link_button_if_editor(current_user, project.author, BP + '/project/remove/' + project.slug,  _('Remove'), handler.xsrf_token) }}
     </div>
     {% end %}
     
-    {% if current_user != activity.author and activity.need_donation %}
+    {% if current_user != project.author and project.need_donation %}
     <div class="mod simple rounded">
         <b class="top"><b class="tl"></b><b class="tr"></b></b>
         <div class="inner">
             <div class="hd"><h3 class="h-donate">{{ _('Plea for donation!') }}</h3>
-            {% if activity.donation_amount_needed %}<p class="">(for as much as Rp {{ s.commify(activity.donation_amount_needed) }},-)</p>{% end %}
+            {% if project.donation_amount_needed %}<p class="">(for as much as Rp {{ s.commify(project.donation_amount_needed) }},-)</p>{% end %}
             </div>
             <div class="bd">
-              {% set accounts = activity.author.get_bank_accounts() %}
+              {% set accounts = project.author.get_bank_accounts() %}
               
               {% if accounts.count() %}
-                <p><a class="dialog button" rel="#accounts" href="#">Donate</a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{activity.slug}}">{{ _('Confirm My Donation') }}</a></p>
+                <p><a class="dialog button" rel="#accounts" href="#">Donate</a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{project.slug}}">{{ _('Confirm My Donation') }}</a></p>
               {% end %}
               
               
@@ -54,12 +54,12 @@
     </div>
     {% end %}
     
-    {{ modules.ItemStat(activity) }}
+    {{ modules.ItemStat(project) }}
     
-{% if current_user != activity.author and accounts.count() %}
+{% if current_user != project.author and accounts.count() %}
     <div id="accounts" class="modal facebox">
         <div class="wDialog">
-            <h3>{{_('Bank accounts of ')}} {{ h.get(activity.author.fullname, activity.author.username) }}</h3> 
+            <h3>{{_('Bank accounts of ')}} {{ h.get(project.author.fullname, project.author.username) }}</h3> 
             <table>
               {% for acc in  accounts %}
               <tr>

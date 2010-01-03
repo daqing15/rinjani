@@ -13,7 +13,7 @@ profile = ('%(fullname)s', [
     ('/profile/%(username)s/about', _('about')),
     ('/profile/%(username)s/donations', _('donations'), {'private':True}),
     ('/profile/%(username)s/articles', _('articles')),
-    ('/profile/%(username)s/activities', _('activities')),
+    ('/profile/%(username)s/projects', _('projects')),
 ])
 
 new_public = ('New', [
@@ -22,12 +22,12 @@ new_public = ('New', [
 
 new_agent = new_sponsor = ('New', [
     ('/article/new', _('article')),
-    ('/activity/new', _('activity')),    
+    ('/project/new', _('project')),    
 ])
 
 new_admin = (_('New'), [
     ('/article/new', _('article')),
-    ('/activity/new', _('activity')),    
+    ('/project/new', _('project')),    
     ('/page/new', _('page')),
 ])
 
@@ -37,10 +37,10 @@ articles = ('Articles', [
     ('/articles/popular', _('popular')),
 ])
 
-activities = ('Activities', [
-    ('/activities/latest', _('latest')),
-    ('/activities/featured', _('featured')),
-    ('/activities/popular', _('popular')),
+projects = ('Projects', [
+    ('/projects/latest', _('latest')),
+    ('/projects/featured', _('featured')),
+    ('/projects/popular', _('popular')),
 ])
 
 users = ('Users', [

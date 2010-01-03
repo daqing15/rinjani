@@ -1,38 +1,9 @@
-import logging
 import urllib
 from tornado.auth import TwitterMixin
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 import tornado.web
 from placemaker import placemaker
-
 from main import BaseHandler
-
-class SearchHandler(BaseHandler):
-    def get(self):
-        from rinjani.indexing import index
-        from rinjani.pagination import SearchPagination
-        
-        q = self.get_argument('q', None)
-        sortby = self.get_argument('sb', 'score')
-        sort = self.get_argument('s', 'desc')
-        
-        if q:
-            params = {}
-            args = self.request.arguments
-            params.update({'sort':"%s %s" % (sortby,sort), \
-                           'facet': 'true', \
-                           'facet.field': ['type','tags']})
-            if 'fq' in args:
-                params.update({'fq': args['fq']})
-            
-            try:
-                pagination = SearchPagination(self, index, q, params)
-                self.render("search", pagination=pagination, q=q, error="",sortby=sortby)
-            except:
-                raise
-                self.render("search", pagination=[], q=q, error="Search facility is down")
-        else: 
-            self.render("search", pagination=[], q=q, error="Not Found",sortby=sortby)
 
 class SurveyHandler(BaseHandler):
     GFORM_BASEURL = u'http://spreadsheets.google.com/embeddedform?key='
@@ -81,6 +52,22 @@ class SurveyHandler(BaseHandler):
         args = [(key, value.encode('utf-8')) for key,value in args.iteritems()]
         return dict(args)
 
+class I18nJsHandler(BaseHandler):
+    def get(self, locale):
+        from tornado.locale import _translations
+        import simplejson
+        
+        loc = self.locale.code
+        messages = {} if loc == 'en_US' else _translations[loc]['unknown']
+        translation_catalog = {
+                               'locale': loc, 
+                               'plural_expr': "(n != 1)",
+                               'messages': messages
+                               }
+        
+        translation_catalog = simplejson.dumps(translation_catalog)
+        self.render("jslocale", translation_catalog=translation_catalog)
+        
 class GetLocHandler(BaseHandler, TwitterMixin):
     def on_response(self, response):
         #logging.warn(response.body)

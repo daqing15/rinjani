@@ -22,10 +22,10 @@ $(document).ready(function() {
     scrollPane();
 });
 
-var $inbox = $('#inbox');
+var $inbox = $('#tweet-container');
 
 function scrollPane() {
-    $inbox.jScrollPane({scrollbarWidth: 13});
+    $inbox.jScrollPane({scrollbarWidth: 10});
     $inbox[0].scrollTo($inbox.data('jScrollPaneMaxScroll'));
 }
 
@@ -56,11 +56,12 @@ jQuery.postJSON = function(url, args, callback) {
 
 
 var _t =
-    "<div class='line message' id='m${id}'>" +
-        "<div class='avatar'></div> " +
-        "<div><strong>${from}</strong>: <span class='msg'>${body}</span></div>" +
-        "<div><span class='datetime small grey'>${date}</span></div>" +
-        "</div>";    
+"<div class='tweet' id='m${id}'>" +
+"<div class='avatar'><img src='/static/uploads/avatars/avatar2.png' /></div>" +
+"<div class='user'><a target='_blank' href='/profile/${from}'>${from}</a></div>" + 
+"<div class='time'><span class='datetime' title='${date}'>${date}</span></div>" +
+"<div class='txt'>${body}</div>" + 
+"</div>";
         
 var updater = {
     errorSleepTime: 2000,

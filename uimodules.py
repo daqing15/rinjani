@@ -1,14 +1,16 @@
 import os
+import random
 import re
 import tornado.web
 import pymongo
 from pymongo.dbref import DBRef
 import urllib2
-
+        
 import forms
+from rinjani.utils import calculate_cloud
 from rinjani.pagination import Pagination
-from models import Article, Activity, User, Content, \
-    TagCombination, UserTagCombination, Vote, Tag, CONTENT_TYPE
+from models import Article, Project, User, Content, \
+    TagCombination, UserTagCombination, Vote, Tag, UserTag, CONTENT_TYPE
 from settings import MY_FLAGS
 
 class BaseUIModule(tornado.web.UIModule):
@@ -16,36 +18,24 @@ class BaseUIModule(tornado.web.UIModule):
         kwargs.update(self.handler.template_vars)
         return self.handler.render_string(path, **kwargs)
 
-class ActivityLatest(BaseUIModule):
+class ProjectLatest(BaseUIModule):
     def render(self, **kwargs):
-        activities = Activity.all({'status':'published'}).sort([('created_at', -1)]).limit(5)
-        if activities:
-            return self.render_string('modules/activities-latest', activities=activities)
+        projects = Project.all({'type':CONTENT_TYPE.PROJECT, \
+                                  'status':'published'})\
+                                  .sort([('created_at', -1)]).limit(5)
+        if projects:
+            return self.render_string('modules/project-latest', projects=projects)
         else: return ''
-
-class ActivitySupporters(BaseUIModule):
-    def render(self, activity):
-        supporters = self.handler.get_current_user()
-        if supporters:
-            return self.render_string('modules/activity-supporters', supporters=supporters)
-        else: return ''
-
-class AgentFeatured(BaseUIModule):
-    def render(self, **kwargs):
-        agents = []
-        return self.render_string('modules/agents-featured', agents=agents)
 
 class ContentLatest(BaseUIModule):
-    def render(self, type=None, **kwargs):
+    def render(self, type='article', **kwargs):
         spec = {'status':'published'}
-        if type == 'article':
-            spec.update({'type': CONTENT_TYPE.ARTICLE})
-        elif type == 'activity':
-            spec.update({'type': CONTENT_TYPE.ACTIVITY})
+        type = getattr(CONTENT_TYPE, type.upper(), CONTENT_TYPE.ARTICLE)
+        spec.update({'type': type})
         limit = kwargs.pop('limit', 3)
         items = Content.all(spec).sort([('created_at', -1)]).limit(limit)
         if items:
-            return self.render_string('modules/articles-latest', items=items)
+            return self.render_string('modules/content-latest', items=items)
         else: return ''
 
 class ArticlesRelated(BaseUIModule):
@@ -134,23 +124,8 @@ class ItemAction(BaseUIModule):
 
 class ItemStat(BaseUIModule):
     def render(self, item):
-        votes = {}
-        for f in MY_FLAGS:
-            votes[str(f[0])] = 0
-        votes.update(item.votes or {})
-        FLAGS = {}
-        for f in MY_FLAGS:
-            FLAGS[str(f[0])] = f[1]
-
-        if self.handler.current_user:
-            vote = Vote.one({'uid':self.handler.current_user['_id'], 'cid': item._id})
-        else:
-            vote = False
         return self.render_string('modules/item-stat',
                                   item=item,
-                                  vote=vote,
-                                  votes=votes,
-                                  FLAGS=FLAGS
                                   )
 
 class ItemSummary(BaseUIModule):
@@ -205,25 +180,16 @@ class Rating(BaseUIModule):
     def render(self, o):
         return self.render_string('modules/rating')
 
-class RelatedTags(BaseUIModule):
-    def render(self, _tags, type):
-        doc = TagCombination if type == 'content' else UserTagCombination
-        size = len(_tags) + 1
-        tags = doc.all(
-                    {'value.tags': {'$size': size, '$all': _tags}}
-                ).sort('value.count',-1)
-        return self.render_string('modules/related-tags', tags=tags, _tags=_tags,type=type)
-    
 class ReportBox(BaseUIModule):
     def render(self, uri):
         return self.render_string('modules/report-box')
 
 class Static(BaseUIModule):
     def render(self, template, **kwargs):
-        path = os.path.join(self.handler.application.settings['template_path'], \
-            'modules', 'statics', template.lower() + '.html')
+        path = os.path.join(self.handler.settings['template_path'], \
+            'statics', template.lower() + '.html')
         if os.path.exists(path):
-            return self.render_string('modules/statics/%s' % template, **kwargs)
+            return self.render_string('statics/%s' % template.lower(), **kwargs)
         return ''
 
 class SimilarContent(BaseUIModule):
@@ -239,7 +205,8 @@ class Slideshow(BaseUIModule):
 
 class Splash(BaseUIModule):
     def render(self):
-        items = Activity.all({'status':'published', 'attachments': {'$ne':[]}})\
+        spec = {'type':CONTENT_TYPE.PROJECT, 'status':'published', 'attachments': {'$ne':[]}}
+        items = Project.all(spec)\
             .sort('created_at', pymongo.DESCENDING).limit(3)
         return self.render_string('modules/splash', items=items)
 
@@ -279,10 +246,9 @@ class Tabs(BaseUIModule):
             return ''
 
 class TagCloud(BaseUIModule):
-    def render(self, **kwargs):
-        from rinjani.utils import calculate_cloud
-        import random
-        tags = Tag.all().sort('value', -1).limit(15)
+    def render(self, type='user', limit=15):
+        cls = UserTag if type=='user' else Tag 
+        tags = cls.all().sort('value', -1).limit(limit)
         tags = [tag for tag in tags]
         tags = calculate_cloud(tags, 10, 2)
         random.shuffle(tags)
@@ -294,13 +260,48 @@ class Tags(BaseUIModule):
 
 class TagSuggestion(BaseUIModule):
     def render(self, tags, el=None):
+        #tm = tags.pop('mandatory',None)
+        #tags = {'Mandatory':tm} if tm else {}
         return self.render_string('modules/tags-suggestion', tags=tags, el=el)
 
+class RelatedTags(BaseUIModule):
+    def render(self, _tags, type):
+        doc = TagCombination if type == 'content' else UserTagCombination
+        size = len(_tags) + 1
+        tags = doc.all(
+                    {'value.tags': {'$size': size, '$all': _tags}}
+                ).sort('value.count',-1)
+        if tags.count():
+            return self.render_string('modules/related-tags', tags=tags, _tags=_tags,type=type)
+        return ''
+    
 class TagContent(BaseUIModule):
     def render(self, slug, type='content'):
         action = '/%s/tagged/%s' % (type, slug)
         return self.render_string('modules/tag-content', action=action)
 
+class UserFeatured(BaseUIModule):
+    def render(self, **kwargs):
+        users = User.all({'type':{"$in":['agent','sponsor']}, 
+                          'status':'active', 'featured': True}).limit(5)
+        return self.render_string('modules/user-featured', users=users)
+    
+class UserMostActive(BaseUIModule):
+    def get_user_most_active(self):
+        users = self.handler.cache.get("users.most.active")
+        if not users:
+            users = User.get_most_active()
+            _users = [u for u in users]
+            self.handler.cache.set("users.most.active", [u.to_json() for u in users], 1800)
+            return _users
+        
+        import simplejson
+        return [simplejson.loads(u) for u in users]
+    
+    def render(self):
+        users = self.get_user_most_active()
+        return self.render_string('modules/user-mostactive', users=users)
+    
 class UserBlock(BaseUIModule):
     def render(self, user):
         return self.render_string('modules/user-block', user=user)

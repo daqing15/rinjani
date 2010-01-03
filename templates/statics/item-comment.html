@@ -1,0 +1,38 @@
+<div id="comment-{{comment['id']}}" class="line item">
+      <div class="unit size2of7">
+            <div class="media attribution" title="{{ escape(get(user.about,""))}}">
+              {{ modules.Avatar(user) }}
+              <div class="bd">
+                <a href="{{user.get_url()}}">{{ user.username }}</a><br />{{ modules.UserItems(user) }}
+              </div>
+          </div>
+      </div>
+      <div class="lastUnit size5of7">
+          <div class="mod">
+              <b class="top"><b class="tl"></b><b class="tr"></b></b>
+              <div class="inner">
+                  <div class="bd">
+                    <p>{{ comment['text']}} - <em>{{ fd(comment['created_at'])}}</em></p>
+                    <div id="resp-{{comment['id']}}">
+                    {% if len(comment['responses']) %}<hr />
+                        {% for r in comment['responses'] %}
+                            {% set cr = commenters[r['user'].id] %} 
+                            <p>{{ r['text'] }} - {{ cr['username'] }}</p>
+                        {% end %}
+                    {% end %}
+                    </div>
+                  </div>
+              </div>
+              <b class="bottom"><b class="bl"></b><b class="br"></b></b>
+          </div>
+          <div class="addcommentbox"><a class="l4resForm" href="javascript:void(0);">Add comment</a>
+          <form action="/comment/add" method="post" class="hidden respForm">
+                <textarea rows="2" cols="30" name="text"></textarea>
+                {{ xsrf_form_html() }}
+                <input type="hidden" name="content_id" value="{{item['_id']}}" />
+                <input type="hidden" name="parent" value="{{comment['id']}}" />
+                <p><button class="ajax"><span><span>Send</span></span></button>
+            </form>
+          </div>
+      </div>
+</div>

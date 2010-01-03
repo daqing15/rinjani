@@ -1,41 +1,46 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ _('Search Result for %s') % escape(q) }}{%  end %}
+{% block title %} {{ _('Search Result for %s') % q }}{%  end %}
 
 {% block body %}
 
-{% if len(pagination) %}
-
-
-<div id="subheader">
-    <h2>{{ _('Sort by') }}</h2>
-    <div id="tabs">
-        {% set get_class = lambda x,y: "class='youarehere'" if x == y else "" %} 
-        <a href="{{h.query_string(current_path, remove=['page'])}}&sb=score" {{get_class('score',sortby)}}>{{ _('Relevancy') }}</a>
-        <a href="{{h.query_string(current_path, remove=['page'])}}&sb=created_at" {{get_class('created_at',sortby)}}>{{ _('Date') }}</a>
-    </div>
-</div>
-
-    {% set c = h.alternate(['rodd','reven']) %}
-    {% set highlights = pagination['highlighting'] %}
-    {% for item in pagination.get_objects() %}
-        <div class="item line searchitem">
-            <div class="unit size1of6">
-                <p class="meta">{{ item['created_at'][:10] }}</p>
-            </div>
-            <div class="lastUnit size5of6">
-                <p><a href="{{item['path']}}">{{ item['title'] }}</a></p>
-                <p class="excerpt">{{ highlights[item['id']]['content'].pop() }}</p>
-            </div>
-        </div>
-    {% end %}
-    {{ pagination }}
+{% if not error %}
+    {% if len(pagination) %}
     
-    <p class="clear"></p>
+    <div id="subheader">
+        <h2>{{ _('Sort by') }}</h2>
+        <div id="tabs">
+            {% set get_class = lambda x,y: "class='youarehere'" if x == y else "" %} 
+            <a href="{{h.query_string(current_path, remove=['page'])}}&sb=score" {{get_class('score',sortby)}}>{{ _('Relevancy') }}</a>
+            <a href="{{h.query_string(current_path, remove=['page'])}}&sb=created_at" {{get_class('created_at',sortby)}}>{{ _('Date') }}</a>
+        </div>
+    </div>
+    
+        {% set c = h.alternate(['rodd','reven']) %}
+        {% set highlights = pagination['highlighting'] %}
+        {% for item in pagination.get_objects() %}
+            <div class="item line searchitem">
+                <div class="unit size1of6">
+                    <p class="meta">{{ item['created_at'][:10] }}</p>
+                </div>
+                <div class="lastUnit size5of6">
+                    <p><a href="{{item['path']}}">{{ item['title'] }}</a></p>
+                    <p class="excerpt">{{ highlights[item['id']]['content'].pop() }}</p>
+                </div>
+            </div>
+        {% end %}
+        {{ pagination }}
+        
+        <p class="clear"></p>
+
+    {% else %}
+        <h3>{{error or "Not Found"}}</h3>
+        <p>Tips: cari lagi ya</p>
+    {% end %}
 
 {% else %}
-    <h3>{{error or "Not Found"}}</h3>
-    <p>Tips: cari lagi ya</p>
+    <h3>{{ _('Error') }}</h3>
+    <p>{{ error }}</p>
 {% end %}
 
 <style>
@@ -45,14 +50,15 @@
 
 {% block sidebar %}
 
-<h2>{{ q }}</h2>
-<p>Took {{ pagination['headers']['QTime']}}ms. Searching for articles contain {{q}} tagged with blah blah</p>
-
-{% if len(pagination) %}
-    {% if pagination['facets'] %}
+{% if not error %}
+    <h2>{{ q }}</h2>
+    <p>{{_('Found %d items') % len(pagination)}}. Took {{ pagination['headers']['QTime']}}ms. Searching for articles contain {{q}} tagged with blah blah.</p>
     
-    {{ modules.Facets(pagination['facets']) }}
-        
+    {% if len(pagination) and faceted %}
+        {% if pagination['facets'] %}
+            <h2>Refine</h2>
+            {{ modules.Facets(pagination['facets']) }}
+        {% end %}
     {% end %}
 {% end %}
 

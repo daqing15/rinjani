@@ -1,7 +1,7 @@
 <div class="media attribution" title="{{ escape(get(item.about, '')) }}">
   {{ modules.Avatar(item) }}
   <div class="bd">
-    <a href="{{item.get_url()}}">{% if item.fullname %}{{ item.fullname}} ({{item.username}}) {% else %} {{ get(item.fullname, item.username) }}{% end %}</a> {{ modules.UserItems(item) }}
+    <a href="{{item.get_url()}}">{% if item.fullname %}{{ h.get(item.fullname,item.username)}} {% else %} {{ get(item.fullname, item.username) }}{% end %}</a> {{ modules.UserItems(item) }}
     <span class="detail">
     {{_('member since')}} {{ fd(item.created_at) }}
     </span>

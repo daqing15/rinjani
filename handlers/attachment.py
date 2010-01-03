@@ -39,14 +39,14 @@ class AddHandler(BaseHandler):
     @authenticated()
     def post(self):
         name = self.get_argument('name')
-        doc_type = self.get_argument('content_type', 'article')
+        doc_type = self.get_argument('content_type', models.CONTENT_TYPE.ARTICLE)
         attachments = self.get_argument('attachments', '')
         no = int(self.get_argument("attachment_counter", 0))
         is_new_doc = bool(int(self.get_argument('is_new_doc'), 0)) 
         
         f = self.request.files[name][0]
         name = unique_filename([self.current_user.username, \
-                                    doc_type, f['filename'], str(len(f['body']))])
+                                    str(doc_type), f['filename'], str(len(f['body']))])
         
         try:
             """ 
@@ -90,21 +90,25 @@ class AddHandler(BaseHandler):
             no += 1
             filename = slugify(f['filename'])
             
+            _ = self._
+            
             """ no#filetype#src#thumb_src#filename"""
             
             # save to doc
             if not is_new_doc:
-                type = self.get_argument('type', None).title()
+                #type = self.get_argument('type', None).title()
+                type = models.CONTENT_MAP[doc_type].title()
                 if type:
                     cls = getattr(models, type, None)
                     if cls:
                         try:
                             id = 'slug' if cls.structure.has_key('slug') else 'username'
-                            doc = cls.one({id: self.get_argument('slug')} )
-                            doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src, 'utf-8'), filename=unicode(filename, 'utf-8'))]
-                            doc.save()
+                            doc = cls.one({type: doc_type, id: self.get_argument('slug')} )
+                            if doc:
+                                doc['attachments'] += [dict(type=unicode(file_type), src=unicode(src), thumb_src=unicode(thumb_src, 'utf-8'), filename=unicode(filename, 'utf-8'))]
+                                doc.save()
                         except Exception, e:
-                            return self.json_response("Failed updating doc: " + e.__str__(), "ERROR")
+                            return self.json_response(_("Failed adding attachment.") + e.__str__(), "ERROR")
                 else:
                     return self.json_response("Unknown document type", "ERROR")
                 
@@ -115,11 +119,11 @@ class AddHandler(BaseHandler):
             html = self.html % dict(no=no, type=file_type, thumb_src=thumb_src, filename=filename)
             return self.json_response(None, "OK", dict(html=html, attachments=attachments, counter=no))
         except IOError:
-            return self.json_response("Cant write to file system", 'ERROR')
+            return self.json_response(_("Cant write to file system"), 'ERROR')
         except Exception, e:
             return self.json_response(e.__str__(),'ERROR')
         
-        return self.json_response("Upload failed. Please contact our administrator.",'ERROR')
+        return self.json_response(_("Upload failed. Please contact our administrator."),'ERROR')
 
 class RemoveHandler(BaseHandler):
     def remove(self, filename):
@@ -139,8 +143,9 @@ class RemoveHandler(BaseHandler):
             thumb = False
             if slug:
                 type = self.get_argument('type').title()
+                type = models.CONTENT_MAP[int(self.get_argument('type'))].title()
                 cls = getattr(models, type, None)
-                id = 'slug' if cls.structure.has_key('slug') else 'username'
+                id = 'slug' if 'slug' in cls.structure else 'username'
                 doc = cls.one({id: slug} )
                 
                 for i, a in enumerate(doc.attachments):
@@ -152,8 +157,8 @@ class RemoveHandler(BaseHandler):
                                 self.remove(a['thumb_src'].replace('.s.', size))
                         else:
                             self.remove(a['src'])
-                        return self.json_response("Attachment succesfully removed", "OK")
-                return self.json_response("Attachment not found", "ERROR")
+                        return self.json_response(self._("Attachment has been removed"), "OK")
+                return self.json_response(self._("Attachment not found"), "ERROR")
             else:
                 thumb = self.get_argument('thumb')
                 if thumb and self.get_argument('attachment_type') in IMAGE_CONTENT_TYPES:

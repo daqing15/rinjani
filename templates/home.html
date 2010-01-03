@@ -6,7 +6,7 @@
 
     {{ modules.Splash() }}
     {{ modules.ContentLatest('article', limit=5) }}
-    {{ modules.TagCloud() }}
+    {{ modules.TagCloud(type='content') }}
 
 {% end %}
 
@@ -18,10 +18,10 @@
 
     <div id="tweets">{{ h.get(tweets,'')}}</div>
     {% if not tweets %}
-    <script type="text/javascript">$(function() {$('#tweets').load('/tweets');})</script>
+    <!-- <script type="text/javascript">$(function() {$('#tweets').load('/tweets');})</script>-->
     {% end %}
 
-    {{ modules.AgentFeatured() }}
+    {{ modules.UserFeatured() }}
 
 {% end %}
 

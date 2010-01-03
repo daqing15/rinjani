@@ -4,7 +4,7 @@
 
 {% block tabContent %}
 
-{{ modules.Tabs(user, 'profile', type, fullname=get(user.fullname, user.username), username=user.username) }}
+{{ modules.Tabs(user, 'profile', type, fullname= "item by " + get(user.fullname, user.username)  , username=user.username) }}
 
 <div class="line item">
 <div class="unit size2of3">
@@ -20,7 +20,7 @@
                           <div class="inner">
                               <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{fd(item.created_at)}}</h3></div>
                               <div class="bd">
-                                <p>{{ get(s.truncate_words(item.excerpt, 20), s.truncate_words(item.content, 15)) }}
+                                <p>{{ s.truncate_words(get(item.goal if item.has_key('goal') else item.excerpt, item.content), 20) }}
                                 {% if item.author == current_user %}
                                     /<a href="/{{item.class_doc.lower()}}/edit/{{item.slug}}">{{_('Edit')}}</a>
                                 {% end %}

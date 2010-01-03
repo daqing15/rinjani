@@ -15,9 +15,8 @@
 
 import tornado.web
 
-from .main import BaseHandler, authenticated
-from forms import page_form, InvalidFormDataError
-from models import Donation, User, Activity
+from main import BaseHandler, authenticated
+from models import Donation, User, Project, CONTENT_TYPE
 
 class ListHandler(BaseHandler):
     @authenticated()
@@ -34,10 +33,10 @@ class ListHandler(BaseHandler):
 
 class ConfirmHandler(BaseHandler):
     def get(self, slug):
-        #activity = Activity.one({'slug': slug}, {'title':1, 'author':1})
+        project = Project.one({'slug': slug}, ['title','author'])
         donation = {'aaa': 1}
         if not donation:
             raise tornado.web.HTTPError(404)
         
-        self.render("donation-confirm", donation=donation)
+        self.render("donation-confirm", donation=donation, project=project)
             

@@ -41,7 +41,7 @@
 <script type="text/javascript">
 $counter = $('input[name=attachment_counter]');
 $attachments = $(':input[name=attachments]');
-content_type = 'page';
+content_type = 4;
 is_new_doc = {{ int(not bool(page.slug)) }};
 textarea = '#content';
 slug = '{{ page.slug if page.slug else '' }}';

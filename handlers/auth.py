@@ -93,7 +93,7 @@ class RegisterHandler(BaseHandler):
 
         try:
             if f.validates(Storage(data)):
-                
+                #todo use async call 
                 captcha_resp = captcha.submit(
                                     self.get_argument('recaptcha_challenge_field'),
                                     self.get_argument('recaptcha_response_field'),
@@ -177,7 +177,7 @@ class FacebookLoginHandler(BaseHandler, AuthMixin, tornado.auth.FacebookMixin):
         if self.get_argument("session", None):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
-        self.authorize_redirect(['email', 'offline_access'])
+        self.authorize_redirect(['email', 'publish_stream', 'offline_access'])
 
     def get_authenticated_user(self, callback):
         self.require_setting("facebook_api_key", "Facebook Connect")

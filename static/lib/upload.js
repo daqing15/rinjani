@@ -48,7 +48,7 @@ $.fn.attachments.fieldParser = function(val) {
 $.fn.attachments.defaults = {
     template: null,
     textarea: '#content',
-    default_caption: 'Change Me',
+    default_caption: _('Change Me'),
     target: '.attachments',
     separator: '$',
     field_separator: '#',
@@ -60,7 +60,7 @@ $(function() {
         action: '/attachment/add',
         name: 'doc',
         responseType: 'json',
-        errorInvalidType: "Please upload only photo or PDF file",
+        errorInvalidType: _("Please upload only photo or PDF file"),
         data: {
             _xsrf: $.cookie('_xsrf'),
             type: content_type,
@@ -104,7 +104,7 @@ $(function() {
     $attachments.attachments({template: tt, textarea: textarea});
 
     $('.thumb .rm').live('click', function() {
-        if (!confirm('This will delete the file. Are you sure?')) return;
+        if (!confirm(_('This will delete the file. Are you sure?'))) return;
         filename = $(this).attr('rel');
         $thumb = $(this).parents('.thumb');
         opts = $.fn.attachments.defaults;
@@ -128,7 +128,7 @@ $(function() {
                     $attachments.val(_attachments.join(opts.separator));
                     $counter.val(Math.max(parseInt($counter.val()) - 1, 0));
                     $thumb.remove();
-                    alert("Please remove reference to " + filename + " attachment in your content.");
+                    alert(_("Please remove reference to ") + filename + " " + _("in your content."));
                 }
         );
     });

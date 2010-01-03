@@ -6,7 +6,8 @@ CONTENT_TYPE = {
     PAGE: 4
 }
 
-TAGS = ['economy', 'education', 'enterpreneurship', 'training', 'inspiring', 'public-figure', 'interview', 'photo', 'failure']
+TAGS = ['arts', 'business', 'culture', 'design', 'environment', 'education', 
+        'health', 'philantrophic', 'poverty', 'social', 'sports', 'technology']
 USERTAGS = ['enterpreneurship', 'social-media', 'healtcare', 'ICT', 'insurance']
 
 EXCERPT = [
@@ -37,13 +38,14 @@ Activity = {
         status: 'published',
         featured: false, enable_comment: false, comment_count: 0, view_count: 0,
         tags: [], votes: {}, attachments: [], lat: null, lang: null,
+        supporters: [],
         date_start: null, date_end: null, location: {}, state: 'running', validated_by: [],
         need_volunteer: false, volunteer_tags: [], need_donation: true, donation_amount_needed: 1000, donation_amount: 0,
         content: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer risus velit, facilisis eget, viverra et, venenatis id, leo. Donec nonummy lacinia leo. Aenean turpis ipsum, rhoncus vitae, posuere vitae, euismod sed, ligula. Pellentesque tempor. Donec rutrum venenatis dui. Praesent a eros. Nam pharetra. Phasellus magna sem, vulputate eget, ornare sed, dignissim sit amet, pede. Nunc metus. Curabitur lorem risus, sagittis vitae, accumsan a, iaculis id, metus.  \n\nDonec tempus quam quis neque. Quisque malesuada nulla sed pede volutpat pulvinar. Integer porta. Morbi urna. Etiam pede nunc, vestibulum vel, rutrum et, tincidunt eu, enim. Etiam cursus purus interdum libero. Morbi turpis arcu, egestas congue, condimentum quis, tristique cursus, leo. Suspendisse viverra placerat tortor. Suspendisse fermentum. Quisque facilisis, urna sit amet pulvinar mollis, purus arcu adipiscing velit, non condimentum diam purus eu massa. Etiam pede nunc, vestibulum vel, rutrum et, tincidunt eu, enim. Vivamus nisi elit, nonummy id, facilisis non, blandit ac, dolor. \n\nIn hac habitasse platea dictumst. Aliquam imperdiet lobortis metus. Integer tempus malesuada pede. Quisque malesuada nulla sed pede volutpat pulvinar. Phasellus nisi metus, tempus sit amet, ultrices ac, porta nec, felis. Vivamus quis mi. Etiam pharetra lacus sed velit imperdiet bibendum. Pellentesque viverra dolor non nunc. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec gravida, ante vel ornare lacinia, orci enim porta est, eget sollicitudin lectus lectus eget lacus. Mauris et dolor. Ut venenatis. Sed dolor. Sed quis elit. Curabitur nunc ante, ullamcorper vel, auctor a, aliquam at, tortor. Nullam venenatis gravida orci. Quisque dictum quam vel neque. Aenean justo ipsum, luctus ut, volutpat laoreet, vehicula in, libero. Nam nisl quam, posuere non, volutpat sed, semper vitae, magna. \n\nDonec at diam a tellus dignissim vestibulum. Quisque arcu ante, cursus in, ornare quis, viverra ut, justo. Maecenas viverra. Praesent a eros. In hac habitasse platea dictumst. Vestibulum viverra varius enim. Vivamus posuere, ante eu tempor dictum, felis nibh facilisis sem, eu auctor metus nulla non lorem. Aliquam vel nibh. Mauris tincidunt aliquam ante. Vivamus posuere, ante eu tempor dictum, felis nibh facilisis sem, eu auctor metus nulla non lorem. Aenean turpis ipsum, rhoncus vitae, posuere vitae, euismod sed, ligula. Phasellus auctor enim eget sem. Pellentesque viverra dolor non nunc. Praesent lacus. Sed non ipsum. Donec ut purus. Aliquam sed erat.",
         content_html: "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer risus velit, facilisis eget, viverra et, venenatis id, leo. Donec nonummy lacinia leo. Aenean turpis ipsum, rhoncus vitae, posuere vitae, euismod sed, ligula. Pellentesque tempor. Donec rutrum venenatis dui. Praesent a eros. Nam pharetra. Phasellus magna sem, vulputate eget, ornare sed, dignissim sit amet, pede. Nunc metus. Curabitur lorem risus, sagittis vitae, accumsan a, iaculis id, metus.  <br /><br />Donec tempus quam quis neque. Quisque malesuada nulla sed pede volutpat pulvinar. Integer porta. Morbi urna. Etiam pede nunc, vestibulum vel, rutrum et, tincidunt eu, enim. Etiam cursus purus interdum libero. Morbi turpis arcu, egestas congue, condimentum quis, tristique cursus, leo. Suspendisse viverra placerat tortor. Suspendisse fermentum. Quisque facilisis, urna sit amet pulvinar mollis, purus arcu adipiscing velit, non condimentum diam purus eu massa. Etiam pede nunc, vestibulum vel, rutrum et, tincidunt eu, enim. Vivamus nisi elit, nonummy id, facilisis non, blandit ac, dolor. <br /><br />In hac habitasse platea dictumst. Aliquam imperdiet lobortis metus. Integer tempus malesuada pede. Quisque malesuada nulla sed pede volutpat pulvinar. Phasellus nisi metus, tempus sit amet, ultrices ac, porta nec, felis. Vivamus quis mi. Etiam pharetra lacus sed velit imperdiet bibendum. Pellentesque viverra dolor non nunc. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec gravida, ante vel ornare lacinia, orci enim porta est, eget sollicitudin lectus lectus eget lacus. Mauris et dolor. Ut venenatis. Sed dolor. Sed quis elit. Curabitur nunc ante, ullamcorper vel, auctor a, aliquam at, tortor. Nullam venenatis gravida orci. Quisque dictum quam vel neque. Aenean justo ipsum, luctus ut, volutpat laoreet, vehicula in, libero. Nam nisl quam, posuere non, volutpat sed, semper vitae, magna. <br /><br />Donec at diam a tellus dignissim vestibulum. Quisque arcu ante, cursus in, ornare quis, viverra ut, justo. Maecenas viverra. Praesent a eros. In hac habitasse platea dictumst. Vestibulum viverra varius enim. Vivamus posuere, ante eu tempor dictum, felis nibh facilisis sem, eu auctor metus nulla non lorem. Aliquam vel nibh. Mauris tincidunt aliquam ante. Vivamus posuere, ante eu tempor dictum, felis nibh facilisis sem, eu auctor metus nulla non lorem. Aenean turpis ipsum, rhoncus vitae, posuere vitae, euismod sed, ligula. Phasellus auctor enim eget sem. Pellentesque viverra dolor non nunc. Praesent lacus. Sed non ipsum. Donec ut purus. Aliquam sed erat.</p>",
     },
-    type: 'Activity',
-    counter: 'activity_count',
+    type: 'Project',
+    counter: 'project_count',
     collectionName: 'contents'
 }
 
@@ -87,11 +89,13 @@ var generate_random_content = function(ctype, id) {
     t["title"] = ctype.type + " #" + id;
     t["slug"] = ctype.type.toLowerCase() + "-" + id;
     t["author"] = new DBRef("users", uid);
-    t['excerpt'] = choose_excerpt();
+    if (ctype.type == CONTENT_TYPE.ARTICLE)
+    	t['excerpt'] = choose_excerpt();
     t["created_at"] = choose_date(id);
     t["updated_at"] = t['created_at'];
     t["view_count"] = 1 + Math.floor(Math.random() * 500)
     t['tags'] = choose_tags();
+    t['comments'] = [];
     db[ctype.collectionName].save(t);
 
     assert( db.getPrevError().err == null , db.getPrevError().err );

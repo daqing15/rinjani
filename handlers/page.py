@@ -48,7 +48,7 @@ class EditHandler(BaseHandler):
         self.render("page-edit", f=f, page=page, user=self.current_user)
     
     @authenticated(None, True)
-    def post(self):
+    def post(self, slug=None):
         f = page_form()
         data = self.get_arguments()
         is_edit = data.has_key('ori_slug')
@@ -59,10 +59,11 @@ class EditHandler(BaseHandler):
                 data['attachments'] = parse_attachments(data['attachments'], is_edit) 
                 
             if f.validates(tornado.web._O(data)):
-                page = Page.one({'type': 'Page', 'slug': data['ori_slug']}) if is_edit else Page()
+                page = Page.one({'type': 'Page', 'slug': data['ori_slug']}) \
+                        if is_edit else Page()
                 page.save(data, user=self.current_user)
                 
-                if attachments and not is_edit:
+                if attachments:
                     page['attachments'] = move_attachments(self.settings.upload_path, data['attachments'])
                     page.update_html()
                     page.save()

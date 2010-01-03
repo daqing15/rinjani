@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ escape(project.title) }} - {{_('Project')}}{% end %}
+
+{% block body %}
+
+<div class="post">
+    <h2>{{ escape(project.title) }}</h2>
+    
+    <div class="cb">
+        <!-- <iframe id="chatbox" src="/talk/{{project.slug}}" style="float:right; border:0;"></iframe>-->
+        {{ project.content_html }}
+    </div>
+</div>
+
+{{ modules.Static('comment', item=project) }}
+
+{% end %}
+
+{% block sidebar %}
+    <div id='userblock'>{{ modules.UserBlock(project.author) }}</div>
+    {{ modules.Static('donation', project=project) }}
+    {{ modules.ItemAction(project) }}
+    {{ modules.ItemStat(project) }}
+    
+    {{ modules.Static('map', item=project) }} 
+    
+    {{ modules.ByAuthor(project.author) }}
+
+<div class="modal facebox" id="boxdonation"><div class="wDialog"></div></div>
+<div class="ovl" id="slideshow">
+    <a class="prev">{{_('prev')}}</a>
+    <a class="next">{{_('next')}}</a>
+    <div class="info"></div>
+    <img class="progress" src="/static/css/img/ajax-loader2.gif" />
+</div>
+
+{% end %}

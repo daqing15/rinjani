@@ -16,9 +16,9 @@
           <div class="mod bubble bubbleLeft lol">
               <b class="top"><b class="tl"></b><b class="tr"></b></b>
               <div class="inner">
-                  <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> - {{fd(item.created_at)}}</h3></div>
+                  <div class="hd"><h3><a href="{{ item.get_url() }}">{{ escape(get(item.title, "")) }}</a> <span class="small">{{fd(item.created_at)}}</span></h3></div>
                   <div class="bd">
-                    <p>{{ get(s.truncate_words(item.excerpt, 13), s.truncate_words(item.content, 13)) }}</p>
+                    <p>{{ get(s.truncate_words(item.goal if item.has_key('goal') else item.excerpt, 13), s.truncate_words(item.content, 13)) }}</p>
                     <p class="tags">
                     {% for tag in item.tags %}<a class="tag" href="/content/tagged/{{tag}}">{{tag}}</a>{%end%}
                     </p> 

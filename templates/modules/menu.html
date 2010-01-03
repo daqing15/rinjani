@@ -1,12 +1,12 @@
 <div class="menu">
-    <div class="logo"><a href="{{BP}}/"><img src="{{ static_url('img/logo.png') }}" width="255" height="56" title="Peduli" /></a></div>
+    <div class="logo"><a href="{{BP}}/"><img src="{{ static_url('img/logo.png') }}" title="Peduli" /></a></div>
     <ul>
         <li class="rounded {{check(['articles', 'article/[^(new)]+'])}}"><a href="{{BP}}/articles">{{ _('Articles') }}</a></li>
-        <li class="rounded {{check(['activities', 'activity/[^(new)]+'])}}"><a href="{{BP}}/activities">{{ _('Activities') }}</a></li>
+        <li class="rounded {{check(['projects', 'project/[^(new)]+'])}}"><a href="{{BP}}/projects">{{ _('Projects') }}</a></li>
         <li class="rounded {{check(['tags','content/tagged', 'user/tagged'])}}"><a href="/tags">{{ _('Tags') }}</a></li>
         <li class="rounded {{check(['users'])}}"><a href="{{BP}}/users">{{ _('Users') }}</a></li>
         {% if current_user %}
-        <li class="rounded db {{check(['activity/new', 'article/new', 'profile', 'preferences', 'admin'])}}"><a href="{{BP}}/profile/{{current_user.username}}">{{ _('Dashboard') }}</a></li>
+        <li class="rounded db {{check(['project/new', 'article/new', 'profile', 'preferences', 'admin'])}}"><a href="{{BP}}/profile/{{current_user.username}}">{{ _('Dashboard') }}</a></li>
         {% end %}
     </ul>
 </div>
