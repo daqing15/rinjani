@@ -164,7 +164,7 @@ class FollowHandler(BaseHandler):
 
             if self.is_xhr():
                 user = User.one({'username': username}) # reload user
-                html = self.render_string('modules/follow-button', user=user)
+                html = self.render_string('statics/follow-button', user=user)
                 return self.json_response(msg, 'OK' if OK else 'ERROR',\
                             {'html': html, 'target':'#followButton'})
             else:
@@ -228,7 +228,7 @@ class ContentHandler(BaseHandler):
         user = User.one({'username': username})
         if not user:
             raise tornado.web.HTTPError(404)
-        ctype = type[:-1] if type in ['articles', 'pages'] else 'project'
+        ctype = type[:-1] # articles, pages, projects, posts
         ctype = getattr(CONTENT_TYPE, ctype.upper())
         spec = {'type': ctype, 'status':'published', 'author': DBRef(User.collection_name, user._id)}
         pagination = Pagination(self, Content, spec)

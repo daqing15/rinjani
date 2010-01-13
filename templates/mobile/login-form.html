@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Login')}}{% end %}
+
+{% block body %}
+
+{{ f.rendernote(f.note) }}
+
+<form method="post">
+
+<h2>{{ _('Come on in!') }}</h2>
+
+<div class="line">
+    {{ modules.Formfield(f.username) }}
+    {{ modules.Formfield(f.password) }}
+    {{ modules.Formfield(f.rememberme) }}
+    <p class="small grey">{{ _('Uncheck this if you are accessing this site from public computer')}}</p>
+    <div class="buttons">
+        <button name="submit"><span><span>{{ _('Login') }}</span></span></button>
+        <input type="hidden" name="next" value="{{ next }}" />
+    </div>
+    
+</div>
+
+{{ xsrf_form_html() }}
+</form>
+{% end %}

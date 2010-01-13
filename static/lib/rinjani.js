@@ -80,6 +80,7 @@ var Rinjani = {
         		  $(resp.data.target).html(resp.data.html);
         	  }
           }
+          $('#loading').hide();
         }
   },
 
@@ -87,8 +88,9 @@ var Rinjani = {
   evaluates the result.  You can only send requests
   to the own server that way and the endpoint has to
   return a valid json_response(). */
-  request: function(url, data, method, callback) {
+  request: function(url, data, method, callback, loader) {
     data = $.extend({_xsrf:$.cookie('_xsrf')}, data);
+    $('#loading').show();
     $.ajax({
       url:      url,
       type:     method || 'GET',
@@ -332,9 +334,13 @@ useRelativeDates : function(element) {
     },
 
     setupForm: function() {
-        $('#hsearch input[type=text]').each(function() {
-            var hint = $(this).val();
-            $(this).val(hint).click(function() { $(this).val(""); }).blur(function() { $(this).val(hint); });
+        $('.lbltxt').each(function() {
+            $(this).data('hint', $(this).val());
+            $(this).click(function() { 
+            		if ($(this).val() == $(this).data('hint')) $(this).val(""); 
+            	}).blur(function() { 
+            		if ($(this).val() == "") $(this).val($(this).data('hint')); 
+            	});
         });
 
         $('button.ajax').live('click', function() {
@@ -367,18 +373,6 @@ useRelativeDates : function(element) {
                   $(this).find('.deptarget').show();
               }
           });
-
-        $('.btn').each(function(){
-            var b = $(this);
-            var tt = b.text() || b.val();
-            if ($(':submit,:button',this)) {
-                b = $('<a>').insertAfter(this). addClass(this.className).attr('id',this.id);
-                $(this).remove();
-            }
-            b.text('').css({cursor:'pointer'}). prepend('<i></i>').append($('<span>').
-            text(tt).append('<i></i><span></span>'));
-         });
-
     },
     setupUI: function() {
         Rinjani.setupDropdownMenu();
@@ -387,7 +381,7 @@ useRelativeDates : function(element) {
         if ($.fn.overlay) {
               var dialog = $(".dialog[rel]").overlay({
                   expose: '#000',
-                  top: '25%',
+                  top: 'center',
                   closeOnClick: false,
                   onBeforeLoad: function() {
                       var wrap = this.getContent().find(".wDialog");
@@ -402,8 +396,9 @@ useRelativeDates : function(element) {
                   var slideshow = $(".slideshow a").overlay({
                     target: '#slideshow',
                     expose: '#000',
-                    top: '25%',
                     closeOnClick: false,
+                    top: 'center',
+                    absolute: true
                   })
 
                   if (slideshow.size()) {
@@ -423,8 +418,8 @@ useRelativeDates : function(element) {
                   tip: '.tooltip'
               });
 
-              $("ul.tabs").tabs("div.panes > div");
-              $("ul.vtabs").tabs("div.vpanes > div");
+              Rinjani.tabs = $("ul.tabs").tabs("div.panes > div", {api:true});
+              Rinjani.vtabs = $("ul.vtabs").tabs("div.vpanes > div", {api:true});
           }
     }
 };

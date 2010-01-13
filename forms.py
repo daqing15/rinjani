@@ -206,6 +206,8 @@ project_form = MyForm(
     Textbox("tags", MaxChunks(6, ',', _("Must be at most six tags")), size=39, description="Tags"),
     Textbox("lat", size=10, description="Latitude"),
     Textbox("lng", size=10, description="Longitude"),
+    Checkbox("show_map", value="1", description=_("Show map")),
+    Checkbox("enable_chat", value="1", description=_("Enable chatbox")),
  )
 
 article_form = MyForm(

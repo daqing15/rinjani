@@ -8,7 +8,17 @@
 <body><div class="page">
 
 <div class="head">
-    <p>Peduli | <a href="http://{{handler.host}}">Full Site</a> / <a href="/">Home</a> / <a href="/articles">Articles</a></p>
+    <p>Peduli | <a href="/">Home</a> / 
+    <a href="/articles">Articles</a> 
+    <a href="/projects">Projects</a>
+    <a href="/users">Users</a>
+    <span class="link-separator">|</span>
+        {% if current_user %}
+        <a href="/logout/?next={{ current_path }}">{{ _('logout') }}</a>
+        {% else %}
+        {{ _('hello, guest') }}. <a href="{{BP}}/login">{{_('login')}}</a>
+        {% end %}
+    </p>
 </div><!-- /.head -->     
 
     <div class="body roundedbig">
@@ -24,5 +34,8 @@
 
     </div>
 </div><!-- /.page -->
+<br />
+<hr style="clear:both;" />
+    <p><a href="http://obscurite.ind.ws">Full Site</a></p>
 </body>
 </html>

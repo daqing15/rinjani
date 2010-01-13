@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-01-01 07:46+0700\n"
+"PO-Revision-Date: 2010-01-06 07:32+0700\n"
 "Last-Translator: hafizhuddin amin <hafizhuddin.amin@gmail.com>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -955,9 +955,8 @@ msgid "Username"
 msgstr "Nama anggota"
 
 #: /media/disk/gryffindor/projects/rinjani/app/translations/strings/forms.pypo:192
-#, fuzzy
 msgid "Remember Me"
-msgstr "anggota sejak"
+msgstr "Ingat Saya"
 
 #: /media/disk/gryffindor/projects/rinjani/app/translations/strings/forms.pypo:196
 #: /media/disk/gryffindor/projects/rinjani/app/translations/strings/forms.pypo:214

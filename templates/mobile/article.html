@@ -6,10 +6,20 @@
 
 <div class="post">  
     <h2>{{ escape(article.title) }}</h2>
+    <p>By  ({{article.author.username}}) </p>
     <div class="cb">
        {{ article.content_html }}
     </div>
 </div>
+
+{% if article.enable_comment %}
+    {% if current_user %}
+        {{ modules.Static('comment', item=article) }}
+    {% else %}
+        <hr />
+        <p><strong>You need to log in in order to give comment</strong></p>
+    {% end %}
+{% end %}
 
 {% end %}
 

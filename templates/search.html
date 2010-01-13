@@ -57,7 +57,7 @@
     {% if len(pagination) and faceted %}
         {% if pagination['facets'] %}
             <h2>Refine</h2>
-            {{ modules.Facets(pagination['facets']) }}
+            {{ modules.Static('facets', facets=pagination['facets']) }}
         {% end %}
     {% end %}
 {% end %}

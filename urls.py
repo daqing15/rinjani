@@ -1,6 +1,14 @@
 
 url_handlers = [
     (r"/", 'handlers.home.HomeHandler'),
+    
+    (r"/articles/?(latest|featured|popular)?", r'handlers.article.ListHandler'),
+    (r"/projects/?(latest|featured|popular)?", r'handlers.project.ListHandler'),
+    (r"/(project|article|page|post)/new", r'handlers.\1.EditHandler'),
+    (r"/(project|article|page|post)/edit/([\w\-]+)", r'handlers.\1.EditHandler'),
+    (r"/(project|article|page|post)/remove/([\w\-]+)", r'handlers.\1.RemoveHandler'),
+    (r"/(project|article|page|post)/([\w\-]+)", r'handlers.\1.ViewHandler'),
+    
     (r"/search", 'handlers.search.SearchHandler'),
     (r"/search/near", 'handlers.search.SearchHandler'),
     (r"/tweets", 'handlers.misc.TweetsHandler'),
@@ -33,14 +41,7 @@ url_handlers = [
     (r"/register", 'handlers.auth.RegisterHandler'),
     (r"/new-user", 'handlers.auth.NewUserHandler'),
     
-    (r"/articles/?(latest|featured|popular)?", r'handlers.article.ListHandler'),
-    (r"/projects/?(latest|featured|popular)?", r'handlers.project.ListHandler'),
-    (r"/(project|article|page|post)/new", r'handlers.\1.EditHandler'),
-    (r"/(project|article|page|post)/edit/([\w\-]+)", r'handlers.\1.EditHandler'),
-    (r"/(project|article|page|post)/remove/([\w\-]+)", r'handlers.\1.RemoveHandler'),
-    (r"/(project|article|page|post)/([\w\-]+)", r'handlers.\1.ViewHandler'),
-    
-    (r"/donation/confirm/([\w\-]+)", 'handlers.donation.ConfirmHandler'),
+    (r"/donation/confirm", 'handlers.donation.ConfirmHandler'),
     (r"/attachment/add", 'handlers.attachment.AddHandler'),
     (r"/attachment/remove", 'handlers.attachment.RemoveHandler'),
 

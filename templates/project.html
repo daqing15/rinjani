@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 
 {% block title %} {{ escape(project.title) }} - {{_('Project')}}{% end %}
-
+{% block head %}<link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />{% end %}
 {% block body %}
 
 <div class="post">
     <h2>{{ escape(project.title) }}</h2>
     
     <div class="cb">
-        <!-- <iframe id="chatbox" src="/talk/{{project.slug}}" style="float:right; border:0;"></iframe>-->
+    
+        {% if project.enable_chat %}
+            <iframe id="chatbox" src="/talk/{{project.slug}}" style="float:right; border:0;"></iframe>
+        {% end %}
+        
         {{ project.content_html }}
     </div>
 </div>
 
-{{ modules.Static('comment', item=project) }}
+{% if project.enable_comment %}
+    {{ modules.Static('comment', item=project) }}
+{% end %}
 
 {% end %}
 
@@ -23,7 +29,9 @@
     {{ modules.ItemAction(project) }}
     {{ modules.ItemStat(project) }}
     
-    {{ modules.Static('map', item=project) }} 
+    {% if project.show_map %}
+        {{ modules.Static('map', item=project) }}
+    {% end %} 
     
     {{ modules.ByAuthor(project.author) }}
 

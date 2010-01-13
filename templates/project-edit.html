@@ -6,10 +6,6 @@
 
 {% block tabContent %}
 
-<noscript>
-<div id="nojs"><strong>You need to enable javascript support in your browser if you want to write Article/Project.</strong></div>
-</noscript>
-
 {{ f.rendernote(f.note) }}
 
 <form method="post" class="withtips">
@@ -46,6 +42,7 @@
                     </div>
                     <div class="lastUnit size1of2">
                         {{ modules.Static('placemaker', f=f) }}
+                        {{ modules.Formfield(f.show_map) }}
                     </div>
                 </div>
 			</div>
@@ -86,7 +83,10 @@
                         </div>    
                         {% if current_user['type'] == 'sponsor' %}
                             {{ modules.Formfield(f.is_champaign) }}
-                        {% end %}         
+                        {% end %} 
+                        
+                        {{ modules.Formfield(f.enable_chat) }} 
+                                
                     </div>
                     <div class="lastUnit size1of3">
                         <div class="line">
@@ -116,9 +116,13 @@
 {% end %}
 
 </div>
+
+{% if project.has_key('_id') %}  
 <div class="lastUnit">
 <a target="_blank" href="{{project.get_url()}}">{{_('View')}}</a>
 </div>
+{% end %}
+
 </div>
 
 <input type="hidden" name="attachments" value="{{ "$".join(["%(type)s#%(src)s#%(thumb_src)s#%(filename)s" % a for a in project.attachments]) }}" />
@@ -153,15 +157,7 @@ slug = '{{ project.slug if project.slug else '' }}';
 {% block inlinejs %}
 <script type="text/javascript" src="{{static_url('lib/markitup/markitup.markdown.js')}}"></script>
 <link href="{{static_url('lib/markitup/markitup.markdown.css')}}" media="screen" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="{{ static_url('lib/date.min.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('lib/jquery.datepicker.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('lib/ajaxupload.min.js') }}"></script>
-<link rel="stylesheet" href="{{ static_url('css/datePicker.css') }}" type="text/css" media="screen, projection" />
-<script type="text/javascript">
-$(function() {
-    $('.date').datePicker().trigger('change');
-});
-</script>
 {% end %}
 
 {% block postinlinejs %}

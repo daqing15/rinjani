@@ -14,7 +14,7 @@
                     {{_('member since')}} {{ fd(h.utc_to_local(user.created_at))}}
                     </p>
 
-                    <div id="followButton">{{ modules.FollowButton(user) }}</div>
+                    <div id="followButton">{{ modules.Static('follow-button', user=user) }}</div>
 
                </div>
             </div>

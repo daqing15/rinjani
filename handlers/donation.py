@@ -16,7 +16,7 @@
 import tornado.web
 
 from main import BaseHandler, authenticated
-from models import Donation, User, Project, CONTENT_TYPE
+from models import Donation, User, Project
 
 class ListHandler(BaseHandler):
     @authenticated()
@@ -32,11 +32,8 @@ class ListHandler(BaseHandler):
         self.render("profile/donations", user=user, donations=donations)
 
 class ConfirmHandler(BaseHandler):
-    def get(self, slug):
-        project = Project.one({'slug': slug}, ['title','author'])
-        donation = {'aaa': 1}
-        if not donation:
-            raise tornado.web.HTTPError(404)
+    def post(self):
+        print self.get_arguments()
+        return self.json_response("Donation pending review.")
         
-        self.render("donation-confirm", donation=donation, project=project)
             

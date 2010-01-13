@@ -139,8 +139,15 @@ def generate_doc_content():
     print(".")
         
 if __name__ == '__main__':
-    #generate_doc_content()
-    #shutil.rmtree(INDEX_DIR, ignore_errors=True)
-    index.rebuild_index()
+    if len(sys.argv) < 2:
+        print("Usage: %s gen|index" % sys.argv[0])
+        sys.exit(0)
+    
+    cmd = sys.argv[1]
+    if cmd == 'gen':    
+        generate_doc_content()
+        shutil.rmtree(INDEX_DIR, ignore_errors=True)
+    elif cmd == 'index':
+        index.rebuild_index()
 
 

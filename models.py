@@ -15,7 +15,6 @@ from rinjani.json import JSONEncoder
 
 USER_TYPE = dict(_USER_TYPE).keys()
 
-# change *-edit.html if you change this :p
 class CONTENT_TYPE:
     GENERIC = 1
     ARTICLE = 2
@@ -52,6 +51,13 @@ class BaseDocument(Simpledoc):
     use_autorefs = True
     sanitized_fields = []
     
+    @classmethod
+    def get_or_404(cls, query={}):
+        o = cls.one(query)
+        if not o:
+            raise tornado.web.HTTPError(404)
+        return o
+
     def check_edit_permission(self, user):
         if user['_id'] == self['author']['_id'] or user['is_admin']:
             return True
@@ -92,14 +98,10 @@ class BaseDocument(Simpledoc):
                     self[k] = int(re.sub('[.,]*', '', data[k]))
                 else:
                     self[k] = data[k]
-            #elif self[k]:
-            #    if t is int:
-            #        self[k] = int(self[k])
-            #    elif t is bool:
-            #        # self.__generate_skeleton None-ing bool field. change to bool
-            #        self[k] = bool(self[k])
             elif k in data:
                 self[k] = data[k]
+            elif t is bool:
+                self[k] = False
                 
         self.update_html(data)
 
@@ -335,10 +337,10 @@ class MultiDocsInCollection(BaseDocument):
             return cls(bson_obj.next(), collection=cls.collection)
     
     @classmethod
-    def all(cls, _spec, *args, **kwargs):
+    def all(cls, spec={}, *args, **kwargs):
         wrap = kwargs.pop('wrap',True)
-        spec = {'type': cls.type}
-        spec.update(_spec)
+        if cls.type != CONTENT_TYPE.GENERIC:
+            spec.update({'type': cls.type})
         collection = kwargs.pop('collection', None)
         collection = cls.collection
         return MongoDocumentCursor(
@@ -573,6 +575,8 @@ class Project(Content):
         'need_volunteer': bool,
         'volunteer_tags': list,
         'need_donation': bool,
+        'show_map': bool,
+        'enable_chat': bool,
         'donation_amount_needed': int,
         'donation_amount': float,
         'validators': [{'user':User, 'comment':unicode}],
@@ -600,6 +604,8 @@ class Project(Content):
                       'enable_comment': True,
                       'need_donation': False,
                       'need_volunteer': False,
+                      'show_map': False,
+                      'enable_chat': False,
                       'featured': False,  
                       'status': u'published',
                       'state': u'planning',
@@ -736,18 +742,18 @@ User.related_to = {
 class Donation(BaseDocument):
     collection_name = 'donations'
     structure =  {
-        'from': User,
+        'from': IS(User, unicode),
         'for': User,
         'from_account': BankAccount,
         'for_account': BankAccount,
         'transfer_no': unicode,
-        'amount': float,
-        'project': Project, # optional
+        'amount': int,
+        'object': IS(Project, Article), # optional
         'is_validated': bool,
         'transferred_at': datetime.datetime,
         'created_at': datetime.datetime
     }
-    required_fields = ['from', 'to', 'transfer_no', 'amount']
+    required_fields = ['from', 'for', 'transfer_no', 'amount']
     default_values = {'is_validated': False, 'created_at':datetime.datetime.utcnow}
     validators = { "amount": lambda x: x > 0}
 
@@ -797,10 +803,5 @@ class Chat(Simpledoc):
                  }
     default_values = {'cursor': 0, 'messages': []}
     
-def get_or_404(cls, query=None):
-    query = query if query else {}
-    o = cls.one(query)
-    if not o:
-        raise tornado.web.HTTPError(404)
-    return o
+
 

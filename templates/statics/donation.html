@@ -10,25 +10,112 @@
             </div>
             <div class="bd">
                 <div class="buttons">
-                    <a class="dialog button" rel="#accounts" href="#"><span><span>Donate</span></span></a> <a class="dialog button" rel="#boxdonation" href="{{BP}}/donation/confirm/{{project.slug}}"><span><span>{{ _('Confirm My Donation') }}</span></span></a>
+                    <button class="dialog" rel="#accounts"><span><span>{{_('Donate/Confirm')}}</span></span></button>
                 </div>
             </div>
         </div>
     </div>
     <div id="accounts" class="modal facebox">
         <div class="wDialog">
-            <h3>{{_('Give Donation') }}</h3>
-            <p>{{_('To give donation to %s, transfer money to one of these accounts') % h.get(project.author.fullname, project.author.username) }}</p>
-            <table>
-              {% for acc in  accounts %}
-              <tr>
-                <td>{{ acc['bank'] }}</td>
-                <td>{{ acc['number']}}</td>
-                <td>{{ acc['holder'] }}</td>
-              </tr>
-              {% end %}
-            </table>
+            <ul class="vtabs">
+                <li id="tA"><a href="#">{{ _('Donate') }}</a></li>
+                <li id="tB"><a href="#">{{ _('Confirm Donation') }}</a></li>
+            </ul> 
+            <div class="vpanes">
+                <div class="vpane">
+                    {{_('To give donation to <strong>%s</strong>, transfer money to one of these accounts') % h.get(project.author.fullname, project.author.username) }}
+                    <table>
+                      {% for acc in  accounts %}
+                      <tr>
+                        <td>{{ acc['label'] }}</td>
+                        <td>{{ acc['number']}}</td>
+                        <td>a.n. {{ acc['holder'] }}</td>
+                      </tr>
+                      {% end %}
+                    </table>
+                    
+                    <div class="line buttons"><a class="button" href="#" onclick="R.vtabs.click(1); return false;"><span><span>{{ _('Confirm donation') }}</span></span></a></div>
+                </div>
+                
+                    <div class="vpane">
+                        {% if not current_user %}
+                        <p class="tip">{{_("If you're member of this site, please log in and revisit this page. That way, your donation will be added to your donation history.") }}</p>
+                        {% end %}
+                        
+                        <form action="/donation/confirm" method="post">
+                            <div id="confirmBox" class="line">
+                                {% if current_user %}
+                                    {% set uaccounts = current_user.get_bank_accounts() %}
+                                    {% if uaccounts %}
+                                        {% set _acc = None %}
+                                        <div class="line">
+                                            <div class="i">
+                                                <label for="from_e">{{ _('Transfered from')}}:</label>
+                                                <select name="account" id="from_e">
+                                                    {% for acc in uaccounts %}
+                                                        {% set _acc = acc %}
+                                                        <option>{{ acc['label'] }}</option>
+                                                    {% end %}
+                                                </select>
+                                                <span class="small"><a href="#" onclick="return toggleNewAccountBox();">{{_('Transferred using other account')}}</a></span>
+                                            </div>
+                                        </div>
+                                    {% end %}
+                                   
+                                {% end %}
+                                
+                                {% set display = 'style="display:none; margin-left: 10px;padding-left:10px;border-left:3px solid #ccc;"' if current_user else '' %}
+                                {% set ba_label = _('Use new bank account') if current_user else _('Bank account') %}
+                                
+                                <div id="newAccount" {{ display }}>
+                                     <div class="line i">
+                                        <label>{{ ba_label }}</label>
+                                        <div class="unit size1of3">
+                                             {{ h.select('acc_', settings.BANKS) }}
+                                        </div>
+                                        <div class="unit size1of3">
+                                            <input type="text" class="lbltxt" size="15" value="Number..." />
+                                        </div>
+                                        <div class="lastUnit size1of3">
+                                            <input type="text" class="lbltxt" size="15" value="A.n." />
+                                        </div>
+                                     </div>
+                                    {% if current_user %}<span class="small"><a href="#" onclick="return toggleNewAccountBox();">{{_('X cancel')}}</a></span>{% end%}
+                                </div>
+                                <div class="line">
+                                    <div class="i unit size1of3">
+                                        <label for="date">{{ _('Transferred at')}}</label>
+                                        <input type="text" id="date" class="date" value="" size="10" />
+                                    </div>
+                                    <div class="i lastUnit size1of3">
+                                        <label for="amount">{{ _('Amount')}}</label>
+                                        Rp <input type="text" id="amount" value="" size="10" />
+                                    </div>
+                                </div>
+                                
+                                {{ xsrf_form_html() }}
+                                <input type="hidden" name="object" value="{{ project._id }}" />
+                                <div class="buttons line">
+                                    <button class="ajax"><span><span>{{_('Confirm')}}</span></span></button>
+                                </div>
+                                
+                            </div>
+                        </form>
+                    </div>
+            </div>
         </div>
     </div>
 
+<script type="text/javascript" src="{{ static_url('lib/date.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('lib/jquery.datepicker.min.js') }}"></script>
+<script type="text/javascript">
+function toggleNewAccountBox() {
+	$('#newAccount').slideToggle();
+    return false;   
+}
+$(function() {
+    $('.date').datePicker().trigger('change');
+});
+</script>
+    
 {% end %}

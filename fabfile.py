@@ -1,9 +1,7 @@
 from fabric.api import env, local, run
-import main
-import rinjani.indexing
 
 def _setup():
-    env.hosts = ['root@obscurite.ind.ws']
+    env.hosts = ['ron@obscurite.ind.ws']
     env.mongo = '/opt/devel/mongodb/bin/mongo'
 
     env.localdir = '/rinjani/app'
@@ -24,9 +22,13 @@ def tag():
         % (env.mongo, env.db, env.remotedir, env.remotedir))
 
 def generate_doc():
+    import main
+    import rinjani.indexing
     rinjani.indexing.generate_doc_content()
     
 def generate_index():
+    import main
+    import rinjani.indexing
     rinjani.indexing.index.rebuild_index()
     
 def rebuilddb():

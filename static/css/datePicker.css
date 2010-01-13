@@ -3,6 +3,7 @@
 table.jCalendar {
 	border: 1px solid #000;
 	background: #fff;
+	margin:0;
 }
 table.jCalendar th {
 	background: #aaa;
@@ -54,18 +55,17 @@ table.jCalendar td.unselectable.dp-hover {
 }
 
 /* For the popup */
-
 div.dp-popup {
 	position: relative;
 	font-size: 11px;
-	padding: 2px;
-	width: 150px;
+	padding: 5px;
 	line-height: 1.2em;
-	background: #fff;
+	border: 1px solid #ccc;
 }
 div#dp-popup {
 	position: absolute;
-	z-index: 199;
+	z-index: 9999;
+	background: #fff; 
 }
 div.dp-popup h2 {
 	color: #666;

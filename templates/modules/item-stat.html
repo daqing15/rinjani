@@ -7,7 +7,7 @@
                     <span><span class="grey">{{ len(item.comments) }}</span> comments</span>
                 </div>
                 <div class="lastUnit size2of3">
-                    {{ modules.Tags(item.tags) }}
+                    {{ modules.Static('tags', tags=item.tags) }}
                 </div>
             </div>
 
@@ -21,7 +21,7 @@
     </div>
 </div>
             {% if item.has_key('need_volunteer') %}
-                {{ modules.Tags(item.volunteer_tags) }}
+                {{ modules.Static('tags', tags=item.volunteer_tags) }}
             {% end %}
 
         </div>

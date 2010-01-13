@@ -22,7 +22,7 @@ class AddHandler(BaseHandler):
         parent = self.get_argument("parent", None)
         if parent is None:
             comment.update({"responses": []})
-            html = self.render_string("modules/statics/item-comment", 
+            html = self.render_string("statics/item-comment", 
                                       user=self.current_user,
                                       comment=comment,
                                       commenters={self.current_user._id: self.current_user},
@@ -58,6 +58,8 @@ function add_resp(id, parent,comment) {
         if self.is_xhr():
             data = {'append':True, 'html': html, 'target': append_to}
             return self.json_response(None, "OK", data)  
+        else:
+            self.redirect(self.get_argument('next'))
         
 class UpdatesHandler(BaseHandler):
     def post(self):        

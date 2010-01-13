@@ -34,7 +34,8 @@ class ViewHandler(BaseHandler):
             tags, tab = tab, 'content'
         tags = urllib2.unquote(tags).split('+')
         doc = Content if tab == 'content' else User
-        pagination = Pagination(self, doc, {'tags': {'$all':tags}})
+        pagination = Pagination(self, doc, {'status':{"$in": ['published', 'active']},'tags': {'$all':tags}})
+        print len(pagination)
         self.render('tag-view', tab=tab, tags=tags, pagination=pagination)
         
 class FlagHandler(BaseHandler):

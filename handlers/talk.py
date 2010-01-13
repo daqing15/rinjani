@@ -20,6 +20,7 @@ import logging
 
 from main import BaseHandler
 from models import Chat, Project, CONTENT_TYPE
+from rinjani.string import sanitize
 
 class MainHandler(BaseHandler):
     def get(self, ch):
@@ -93,7 +94,7 @@ function insertNewMessage(ch, newMsg) {
         message = {
             "from": self.current_user["username"],
             "avatar": self.current_user["avatar"],
-            "body": self.get_argument("body"),
+            "body": sanitize(self.get_argument("body")),
             "date": datetime.datetime.isoformat(datetime.datetime.utcnow())
         }
         

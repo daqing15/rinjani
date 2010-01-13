@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ escape(project['title']) }} - {{_('project')}}{% end %}
+
+{% block body %}
+
+<div class="post">  
+    <h2>{{ escape(project.title) }}</h2>
+    <p>By  ({{project.author.username}}) </p>
+    <div class="cb">
+       {{ project.content_html }}
+    </div>
+</div>
+
+{% if project.enable_comment %}
+    {% if current_user %}
+        {{ modules.Static('comment', item=project) }}
+    {% else %}
+        <hr />
+        <p><strong>You need to log in in order to give comment</strong></p>
+    {% end %}
+{% end %}
+
+{% end %}
+
+
+
+

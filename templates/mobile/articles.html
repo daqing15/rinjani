@@ -6,8 +6,7 @@
 
 {% if pagination.get_objects().count() %}
     {% for item in pagination.get_objects() %}
-        {{ log.error(item.slug) }}
-        <h4><a href="{{ item.get_url()}}">{{ item.title }}</a></h4>
+        <h4><a href="{{ item.get_url()}}">{{ item.title }}</a> ({{item.author.username}})</h4>
         <p>{{ item.excerpt}}</p>
         <hr />
     {% end %}

@@ -73,20 +73,6 @@ class Disqus(BaseUIModule):
             return ""
         return self.render_string('modules/disqus', id=id)
 
-class FansOf(BaseUIModule):
-    def render(self, user):
-        fans = []
-        return self.render_string('modules/fans-of', user=user, fans=fans)
-
-class Facets(BaseUIModule):
-    def render(self, facets):
-        return self.render_string('modules/facets', facets=facets)
-    
-class Fans(BaseUIModule):
-    def render(self, user):
-        fans = []
-        return self.render_string('modules/fans', user=user, fans=fans)
-
 class Flash(BaseUIModule):
     def render(self):
         message = self.handler.get_cookie('f')
@@ -96,10 +82,7 @@ class Flash(BaseUIModule):
             return self.render_string('modules/flash', message=message)
         else:
             return ''
-class FollowButton(BaseUIModule):
-    def render(self, user):
-        return self.render_string('modules/follow-button', user=user)
-    
+        
 class Formfield(BaseUIModule):
     def render(self, i, label=None):
         return self.render_string('modules/field', i=i,
@@ -186,11 +169,11 @@ class ReportBox(BaseUIModule):
 
 class Static(BaseUIModule):
     def render(self, template, **kwargs):
-        path = os.path.join(self.handler.settings['template_path'], \
-            'statics', template.lower() + '.html')
-        if os.path.exists(path):
-            return self.render_string('statics/%s' % template.lower(), **kwargs)
-        return ''
+        #path = os.path.join(self.handler.settings['template_path'], \
+        #    'statics', template.lower() + '.html')
+        #if os.path.exists(path):
+        return self.render_string('statics/%s' % template.lower(), **kwargs)
+        #return ''
 
 class SimilarContent(BaseUIModule):
     def render(self, content):
@@ -253,10 +236,6 @@ class TagCloud(BaseUIModule):
         tags = calculate_cloud(tags, 10, 2)
         random.shuffle(tags)
         return self.render_string('modules/tag-cloud', tags=tags[0:10], min=min)
-
-class Tags(BaseUIModule):
-    def render(self, tags):
-        return self.render_string('modules/tags', tags=tags)
 
 class TagSuggestion(BaseUIModule):
     def render(self, tags, el=None):

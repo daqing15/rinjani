@@ -35,8 +35,8 @@ class ErrorHandler(tornado.web.RequestHandler):
         self.status_code = status_code
         super(ErrorHandler, self).__init__(application, request)
     
-    def get_error_html(self, status_code):
-        return self.render_string(status_code)
+    def get_error_html(self, status_code, **kwargs):
+        return self.render_string(status_code, **kwargs)
     
     @property
     def template_vars(self):
@@ -82,24 +82,19 @@ class Application(tornado.web.Application):
         else:
             if request.path != "/":
                 request.path = request.path.rstrip('/')
-            for pattern, handler_class, kwargs in handlers:
-                match = pattern.match(request.path)
+            for spec in handlers:
+                match = spec.regex.match(request.path)
                 if match:
-                    if not callable(handler_class):
-                        args = get_args(handler_class, match.groups())
-                        handler_class = re.sub(pattern, handler_class, request.path)
+                    if not callable(spec.handler_class):
+                        args = get_args(spec.handler_class, match.groups())
+                        handler_class = re.sub(spec.regex, spec.handler_class, request.path)
                         mod_name, handler_classname = get_mod_handler(handler_class)
                         handler_class = import_module(mod_name, handler_classname)
-                        handler = handler_class(self, request, **kwargs)
+                        handler = handler_class(self, request, **spec.kwargs)
                     break
             if not handler:
                 handler = MissingHandler(self, request)
         
-        # force debug if ip in registered remote debugger ips
-        if self.settings.get("debug_ip", None):
-            if request.remote_ip in self.settings.get("debug_ip"):
-                self.settings['debug'] = True
-                
         # In debug mode, re-compile templates and reload static files on every
         # request so you don't need to restart to see changes
         if self.settings.get("debug"):
@@ -107,7 +102,6 @@ class Application(tornado.web.Application):
             RequestHandler._static_hashes = {}
         
         handler._execute(transforms, *args)
-            
         return handler
     
 

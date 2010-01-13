@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Users')}}{% end %}
+
+{% block body %}
+
+<div class="line">
+
+{% if pagination.get_objects().count() %}
+    {% set c = h.alternate(['rodd','rodd', 'reven', 'reven']) %}
+    {% for user in pagination.get_objects() %}
+    <div class="unit size1of3 {{c.next()}}">
+           {{ modules.ItemSummary(user, 'modules/item-user') }}
+    </div>
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
+{% end %}    
+</div>
+<p class="clear"></p>
+
+{{ pagination }}
+
+{% end %}
+

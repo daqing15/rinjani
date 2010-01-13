@@ -19,7 +19,9 @@
 </div>
 
 
-{{ modules.Static('comment', item=article) }}
+{% if article.enable_comment %}
+    {{ modules.Static('comment', item=article) }}
+{% end %}
 
 {% end %}
 

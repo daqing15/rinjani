@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -W ignore::DeprecationWarning
 import os.path
 import sys
 DIR = os.path.abspath(os.path.dirname(__file__))
@@ -29,20 +29,6 @@ VERIFIER_SIZE = 10
 CONSUMER_STATES = [u'pending', u'confirmed', u'accepted', u'rejected']
 HEADER_SERVER = 'PeduliAPI/0.1a'
 
-class authenticated(object):
-    """Decorate methods with this to require authenticated access"""
-    def __init__(self, group=None, admin=False, verified=False):
-        pass
-    
-    def __call__(self, method):
-        cls = self
-        def wrapped_method(self, *args, **kwargs):
-            username = self.get_argument('username')
-            password = hashlib.sha1(self.get_argument('password'))
-            self.unauthenticated_response()
-            return
-        return wrapped_method
-    
 class Consumer(Simpledoc):
     collection_name = 'consumers'
     structure = {
@@ -65,7 +51,21 @@ class Consumer(Simpledoc):
             key = generate_random_password(length=KEY_SIZE) 
             
         return key, secret
-
+    
+class authenticated(object):
+    """Decorate methods with this to require authenticated access"""
+    def __init__(self, group=None, admin=False, verified=False):
+        pass
+    
+    def __call__(self, method):
+        cls = self
+        def wrapped_method(self, *args, **kwargs):
+            username = self.get_argument('username')
+            password = hashlib.sha1(self.get_argument('password'))
+            self.unauthenticated_response()
+            return
+        return wrapped_method
+    
 class BaseHandler(tornado.web.RequestHandler):
     def get_arguments(self):
         return dict([(k, self.get_argument(k)) \
@@ -182,8 +182,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         static_dir = DIR + '/static'
         handlers = [
-            (r'/(articles|activities)', ListHandler),
-            (r'/(article|activity|page|post)/([\w\-]+)', ContentHandler),
+            (r'/(articles|projects)', ListHandler),
+            (r'/(article|project|page|post)/([\w\-]+)', ContentHandler),
             (r'/activate/\w+', RequestHandler),
             (r'/request', RequestHandler),
             (r'/register', RegisterHandler),

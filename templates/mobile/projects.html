@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{_('Projects')}}{% end %}
+
+{% block body %}
+
+{% if pagination.get_objects().count() %}
+    {% for item in pagination.get_objects() %}
+        <h4><a href="{{ item.get_url()}}">{{ item.title }}</a> ({{item.author.username}})</h4>
+        <p>{{ item.goal}}</p>
+        <hr />
+    {% end %}
+{% else %}
+    <p class="grey" style="margin-top: 20px;">{{ _('None') }}</p>
+{% end %}
+
+<p class="clear"></p>
+
+{{ pagination }}
+
+
+{% end %}
+

@@ -16,10 +16,11 @@
 
 import os.path
 import httplib
+import logging
 import urllib
 import tornado.web
 
-from rinjani.utils import log, is_mobile_agent
+from rinjani.utils import is_mobile_agent
 from rinjani import defaulthelper, string, timeutil, cache
 from forms import MyForm
 from models import User
@@ -70,7 +71,10 @@ class authenticated(object):
                 if (not cls.allowed_types and not cls.admin_access) \
                         or in_type or user['is_admin']:
 
-                    if not cls.verified_access or (cls.verified_access and (user['is_admin'] or user['is_verified'])):
+                    if not cls.verified_access \
+                        or (cls.verified_access and \
+                                (user['is_admin'] or user['is_verified'])
+                            ):
                         return method(self, *args, **kwargs)
 
                     return response_error(_('Access to that page is only for verified user. Please <a href="/profile/verify">verify your account</a>.'))
@@ -137,11 +141,11 @@ class BaseHandler(tornado.web.RequestHandler):
         template += '.html'
         return super(BaseHandler, self).render_string(template, **kwargs)
 
-    def get_error_html(self, status_code):
-        return self.render_string(str(status_code), message=None)
+    def get_error_html(self, status_code, **kwargs):
+        return self.render_string(str(status_code), **kwargs)
     
     def log(self, msg, type=None):
-        log(msg, type)
+        logging.info(msg)
         
     @property
     def cache(self):
